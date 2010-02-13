@@ -1,11 +1,9 @@
 .deps
 .libs
 .dirstamp
-*.in
 *.la
 *.lo
 *.o
-Makefile
 /lib/stamp-h1
 
 /libnl-1.pc
@@ -13,15 +11,5 @@ Makefile
 /lib/defs.h
 cscope.*
 
-/aclocal.m4
 /autom4te.cache
-/compile
-/config.*
-/configure
-/depcomp
-/libtool
-/ltmain.sh
-/install-sh
-/missing
-
 /*.pc
