@@ -1,0 +1,9 @@
+Document: libnl2-doc
+Title: libnl API documentation
+Author: Thomas Graf <tgraf@suug.ch>
+Abstract: Library for dealing with netlink sockets.
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/libnl2-doc/html/index.html
+Files: /usr/share/doc/libnl2-doc/html/*

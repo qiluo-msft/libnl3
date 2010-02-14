@@ -1,0 +1,5 @@
+libnl2 (1.99+git20091216-1) UNRELEASED; urgency=low
+
+  * Initial release
+
+ -- Heiko Stuebner <heiko@sntech.de>  Sat, 13 Feb 2010 15:10:35 +0100
