@@ -13,10 +13,9 @@ Copyright:
 
 lib/route/addr.c 
 include/netlink/route/addr.h
-   
-   Copyright (c) 2003-2006 Thomas Graf <tgraf@suug.ch>
-                           Baruch Even <baruch@ev-en.org>,
-                           Mediatrix Telecom, inc. <ericb@mediatrix.com>
+
+   Copyright (c) Thomas Graf <tgraf@suug.ch>
+                 Baruch Even <baruch@ev-en.org>
 
 
 lib/route/cls/u32.c
@@ -24,28 +23,38 @@ lib/route/cls/fw.c
 lib/route/sch/htb.c
 include/netlink/route/cls/fw.h
 include/netlink/route/sch/htb.h
-   
-   Copyright (c) 2003-2006 Thomas Graf <tgraf@suug.ch>
-   Copyright (c) 2006 Petr Gotthard <petr.gotthard@siemens.com>
-   Copyright (c) 2006 Siemens AG Oesterreich
+
+   Copyright (c) Thomas Graf <tgraf@suug.ch>
+   Copyright (c) Petr Gotthard <petr.gotthard@siemens.com>
+   Copyright (c) Siemens AG Oesterreich
 
 
-include/netlink/netfilter/ct.h
-include/netlink/netfilter/log.h
-include/netlink/netfilter/nfnl.h
+
+lib/netfilter/log_msg.c
 lib/netfilter/ct.c
-lib/netfilter/ct_obj.c
-lib/netfilter/log.c
+include/netlink/netfilter/log_msg.h
+include/netlink/netfilter/log.h
 lib/netfilter/log_obj.c
-lib/netfilter/nfnl.c
-src/f_ct.c
-src/nf-ct-dump.c
-src/nf-monitor.c
-src/nf-log.c
 
-   Copyright (c) 2003-2006 Thomas Graf <tgraf@suug.ch>
-   Copyright (c) 2007 Philip Craig <philipc@snapgear.com>
-   Copyright (c) 2007 Secure Computing Corporation
+   Copyright (c) Thomas Graf <tgraf@suug.ch>
+   Copyright (c) Philip Craig <philipc@snapgear.com>
+   Copyright (c) Patrick McHardy <kaber@trash.net>
+   Copyright (c) Secure Computing Corporation
+
+
+
+include/netlink/netfilter/queue_msg.h
+lib/netfilter/queue_msg_obj.c
+lib/netfilter/queue_msg.c
+lib/netfilter/queue.c
+lib/netfilter/netfilter.c
+lib/netfilter/queue_obj.c
+include/netlink/netfilter/netfilter.h
+include/netlink/netfilter/queue.h
+src/nf-queue.c
+
+   Copyright (c) Patrick McHardy <kaber@trash.net>
+
 
 
 All other *.c and *.h files not mentioned above are copyright of:
@@ -54,6 +63,30 @@ All other *.c and *.h files not mentioned above are copyright of:
 
 
 License:
+
+src/nl-addr-add.c
+src/nl-addr-list.c
+src/nl-cls-add.c
+src/cls/utils.c
+src/cls/cgroup.c
+src/cls/utils.h
+src/cls/basic.c
+src/nl-addr-delete.c:
+
+   This library is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published 
+   by the Free Software Foundation version 2 of the License.
+
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+On Debian GNU/Linux systems, the complete text of the GNU General
+Public License can be found in /usr/share/common-licenses/GPL-2
+
+
+All other *.c and *.h files not mentioned above:
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License as published 
