@@ -4,8 +4,13 @@ libnl2 (1.99+git20091216-1) UNRELEASED; urgency=low
   * New source name to enable installing libnl and libnl2 side by side
   * Set myself as new maintainer for libnl2 according to agreement
     with Michael Biebl
+  * Add debug package
+  * README.Debian warns of possible breakage in this snapshot
+  * Add Patch 0001 which fixes some errors in the build system
+  * Add Patch 0002 which adds libnl-?? libs to linker statement
+    until I can resolve this with upstream
 
- -- Heiko Stuebner <heiko@sntech.de>  Sat, 13 Feb 2010 15:10:35 +0100
+ -- Heiko Stuebner <heiko@sntech.de>  Mon, 15 Feb 2010 21:50:35 +0100
 
 libnl (1.1-5) unstable; urgency=low
 
