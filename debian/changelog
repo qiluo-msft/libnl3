@@ -1,4 +1,4 @@
-libnl2 (1.99+git20091216-1) UNRELEASED; urgency=low
+libnl2 (1.99+git20091216-1) unstable; urgency=low
 
   * New upstream snapshot
   * New source name to enable installing libnl and libnl2 side by side
