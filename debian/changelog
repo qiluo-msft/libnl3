@@ -1,3 +1,11 @@
+libnl2 (1.99+git20091216-2) unstable; urgency=low
+
+  * add README.source describing the patches in use.
+  * remove libnl*-provides - libnl2 should stay sepparate
+    from libnl1 for now
+
+ -- Heiko Stuebner <heiko@sntech.de>  Wed, 10 Mar 2010 18:03:35 +0100
+
 libnl2 (1.99+git20091216-1) unstable; urgency=low
 
   * New upstream snapshot
