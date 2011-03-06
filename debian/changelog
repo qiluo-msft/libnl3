@@ -1,4 +1,4 @@
-libnl2 (2.0-2) unstable; urgency=low
+libnl2 (2.0-1) unstable; urgency=low
 
   * New upstream release (Closes: #603765)
   * Fix compilation with binutils-gold or ld --no-add-needed
