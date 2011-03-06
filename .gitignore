@@ -4,6 +4,7 @@
 *.la
 *.lo
 *.o
+*.swp
 /lib/stamp-h1
 
 /libnl-1.pc
