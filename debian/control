@@ -8,7 +8,7 @@ Standards-Version: 3.8.4
 Homepage: http://people.suug.ch/~tgr/libnl/
 
 Package: libnl2
-Architecture: any
+Architecture: linux-any
 Section: libs
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: library for dealing with netlink sockets 
@@ -17,7 +17,7 @@ Description: library for dealing with netlink sockets
  netlink family specific interfaces.
 
 Package: libnl2-dev
-Architecture: any
+Architecture: linux-any
 Section: libdevel
 Depends: libnl2 (= ${binary:Version}), ${misc:Depends}
 Conflicts: libnl-dev
@@ -31,7 +31,7 @@ Description: development library and headers for libnl2
  libnl2.
 
 Package: libnl2-dbg
-Architecture: any
+Architecture: linux-any
 Section: debug
 Depends: libnl2 (= ${binary:Version}), ${misc:Depends}
 Priority: extra
