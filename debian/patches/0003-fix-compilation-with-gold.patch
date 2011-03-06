@@ -1,0 +1,39 @@
+From 340ac02b4e5038b73f87de5dcf9ee88908611c1d Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko@sntech.de>
+Date: Sun, 6 Mar 2011 15:44:37 +0100
+Subject: [PATCH] fix compilation with gold
+
+---
+ src/Makefile.am |    2 +-
+ src/Makefile.in |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index dda32a7..f0bb9b5 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -3,7 +3,7 @@
+ SUBDIRS = lib
+ 
+ AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE
+-AM_LDFLAGS = -L${top_builddir}/lib -L${top_builddir}/src/lib -lnl-cli
++AM_LDFLAGS = -L${top_builddir}/lib -L${top_builddir}/src/lib -lnl-cli -lnl -lnl-nf -lnl-genl -lnl-route
+ 
+ noinst_PROGRAMS = \
+ 	genl-ctrl-list \
+diff --git a/src/Makefile.in b/src/Makefile.in
+index 2026b28..eb7f3db 100644
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -361,7 +361,7 @@ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ SUBDIRS = lib
+ AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE
+-AM_LDFLAGS = -L${top_builddir}/lib -L${top_builddir}/src/lib -lnl-cli
++AM_LDFLAGS = -L${top_builddir}/lib -L${top_builddir}/src/lib -lnl-cli -lnl -lnl-nf -lnl-genl -lnl-route
+ genl_ctrl_list_SOURCES = genl-ctrl-list.c 
+ genl_ctrl_list_LDADD = -lnl-genl -lnl-route
+ nf_ct_list_SOURCES = nf-ct-list.c 
+-- 
+1.7.2.3
+
