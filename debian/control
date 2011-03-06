@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Heiko Stuebner <mmind@debian.org>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7), cdbs, doxygen, texlive-latex-base, graphviz, ghostscript
+Build-Depends: debhelper (>= 7), cdbs, doxygen, bison, flex
 Standards-Version: 3.9.1
 Homepage: http://people.suug.ch/~tgr/libnl/
 

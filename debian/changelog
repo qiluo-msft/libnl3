@@ -1,8 +1,11 @@
 libnl2 (2.0-2) unstable; urgency=low
 
   * New upstream release (Closes: #603765)
-  * Fix compilation with binutils-gold or ld --no-add-needed (Closes: #615745)
+  * Fix compilation with binutils-gold or ld --no-add-needed
+    (Closes: #615745)
   * Update standards
+  * Update build dependencies - tetex-live is not necessary
+    anymore (Closes: #616260)
 
  -- Heiko Stuebner <heiko@sntech.de>  Wed, 10 Mar 2010 18:03:35 +0100
 
