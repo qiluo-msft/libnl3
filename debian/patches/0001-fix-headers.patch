@@ -1,6 +1,6 @@
-From 1e283b011d581757f92af1f675a5e8b8903bce16 Mon Sep 17 00:00:00 2001
+From d93a43d602c4771f1c21aaf7250906dac97ec108 Mon Sep 17 00:00:00 2001
 From: Heiko Stuebner <heiko@sntech.de>
-Date: Mon, 15 Feb 2010 20:07:10 +0100
+Date: Sun, 6 Mar 2011 15:29:34 +0100
 Subject: [PATCH] fix headers
 
 ---
@@ -9,7 +9,7 @@ Subject: [PATCH] fix headers
  2 files changed, 27 insertions(+), 0 deletions(-)
 
 diff --git a/include/Makefile.am b/include/Makefile.am
-index cac5c24..0ec894d 100644
+index 8815a6e..79bf090 100644
 --- a/include/Makefile.am
 +++ b/include/Makefile.am
 @@ -28,6 +28,10 @@ nobase_include_HEADERS = \
@@ -23,7 +23,7 @@ index cac5c24..0ec894d 100644
  	netlink/route/cls/fw.h \
  	netlink/route/cls/police.h \
  	netlink/route/cls/u32.h \
-@@ -57,6 +61,14 @@ nobase_include_HEADERS = \
+@@ -57,7 +61,17 @@ nobase_include_HEADERS = \
  	netlink/route/rtnl.h \
  	netlink/route/rule.h \
  	netlink/route/tc.h \
@@ -38,17 +38,14 @@ index cac5c24..0ec894d 100644
  	netlink/socket.h \
  	netlink/types.h \
  	netlink/utils.h \
-@@ -65,3 +77,5 @@ nobase_include_HEADERS = \
- 	netlink-local.h \
- 	netlink-tc.h \
- 	netlink-types.h
+ 	netlink/version.h
 +
 +EXTRA_DIST = linux
 diff --git a/include/Makefile.in b/include/Makefile.in
-index b805266..979a1f6 100644
+index cb8efc1..dd8d018 100644
 --- a/include/Makefile.in
 +++ b/include/Makefile.in
-@@ -218,6 +218,10 @@ nobase_include_HEADERS = \
+@@ -223,6 +223,10 @@ nobase_include_HEADERS = \
  	netlink/netlink.h \
  	netlink/object-api.h \
  	netlink/object.h \
@@ -59,7 +56,7 @@ index b805266..979a1f6 100644
  	netlink/route/cls/fw.h \
  	netlink/route/cls/police.h \
  	netlink/route/cls/u32.h \
-@@ -247,6 +251,14 @@ nobase_include_HEADERS = \
+@@ -252,11 +256,20 @@ nobase_include_HEADERS = \
  	netlink/route/rtnl.h \
  	netlink/route/rule.h \
  	netlink/route/tc.h \
@@ -74,14 +71,12 @@ index b805266..979a1f6 100644
  	netlink/socket.h \
  	netlink/types.h \
  	netlink/utils.h \
-@@ -256,6 +268,7 @@ nobase_include_HEADERS = \
- 	netlink-tc.h \
- 	netlink-types.h
+ 	netlink/version.h
  
 +EXTRA_DIST = linux
  all: all-am
  
  .SUFFIXES:
 -- 
-1.6.5
+1.7.2.3
 
