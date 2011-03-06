@@ -1,7 +1,7 @@
 Source: libnl2
 Section: net
 Priority: optional
-Maintainer: Heiko Stuebner <heiko@sntech.de>
+Maintainer: Heiko Stuebner <mmind@debian.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7), cdbs, doxygen, texlive-latex-base, graphviz, ghostscript
 Standards-Version: 3.8.4
