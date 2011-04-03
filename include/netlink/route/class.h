@@ -22,8 +22,6 @@ extern "C" {
 
 struct rtnl_class;
 
-extern struct nl_object_ops class_obj_ops;
-
 extern struct rtnl_class *	rtnl_class_alloc(void);
 extern void		rtnl_class_put(struct rtnl_class *);
 extern int		rtnl_class_alloc_cache(struct nl_sock *, int,
@@ -43,16 +41,7 @@ extern int	rtnl_class_build_delete_request(struct rtnl_class *,
 											struct nl_msg **);
 extern int	rtnl_class_delete(struct nl_sock *, struct rtnl_class *);
 
-extern void		rtnl_class_set_ifindex(struct rtnl_class *, int);
-extern int		rtnl_class_get_ifindex(struct rtnl_class *);
-extern void		rtnl_class_set_handle(struct rtnl_class *, uint32_t);
-extern uint32_t		rtnl_class_get_handle(struct rtnl_class *);
-extern void		rtnl_class_set_parent(struct rtnl_class *, uint32_t);
-extern uint32_t		rtnl_class_get_parent(struct rtnl_class *);
 extern void		rtnl_class_set_kind(struct rtnl_class *, const char *);
-extern char *		rtnl_class_get_kind(struct rtnl_class *);
-extern uint64_t		rtnl_class_get_stat(struct rtnl_class *,
-					    enum rtnl_tc_stats_id);
 
 /* iterators */
 extern void		rtnl_class_foreach_child(struct rtnl_class *,
