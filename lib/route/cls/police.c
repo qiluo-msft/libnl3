@@ -13,9 +13,8 @@
 #include <netlink-tc.h>
 #include <netlink/netlink.h>
 #include <netlink/utils.h>
-#include <netlink/route/tc.h>
+#include <netlink/route/tc-api.h>
 #include <netlink/route/classifier.h>
-#include <netlink/route/classifier-modules.h>
 #include <netlink/route/cls/police.h>
 
 /**
@@ -23,7 +22,7 @@
  * @{
  */
 
-static struct trans_tbl police_types[] = {
+static const struct trans_tbl police_types[] = {
 	__ADD(TC_POLICE_UNSPEC,unspec)
 	__ADD(TC_POLICE_OK,ok)
 	__ADD(TC_POLICE_RECLASSIFY,reclassify)
