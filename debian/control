@@ -20,7 +20,7 @@ Package: libnl3-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libnl3 (= ${binary:Version}), ${misc:Depends}
-Conflicts: libnl-dev
+Conflicts: libnl-dev, libnl2-dev
 Suggests: libnl3-doc
 Description: development library and headers for libnl3
  This is a library for applications dealing with netlink sockets. 
