@@ -4,9 +4,9 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
-DEB_DH_STRIP_ARGS := --dbg-package=libnl2-dbg
-DEB_DH_MAKESHLIBS_ARGS_libnl2 := -V"libnl2 (>= $(DEB_UPSTREAM_VERSION))"
+DEB_DH_STRIP_ARGS := --dbg-package=libnl3-dbg
+DEB_DH_MAKESHLIBS_ARGS_libnl3 := -V"libnl3 (>= $(DEB_UPSTREAM_VERSION))"
 
 
-build/libnl2-doc::
+build/libnl3-doc::
 	cd doc && $(MAKE) gendoc

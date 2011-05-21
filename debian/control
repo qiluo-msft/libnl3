@@ -1,4 +1,4 @@
-Source: libnl2
+Source: libnl3
 Section: net
 Priority: optional
 Maintainer: Heiko Stuebner <mmind@debian.org>
@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 7), cdbs, doxygen, bison, flex, mscgen, graphviz
 Standards-Version: 3.9.1
 Homepage: http://people.suug.ch/~tgr/libnl/
 
-Package: libnl2
+Package: libnl3
 Architecture: linux-any
 Section: libs
 Depends: ${misc:Depends}, ${shlibs:Depends}
@@ -16,26 +16,26 @@ Description: library for dealing with netlink sockets
  The library provides an interface for raw netlink messaging and various 
  netlink family specific interfaces.
 
-Package: libnl2-dev
+Package: libnl3-dev
 Architecture: linux-any
 Section: libdevel
-Depends: libnl2 (= ${binary:Version}), ${misc:Depends}
+Depends: libnl3 (= ${binary:Version}), ${misc:Depends}
 Conflicts: libnl-dev
-Suggests: libnl2-doc
-Description: development library and headers for libnl2
+Suggests: libnl3-doc
+Description: development library and headers for libnl3
  This is a library for applications dealing with netlink sockets. 
  The library provides an interface for raw netlink messaging and various 
  netlink family specific interfaces.
  .
  This package contains all files that are needed to build applications using
- libnl2.
+ libnl3.
 
-Package: libnl2-dbg
+Package: libnl3-dbg
 Architecture: linux-any
 Section: debug
-Depends: libnl2 (= ${binary:Version}), ${misc:Depends}
+Depends: libnl3 (= ${binary:Version}), ${misc:Depends}
 Priority: extra
-Description: debug symbols for libnl2
+Description: debug symbols for libnl3
  This is a library for applications dealing with netlink sockets. 
  The library provides an interface for raw netlink messaging and various 
  netlink family specific interfaces.
@@ -45,14 +45,14 @@ Description: debug symbols for libnl2
  to interpret core dumps. The libraries are installed in /usr/lib/debug and
  are automatically used by gdb.
 
-Package: libnl2-doc
+Package: libnl3-doc
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}
 Suggests: doc-base
-Description: API documentation for libnl2
+Description: API documentation for libnl3
  This is a library for applications dealing with netlink sockets. 
  The library provides an interface for raw netlink messaging and various 
  netlink family specific interfaces.
  .
- This package contains the API reference documentation for libnl2.
+ This package contains the API reference documentation for libnl3.
