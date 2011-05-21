@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Heiko Stuebner <mmind@debian.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7), cdbs, doxygen, bison, flex, mscgen, graphviz
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Homepage: http://people.suug.ch/~tgr/libnl/
 
 Package: libnl3

@@ -2,6 +2,7 @@ libnl3 (3.0-1) unstable; urgency=low
 
   * New upstream release (Closes: #626098)
     see README.Debian for version explanation.
+  * Update standards to 3.9.2
 
  -- Heiko Stuebner <mmind@debian.org>  Sat, 21 May 2011 19:25:13 +0200
 
