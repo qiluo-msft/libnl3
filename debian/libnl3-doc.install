@@ -1,5 +1,5 @@
-doc/html/*.html usr/share/doc/libnl3-doc/html
-doc/html/*.css usr/share/doc/libnl3-doc/html
-doc/html/*.png usr/share/doc/libnl3-doc/html
-doc/html/*.map usr/share/doc/libnl3-doc/html
-doc/html/*.md5 usr/share/doc/libnl3-doc/html
+debian/build/main/doc/html/*.html usr/share/doc/libnl3-doc/html
+debian/build/main/doc/html/*.css usr/share/doc/libnl3-doc/html
+debian/build/main/doc/html/*.png usr/share/doc/libnl3-doc/html
+debian/build/main/doc/html/*.map usr/share/doc/libnl3-doc/html
+debian/build/main/doc/html/*.md5 usr/share/doc/libnl3-doc/html
