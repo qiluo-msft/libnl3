@@ -7,7 +7,7 @@ libnl3 (3.0-2) unstable; urgency=low
 
 libnl3 (3.0-1.1) unstable; urgency=low
 
-  * Non-maintainer upload with agreement from Heiko Stübner
+  * Non-maintainer upload with agreement from Heiko Stuebner
   * Add libnl3-udeb package with seperate build for 
     debian-installer (Closes: #635962).
 
