@@ -19,7 +19,7 @@ index ccedf43..5999113 100644
  # -*- Makefile -*-
  
 -AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
-+AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -I${builddir}/route -I${builddir}/route/cls -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
++AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -I${builddir}/route -I${builddir}/route/cls -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl3\"
  AM_LDFLAGS = -version-info 3:0:0
  
  lib_LTLIBRARIES = \
@@ -30,7 +30,7 @@ index ccedf43..5999113 100644
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
 -AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
-+AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -I${builddir}/route -I${builddir}/route/cls -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
++AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -I${builddir}/route -I${builddir}/route/cls -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl3\"
  AM_LDFLAGS = -version-info 3:0:0
  lib_LTLIBRARIES = \
  	libnl.la libnl-genl.la libnl-route.la libnl-nf.la
