@@ -6,7 +6,7 @@
  *	License as published by the Free Software Foundation version 2.1
  *	of the License.
  *
- * Copyright (c) 2003-2008 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2003-2011 Thomas Graf <tgraf@suug.ch>
  */
 
 #ifndef NETLINK_LOCAL_H_
@@ -43,6 +43,7 @@
 #include <linux/if.h>
 #include <linux/if_arp.h>
 #include <linux/if_ether.h>
+#include <linux/ethtool.h>
 #include <linux/pkt_sched.h>
 #include <linux/pkt_cls.h>
 #include <linux/gen_stats.h>
@@ -88,6 +89,13 @@ struct trans_list {
 		assert(0);	\
 	} while (0)
 
+#define APPBUG(msg)							\
+	do {								\
+		fprintf(stderr, "APPLICATION BUG: %s:%d:%s: %s\n",	\
+			__FILE__, __LINE__, __PRETTY_FUNCTION__, msg);	\
+		assert(0);						\
+	} while(0)
+
 extern int __nl_read_num_str_file(const char *path,
 				  int (*cb)(long, const char *));
 
@@ -119,7 +127,11 @@ static inline int nl_cb_call(struct nl_cb *cb, int type, struct nl_msg *msg)
 }
 
 #define ARRAY_SIZE(X) (sizeof(X) / sizeof((X)[0]))
+
+/* This is also defined in stddef.h */
+#ifndef offsetof
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#endif
 
 #define __init __attribute__ ((constructor))
 #define __exit __attribute__ ((destructor))
@@ -184,6 +196,18 @@ static inline int wait_for_ack(struct nl_sock *sk)
 		return 0;
 	else
 		return nl_wait_for_ack(sk);
+}
+
+static inline int build_sysconf_path(char **strp, const char *filename)
+{
+	char *sysconfdir;
+
+	sysconfdir = getenv("NLSYSCONFDIR");
+
+	if (!sysconfdir)
+		sysconfdir = SYSCONFDIR;
+
+	return asprintf(strp, "%s/%s", sysconfdir, filename);
 }
 
 #endif

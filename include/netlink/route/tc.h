@@ -24,6 +24,12 @@ extern "C" {
 #endif
 
 /**
+ * Compute tc handle based on major and minor parts
+ * @ingroup tc
+ */
+#define TC_HANDLE(maj, min)	(TC_H_MAJ((maj) << 16) | TC_H_MIN(min))
+
+/**
  * Traffic control object
  * @ingroup tc
  */
@@ -65,6 +71,7 @@ enum rtnl_tc_stat {
 extern void		rtnl_tc_set_ifindex(struct rtnl_tc *, int);
 extern int		rtnl_tc_get_ifindex(struct rtnl_tc *);
 extern void		rtnl_tc_set_link(struct rtnl_tc *, struct rtnl_link *);
+extern struct rtnl_link *rtnl_tc_get_link(struct rtnl_tc *);
 extern void		rtnl_tc_set_mtu(struct rtnl_tc *, uint32_t);
 extern uint32_t		rtnl_tc_get_mtu(struct rtnl_tc *);
 extern void		rtnl_tc_set_mpu(struct rtnl_tc *, uint32_t);

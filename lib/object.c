@@ -63,9 +63,11 @@ struct nl_object *nl_object_alloc(struct nl_object_ops *ops)
 }
 
 /**
- * Allocate a new object of kind specified by the name
+ * Allocate new object of kind specified by the name
  * @arg kind		name of object type
- * @return The new object or nULL
+ * @arg result		Result pointer
+ *
+ * @return 0 on success or a negative error code.
  */
 int nl_object_alloc_name(const char *kind, struct nl_object **result)
 {
@@ -246,6 +248,16 @@ int nl_object_is_marked(struct nl_object *obj)
 void nl_object_dump(struct nl_object *obj, struct nl_dump_params *params)
 {
 	dump_from_ops(obj, params);
+}
+
+void nl_object_dump_buf(struct nl_object *obj, char *buf, size_t len)
+{
+        struct nl_dump_params dp = {
+                .dp_buf = buf,
+                .dp_buflen = len,
+        };
+
+        return nl_object_dump(obj, &dp);
 }
 
 /**

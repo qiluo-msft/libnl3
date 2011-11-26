@@ -65,9 +65,13 @@ extern int			nl_cache_include(struct nl_cache *,
 						 struct nl_object *,
 						 change_func_t,
 						 void *);
+extern void			nl_cache_set_arg1(struct nl_cache *, int);
+extern void			nl_cache_set_arg2(struct nl_cache *, int);
 
 /* General */
 extern int			nl_cache_is_empty(struct nl_cache *);
+extern struct nl_object *	nl_cache_search(struct nl_cache *,
+						struct nl_object *);
 extern void			nl_cache_mark_all(struct nl_cache *);
 
 /* Dumping */
@@ -103,6 +107,7 @@ extern int			nl_cache_mngt_unregister(struct nl_cache_ops *);
 extern void			nl_cache_mngt_provide(struct nl_cache *);
 extern void			nl_cache_mngt_unprovide(struct nl_cache *);
 extern struct nl_cache *	nl_cache_mngt_require(const char *);
+extern struct nl_cache *	__nl_cache_mngt_require(const char *);
 
 struct nl_cache_mngr;
 

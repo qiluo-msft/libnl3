@@ -15,6 +15,8 @@
  * @{
  */
 
+#include <pthread.h>
+
 #include <netlink-local.h>
 #include <netlink/netlink.h>
 #include <netlink/utils.h>
@@ -43,11 +45,14 @@ static void __init init_default_cb(void)
 }
 
 static uint32_t used_ports_map[32];
+static pthread_mutex_t port_map_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static uint32_t generate_local_port(void)
 {
 	int i, n;
 	uint32_t pid = getpid() & 0x3FFFFF;
+
+	pthread_mutex_lock(&port_map_mutex);
 
 	for (i = 0; i < 32; i++) {
 		if (used_ports_map[i] == 0xFFFFFFFF)
@@ -62,10 +67,14 @@ static uint32_t generate_local_port(void)
 
 			/* PID_MAX_LIMIT is currently at 2^22, leaving 10 bit
 			 * to, i.e. 1024 unique ports per application. */
-			return pid + (n << 22);
 
+			pthread_mutex_unlock(&port_map_mutex);
+
+			return pid + (n << 22);
 		}
 	}
+
+	pthread_mutex_unlock(&port_map_mutex);
 
 	/* Out of sockets in our own PID namespace, what to do? FIXME */
 	return UINT_MAX;
@@ -79,7 +88,10 @@ static void release_local_port(uint32_t port)
 		return;
 	
 	nr = port >> 22;
-	used_ports_map[nr / 32] &= ~(1 << nr % 32);
+
+	pthread_mutex_lock(&port_map_mutex);
+	used_ports_map[nr / 32] &= ~(1 << (nr % 32));
+	pthread_mutex_unlock(&port_map_mutex);
 }
 
 /**
@@ -256,7 +268,14 @@ void nl_socket_set_local_port(struct nl_sock *sk, uint32_t port)
 {
 	if (port == 0) {
 		port = generate_local_port(); 
-		sk->s_flags &= ~NL_OWN_PORT;
+		/*
+		 * Release local port after generation of a new one to be
+		 * able to change local port using nl_socket_set_local_port(, 0)
+		 */
+		if (!(sk->s_flags & NL_OWN_PORT))
+			release_local_port(sk->s_local.nl_pid);
+		else
+			sk->s_flags &= ~NL_OWN_PORT;
 	} else  {
 		if (!(sk->s_flags & NL_OWN_PORT))
 			release_local_port(sk->s_local.nl_pid);
@@ -476,12 +495,12 @@ void nl_socket_set_cb(struct nl_sock *sk, struct nl_cb *cb)
 }
 
 /**
- * Modify the callback handler associated to the socket
+ * Modify the callback handler associated with the socket
  * @arg sk		Netlink socket.
  * @arg type		which type callback to set
  * @arg kind		kind of callback
  * @arg func		callback function
- * @arg arg		argument to be passwd to callback function
+ * @arg arg		argument to be passed to callback function
  *
  * @see nl_cb_set
  */
@@ -490,6 +509,21 @@ int nl_socket_modify_cb(struct nl_sock *sk, enum nl_cb_type type,
 			void *arg)
 {
 	return nl_cb_set(sk->s_cb, type, kind, func, arg);
+}
+
+/**
+ * Modify the error callback handler associated with the socket
+ * @arg sk		Netlink socket.
+ * @arg kind		kind of callback
+ * @arg func		callback function
+ * @arg arg		argument to be passed to callback function
+ *
+ * @see nl_cb_err
+ */
+int nl_socket_modify_err_cb(struct nl_sock *sk, enum nl_cb_kind kind,
+			    nl_recvmsg_err_cb_t func, void *arg)
+{
+	return nl_cb_err(sk->s_cb, kind, func, arg);
 }
 
 /** @} */

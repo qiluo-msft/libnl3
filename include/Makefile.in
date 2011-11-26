@@ -36,9 +36,22 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@ENABLE_CLI_TRUE@am__append_1 = \
+@ENABLE_CLI_TRUE@	netlink/cli/addr.h \
+@ENABLE_CLI_TRUE@	netlink/cli/class.h \
+@ENABLE_CLI_TRUE@	netlink/cli/cls.h \
+@ENABLE_CLI_TRUE@	netlink/cli/ct.h \
+@ENABLE_CLI_TRUE@	netlink/cli/link.h \
+@ENABLE_CLI_TRUE@	netlink/cli/neigh.h \
+@ENABLE_CLI_TRUE@	netlink/cli/qdisc.h \
+@ENABLE_CLI_TRUE@	netlink/cli/route.h \
+@ENABLE_CLI_TRUE@	netlink/cli/rule.h \
+@ENABLE_CLI_TRUE@	netlink/cli/tc.h \
+@ENABLE_CLI_TRUE@	netlink/cli/utils.h
+
 subdir = include
-DIST_COMMON = $(nobase_include_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+DIST_COMMON = $(am__nobase_libnlinclude_HEADERS_DIST) \
+	$(noinst_HEADERS) $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -58,6 +71,42 @@ am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
 am__v_at_0 = @
 SOURCES =
 DIST_SOURCES =
+am__nobase_libnlinclude_HEADERS_DIST = netlink/fib_lookup/lookup.h \
+	netlink/fib_lookup/request.h netlink/genl/ctrl.h \
+	netlink/genl/family.h netlink/genl/genl.h netlink/genl/mngt.h \
+	netlink/netfilter/ct.h netlink/netfilter/log.h \
+	netlink/netfilter/log_msg.h netlink/netfilter/netfilter.h \
+	netlink/netfilter/nfnl.h netlink/netfilter/queue.h \
+	netlink/netfilter/queue_msg.h netlink/addr.h netlink/attr.h \
+	netlink/cache-api.h netlink/cache.h netlink/data.h \
+	netlink/errno.h netlink/handlers.h netlink/list.h \
+	netlink/msg.h netlink/netlink-compat.h \
+	netlink/netlink-kernel.h netlink/netlink.h \
+	netlink/object-api.h netlink/object.h \
+	netlink/route/cls/ematch/cmp.h netlink/route/cls/ematch/meta.h \
+	netlink/route/cls/ematch/nbyte.h \
+	netlink/route/cls/ematch/text.h netlink/route/cls/basic.h \
+	netlink/route/cls/cgroup.h netlink/route/cls/ematch.h \
+	netlink/route/cls/fw.h netlink/route/cls/police.h \
+	netlink/route/cls/u32.h netlink/route/link/api.h \
+	netlink/route/link/bonding.h netlink/route/link/info-api.h \
+	netlink/route/link/inet.h netlink/route/link/vlan.h \
+	netlink/route/qdisc/cbq.h netlink/route/qdisc/dsmark.h \
+	netlink/route/qdisc/fifo.h netlink/route/qdisc/htb.h \
+	netlink/route/qdisc/netem.h netlink/route/qdisc/prio.h \
+	netlink/route/qdisc/red.h netlink/route/qdisc/sfq.h \
+	netlink/route/qdisc/tbf.h netlink/route/addr.h \
+	netlink/route/class.h netlink/route/classifier.h \
+	netlink/route/link.h netlink/route/neighbour.h \
+	netlink/route/neightbl.h netlink/route/nexthop.h \
+	netlink/route/pktloc.h netlink/route/qdisc.h \
+	netlink/route/route.h netlink/route/rtnl.h \
+	netlink/route/rule.h netlink/route/tc.h netlink/route/tc-api.h \
+	netlink/socket.h netlink/types.h netlink/utils.h \
+	netlink/version.h netlink/cli/addr.h netlink/cli/class.h \
+	netlink/cli/cls.h netlink/cli/ct.h netlink/cli/link.h \
+	netlink/cli/neigh.h netlink/cli/qdisc.h netlink/cli/route.h \
+	netlink/cli/rule.h netlink/cli/tc.h netlink/cli/utils.h
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -79,8 +128,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(includedir)"
-HEADERS = $(nobase_include_HEADERS)
+am__installdirs = "$(DESTDIR)$(libnlincludedir)"
+HEADERS = $(nobase_libnlinclude_HEADERS) $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -100,6 +149,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -119,14 +169,20 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LIBNL_VERSION = @LIBNL_VERSION@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_REVISION = @LT_REVISION@
 MAJ_VERSION = @MAJ_VERSION@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
+MIC_VERSION = @MIC_VERSION@
 MIN_VERSION = @MIN_VERSION@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
@@ -155,6 +211,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -187,7 +244,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -204,65 +260,69 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-nobase_include_HEADERS = \
-	netlink/fib_lookup/lookup.h \
-	netlink/fib_lookup/request.h \
-	netlink/genl/ctrl.h \
-	netlink/genl/family.h \
-	netlink/genl/genl.h \
-	netlink/genl/mngt.h \
-	netlink/netfilter/ct.h \
-	netlink/netfilter/log.h \
-	netlink/netfilter/log_msg.h \
-	netlink/netfilter/netfilter.h \
-	netlink/netfilter/nfnl.h \
-	netlink/netfilter/queue.h \
-	netlink/netfilter/queue_msg.h \
-	netlink/addr.h \
-	netlink/attr.h \
-	netlink/cache-api.h \
-	netlink/cache.h \
-	netlink/data.h \
-	netlink/errno.h \
-	netlink/handlers.h \
-	netlink/list.h \
-	netlink/msg.h \
-	netlink/netlink-compat.h \
-	netlink/netlink-kernel.h \
-	netlink/netlink.h \
-	netlink/object-api.h \
-	netlink/object.h \
-	netlink/route/cls/fw.h \
-	netlink/route/cls/police.h \
-	netlink/route/cls/u32.h \
-	netlink/route/link/info-api.h \
-	netlink/route/link/vlan.h \
-	netlink/route/qdisc/cbq.h \
-	netlink/route/qdisc/dsmark.h \
-	netlink/route/qdisc/fifo.h \
-	netlink/route/qdisc/htb.h \
-	netlink/route/qdisc/netem.h \
-	netlink/route/qdisc/prio.h \
-	netlink/route/qdisc/red.h \
-	netlink/route/qdisc/sfq.h \
-	netlink/route/qdisc/tbf.h \
-	netlink/route/addr.h \
-	netlink/route/class.h \
-	netlink/route/classifier.h \
-	netlink/route/link.h \
-	netlink/route/neighbour.h \
-	netlink/route/neightbl.h \
-	netlink/route/nexthop.h \
-	netlink/route/qdisc.h \
-	netlink/route/route.h \
-	netlink/route/rtnl.h \
-	netlink/route/rule.h \
-	netlink/route/tc.h \
-	netlink/route/tc-api.h \
-	netlink/socket.h \
-	netlink/types.h \
-	netlink/utils.h \
-	netlink/version.h
+libnlincludedir = $(includedir)/libnl@MAJ_VERSION@
+nobase_libnlinclude_HEADERS = netlink/fib_lookup/lookup.h \
+	netlink/fib_lookup/request.h netlink/genl/ctrl.h \
+	netlink/genl/family.h netlink/genl/genl.h netlink/genl/mngt.h \
+	netlink/netfilter/ct.h netlink/netfilter/log.h \
+	netlink/netfilter/log_msg.h netlink/netfilter/netfilter.h \
+	netlink/netfilter/nfnl.h netlink/netfilter/queue.h \
+	netlink/netfilter/queue_msg.h netlink/addr.h netlink/attr.h \
+	netlink/cache-api.h netlink/cache.h netlink/data.h \
+	netlink/errno.h netlink/handlers.h netlink/list.h \
+	netlink/msg.h netlink/netlink-compat.h \
+	netlink/netlink-kernel.h netlink/netlink.h \
+	netlink/object-api.h netlink/object.h \
+	netlink/route/cls/ematch/cmp.h netlink/route/cls/ematch/meta.h \
+	netlink/route/cls/ematch/nbyte.h \
+	netlink/route/cls/ematch/text.h netlink/route/cls/basic.h \
+	netlink/route/cls/cgroup.h netlink/route/cls/ematch.h \
+	netlink/route/cls/fw.h netlink/route/cls/police.h \
+	netlink/route/cls/u32.h netlink/route/link/api.h \
+	netlink/route/link/bonding.h netlink/route/link/info-api.h \
+	netlink/route/link/inet.h netlink/route/link/vlan.h \
+	netlink/route/qdisc/cbq.h netlink/route/qdisc/dsmark.h \
+	netlink/route/qdisc/fifo.h netlink/route/qdisc/htb.h \
+	netlink/route/qdisc/netem.h netlink/route/qdisc/prio.h \
+	netlink/route/qdisc/red.h netlink/route/qdisc/sfq.h \
+	netlink/route/qdisc/tbf.h netlink/route/addr.h \
+	netlink/route/class.h netlink/route/classifier.h \
+	netlink/route/link.h netlink/route/neighbour.h \
+	netlink/route/neightbl.h netlink/route/nexthop.h \
+	netlink/route/pktloc.h netlink/route/qdisc.h \
+	netlink/route/route.h netlink/route/rtnl.h \
+	netlink/route/rule.h netlink/route/tc.h netlink/route/tc-api.h \
+	netlink/socket.h netlink/types.h netlink/utils.h \
+	netlink/version.h $(am__append_1)
+noinst_HEADERS = \
+	linux/fib_rules.h \
+	linux/genetlink.h \
+	linux/gen_stats.h \
+	linux/if_addr.h \
+	linux/if_arp.h \
+	linux/if_ether.h \
+	linux/if.h \
+	linux/if_link.h \
+	linux/if_vlan.h \
+	linux/inetdevice.h \
+	linux/ip_mp_alg.h \
+	linux/ipv6.h \
+	linux/neighbour.h \
+	linux/netfilter.h \
+	linux/netfilter/nfnetlink_conntrack.h \
+	linux/netfilter/nfnetlink.h \
+	linux/netfilter/nfnetlink_log.h \
+	linux/netfilter/nfnetlink_queue.h \
+	linux/netlink.h \
+	linux/pkt_cls.h \
+	linux/pkt_sched.h \
+	linux/rtnetlink.h \
+	linux/snmp.h \
+	linux/tc_ematch/tc_em_meta.h \
+	netlink-generic.h \
+	netlink-local.h \
+	netlink-tc.h \
+	netlink-types.h
 
 all: all-am
 
@@ -303,29 +363,29 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-nobase_includeHEADERS: $(nobase_include_HEADERS)
+install-nobase_libnlincludeHEADERS: $(nobase_libnlinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"
-	@list='$(nobase_include_HEADERS)'; test -n "$(includedir)" || list=; \
+	test -z "$(libnlincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libnlincludedir)"
+	@list='$(nobase_libnlinclude_HEADERS)'; test -n "$(libnlincludedir)" || list=; \
 	$(am__nobase_list) | while read dir files; do \
 	  xfiles=; for file in $$files; do \
 	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
 	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
 	  test -z "$$xfiles" || { \
 	    test "x$$dir" = x. || { \
-	      echo "$(MKDIR_P) '$(DESTDIR)$(includedir)/$$dir'"; \
-	      $(MKDIR_P) "$(DESTDIR)$(includedir)/$$dir"; }; \
-	    echo " $(INSTALL_HEADER) $$xfiles '$(DESTDIR)$(includedir)/$$dir'"; \
-	    $(INSTALL_HEADER) $$xfiles "$(DESTDIR)$(includedir)/$$dir" || exit $$?; }; \
+	      echo "$(MKDIR_P) '$(DESTDIR)$(libnlincludedir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(libnlincludedir)/$$dir"; }; \
+	    echo " $(INSTALL_HEADER) $$xfiles '$(DESTDIR)$(libnlincludedir)/$$dir'"; \
+	    $(INSTALL_HEADER) $$xfiles "$(DESTDIR)$(libnlincludedir)/$$dir" || exit $$?; }; \
 	done
 
-uninstall-nobase_includeHEADERS:
+uninstall-nobase_libnlincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nobase_include_HEADERS)'; test -n "$(includedir)" || list=; \
+	@list='$(nobase_libnlinclude_HEADERS)'; test -n "$(libnlincludedir)" || list=; \
 	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(libnlincludedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libnlincludedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -413,7 +473,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libnlincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -461,7 +521,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-nobase_includeHEADERS
+install-data-am: install-nobase_libnlincludeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -505,7 +565,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-nobase_includeHEADERS
+uninstall-am: uninstall-nobase_libnlincludeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -515,12 +575,13 @@ uninstall-am: uninstall-nobase_includeHEADERS
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-nobase_includeHEADERS \
+	install-info-am install-man install-nobase_libnlincludeHEADERS \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-nobase_includeHEADERS
+	tags uninstall uninstall-am \
+	uninstall-nobase_libnlincludeHEADERS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
