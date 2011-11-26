@@ -3,11 +3,12 @@ Section: net
 Priority: optional
 Maintainer: Heiko Stuebner <mmind@debian.org>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7), cdbs, doxygen, bison, flex, mscgen, graphviz
+Build-Depends: debhelper (>= 7), cdbs, doxygen, bison, flex, mscgen, graphviz,
+ python-pygments, xmlstarlet, texlive-latex-base, asciidoc
 Standards-Version: 3.9.2
 Homepage: http://people.suug.ch/~tgr/libnl/
 
-Package: libnl3
+Package: libnl-3-200
 Architecture: linux-any
 Section: libs
 Depends: ${misc:Depends}, ${shlibs:Depends}
@@ -16,12 +17,14 @@ Description: library for dealing with netlink sockets
  The library provides an interface for raw netlink messaging and various 
  netlink family specific interfaces.
 
-Package: libnl3-dev
+Package: libnl-3-dev
 Architecture: linux-any
 Section: libdevel
-Depends: libnl3 (= ${binary:Version}), ${misc:Depends}
+Depends: libnl-3-200 (= ${binary:Version}), ${misc:Depends}
 Conflicts: libnl-dev, libnl2-dev
 Suggests: libnl3-doc
+Breaks: libnl3-dev
+Replaces: libnl3-dev
 Description: development library and headers for libnl3
  This is a library for applications dealing with netlink sockets. 
  The library provides an interface for raw netlink messaging and various 
@@ -30,10 +33,10 @@ Description: development library and headers for libnl3
  This package contains all files that are needed to build applications using
  libnl3.
 
-Package: libnl3-dbg
+Package: libnl-3-200-dbg
 Architecture: linux-any
 Section: debug
-Depends: libnl3 (= ${binary:Version}), ${misc:Depends}
+Depends: libnl-3-200 (= ${binary:Version}), ${misc:Depends}
 Priority: extra
 Description: debug symbols for libnl3
  This is a library for applications dealing with netlink sockets. 
@@ -45,7 +48,7 @@ Description: debug symbols for libnl3
  to interpret core dumps. The libraries are installed in /usr/lib/debug and
  are automatically used by gdb.
 
-Package: libnl3-doc
+Package: libnl-3-doc
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}
@@ -57,7 +60,7 @@ Description: API documentation for libnl3
  .
  This package contains the API reference documentation for libnl3.
 
-Package: libnl3-udeb
+Package: libnl-3-200-udeb
 Architecture: linux-any
 XC-Package-Type: udeb
 Section: debian-installer

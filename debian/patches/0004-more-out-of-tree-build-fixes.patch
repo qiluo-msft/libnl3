@@ -1,0 +1,46 @@
+diff -Nur -x '*.orig' -x '*~' libnl3/doc/Makefile.am libnl3.new/doc/Makefile.am
+--- libnl3/doc/Makefile.am	2011-11-24 13:17:15.461101000 -0500
++++ libnl3.new/doc/Makefile.am	2011-11-24 14:14:15.817501781 -0500
+@@ -79,16 +79,16 @@
+ 	images/icons/callouts/15.png
+ 
+ %.html: %.txt
+-	./resolve-asciidoc-refs.py $< > asciidoc.tmp
++	../../../../doc/resolve-asciidoc-refs.py $< > asciidoc.tmp
+ 	asciidoc $(ASCIIDOCOPTS) -o $@ asciidoc.tmp
+-	./doxygen-link.py libnl.dict $@ > asciidoc.tmp
++	../../../../doc/doxygen-link.py libnl.dict $@ > asciidoc.tmp
+ 	mv asciidoc.tmp $@
+ 
+ asciidoc: core.html route.html index.html
+ 
+ api_ref:
+ 	doxygen Doxyfile;
+-	./gen-tags.sh | ./tags2dict.sh > libnl.dict
++	../../../../doc/gen-tags.sh | ../../../../doc/tags2dict.sh > libnl.dict
+ 
+ gendoc:
+ 	$(MAKE) api_ref
+diff -Nur -x '*.orig' -x '*~' libnl3/lib/Makefile.am libnl3.new/lib/Makefile.am
+--- libnl3/lib/Makefile.am	2011-11-24 13:17:15.461101000 -0500
++++ libnl3.new/lib/Makefile.am	2011-11-24 14:14:15.817501781 -0500
+@@ -39,15 +39,19 @@
+ # Hack to avoid using ylwrap. It does not function correctly in combination
+ # with --header-file=
+ route/pktloc_grammar.c: route/pktloc_grammar.l
++	$(AM_V_GEN) install -d route/
+ 	$(AM_V_GEN) $(LEX) --header-file=route/pktloc_grammar.h $(LFLAGS) -o $@ $^
+ 
+ route/pktloc_syntax.c: route/pktloc_syntax.y
++	$(AM_V_GEN) install -d route/
+ 	$(AM_V_GEN) $(YACC) -d $(YFLAGS) -o $@ $^
+ 
+ route/cls/ematch_grammar.c: route/cls/ematch_grammar.l
++	$(AM_V_GEN) install -d route/cls/
+ 	$(AM_V_GEN) $(LEX) --header-file=route/cls/ematch_grammar.h $(LFLAGS) -o $@ $^
+ 
+ route/cls/ematch_syntax.c: route/cls/ematch_syntax.y
++	$(AM_V_GEN) install -d route/cls/
+ 	$(AM_V_GEN) $(YACC) -d $(YFLAGS) -o $@ $^
+ 
+ libnl_route_3_la_LIBADD  = libnl-3.la

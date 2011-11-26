@@ -1,3 +1,25 @@
+libnl3 (3.2.3-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * debian/patches/0001-fix-headers.patch,
+    debian/patches/0002-link-sub-libs.patch,
+    debian/patches/0003-fix-out-of-tree-build.patch: dropped.
+  * debian/patches/0004-more-out-of-tree-build-fixes.patch: new patch; adjust
+    Makefiles some more to properly deal with the out-of-tree build when
+    generating headers and documentation.
+  * debian/control:
+    - rename packages to follow upstream soname.
+    - add python-pygments, xmlstarlet, texlive-latex-base and asciidoc to
+      Build-Depends.
+  * debian/rules: update due to upstream soname changes.
+  * debian/*.install: rename and update due to upstream soname changes.
+  * debian/libnl-3-200.install: netlink config files should be installed to
+    /etc/libnl, not /etc/libnl3.
+  * debian/libnl-3-doc.install,
+    debian/libnl-3-doc.doc-base: update to take into account new paths.
+
+ -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Fri, 25 Nov 2011 10:20:37 -0500
+
 libnl3 (3.0-2) unstable; urgency=low
 
   * Acknowledge NMU
