@@ -54,9 +54,10 @@ noinst_PROGRAMS = genl-ctrl-list$(EXEEXT) nf-ct-list$(EXEEXT) \
 	nl-route-add$(EXEEXT) nl-route-delete$(EXEEXT) \
 	nl-route-get$(EXEEXT) nl-route-list$(EXEEXT) \
 	nl-fib-lookup$(EXEEXT) nl-list-caches$(EXEEXT) \
-	nl-list-sockets$(EXEEXT) nl-util-addr$(EXEEXT)
+	nl-list-sockets$(EXEEXT) nl-util-addr$(EXEEXT) \
+	nl-link-enslave$(EXEEXT) nl-link-release$(EXEEXT)
 subdir = src
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in COPYING
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -73,123 +74,339 @@ PROGRAMS = $(noinst_PROGRAMS) $(sbin_PROGRAMS)
 am_genl_ctrl_list_OBJECTS = genl-ctrl-list.$(OBJEXT)
 genl_ctrl_list_OBJECTS = $(am_genl_ctrl_list_OBJECTS)
 genl_ctrl_list_LDADD = $(LDADD)
+genl_ctrl_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
 am_nf_ct_list_OBJECTS = nf-ct-list.$(OBJEXT)
 nf_ct_list_OBJECTS = $(am_nf_ct_list_OBJECTS)
 nf_ct_list_LDADD = $(LDADD)
+nf_ct_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nf_log_OBJECTS = nf-log.$(OBJEXT)
 nf_log_OBJECTS = $(am_nf_log_OBJECTS)
 nf_log_LDADD = $(LDADD)
+nf_log_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nf_monitor_OBJECTS = nf-monitor.$(OBJEXT)
 nf_monitor_OBJECTS = $(am_nf_monitor_OBJECTS)
 nf_monitor_LDADD = $(LDADD)
+nf_monitor_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nf_queue_OBJECTS = nf-queue.$(OBJEXT)
 nf_queue_OBJECTS = $(am_nf_queue_OBJECTS)
 nf_queue_LDADD = $(LDADD)
+nf_queue_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_addr_add_OBJECTS = nl-addr-add.$(OBJEXT)
 nl_addr_add_OBJECTS = $(am_nl_addr_add_OBJECTS)
 nl_addr_add_LDADD = $(LDADD)
+nl_addr_add_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_addr_delete_OBJECTS = nl-addr-delete.$(OBJEXT)
 nl_addr_delete_OBJECTS = $(am_nl_addr_delete_OBJECTS)
 nl_addr_delete_LDADD = $(LDADD)
+nl_addr_delete_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_addr_list_OBJECTS = nl-addr-list.$(OBJEXT)
 nl_addr_list_OBJECTS = $(am_nl_addr_list_OBJECTS)
 nl_addr_list_LDADD = $(LDADD)
+nl_addr_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_class_add_OBJECTS = nl-class-add.$(OBJEXT)
 nl_class_add_OBJECTS = $(am_nl_class_add_OBJECTS)
 nl_class_add_LDADD = $(LDADD)
+nl_class_add_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_class_delete_OBJECTS = nl-class-delete.$(OBJEXT)
 nl_class_delete_OBJECTS = $(am_nl_class_delete_OBJECTS)
 nl_class_delete_LDADD = $(LDADD)
+nl_class_delete_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_class_list_OBJECTS = nl-class-list.$(OBJEXT)
 nl_class_list_OBJECTS = $(am_nl_class_list_OBJECTS)
 nl_class_list_LDADD = $(LDADD)
+nl_class_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_classid_lookup_OBJECTS = nl-classid-lookup.$(OBJEXT)
 nl_classid_lookup_OBJECTS = $(am_nl_classid_lookup_OBJECTS)
 nl_classid_lookup_LDADD = $(LDADD)
+nl_classid_lookup_DEPENDENCIES =  \
+	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_cls_add_OBJECTS = nl-cls-add.$(OBJEXT)
 nl_cls_add_OBJECTS = $(am_nl_cls_add_OBJECTS)
 nl_cls_add_LDADD = $(LDADD)
+nl_cls_add_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_cls_delete_OBJECTS = nl-cls-delete.$(OBJEXT)
 nl_cls_delete_OBJECTS = $(am_nl_cls_delete_OBJECTS)
 nl_cls_delete_LDADD = $(LDADD)
+nl_cls_delete_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_cls_list_OBJECTS = nl-cls-list.$(OBJEXT)
 nl_cls_list_OBJECTS = $(am_nl_cls_list_OBJECTS)
 nl_cls_list_LDADD = $(LDADD)
+nl_cls_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_fib_lookup_OBJECTS = nl-fib-lookup.$(OBJEXT)
 nl_fib_lookup_OBJECTS = $(am_nl_fib_lookup_OBJECTS)
 nl_fib_lookup_LDADD = $(LDADD)
+nl_fib_lookup_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
+nl_link_enslave_SOURCES = nl-link-enslave.c
+nl_link_enslave_OBJECTS = nl-link-enslave.$(OBJEXT)
+nl_link_enslave_LDADD = $(LDADD)
+nl_link_enslave_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_link_ifindex2name_OBJECTS = nl-link-ifindex2name.$(OBJEXT)
 nl_link_ifindex2name_OBJECTS = $(am_nl_link_ifindex2name_OBJECTS)
 nl_link_ifindex2name_LDADD = $(LDADD)
+nl_link_ifindex2name_DEPENDENCIES =  \
+	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_link_list_OBJECTS = nl-link-list.$(OBJEXT)
 nl_link_list_OBJECTS = $(am_nl_link_list_OBJECTS)
 nl_link_list_LDADD = $(LDADD)
+nl_link_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_link_name2ifindex_OBJECTS = nl-link-name2ifindex.$(OBJEXT)
 nl_link_name2ifindex_OBJECTS = $(am_nl_link_name2ifindex_OBJECTS)
 nl_link_name2ifindex_LDADD = $(LDADD)
+nl_link_name2ifindex_DEPENDENCIES =  \
+	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
+nl_link_release_SOURCES = nl-link-release.c
+nl_link_release_OBJECTS = nl-link-release.$(OBJEXT)
+nl_link_release_LDADD = $(LDADD)
+nl_link_release_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_link_set_OBJECTS = nl-link-set.$(OBJEXT)
 nl_link_set_OBJECTS = $(am_nl_link_set_OBJECTS)
 nl_link_set_LDADD = $(LDADD)
+nl_link_set_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_link_stats_OBJECTS = nl-link-stats.$(OBJEXT)
 nl_link_stats_OBJECTS = $(am_nl_link_stats_OBJECTS)
 nl_link_stats_LDADD = $(LDADD)
+nl_link_stats_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_list_caches_OBJECTS = nl-list-caches.$(OBJEXT)
 nl_list_caches_OBJECTS = $(am_nl_list_caches_OBJECTS)
 nl_list_caches_LDADD = $(LDADD)
+nl_list_caches_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_list_sockets_OBJECTS = nl-list-sockets.$(OBJEXT)
 nl_list_sockets_OBJECTS = $(am_nl_list_sockets_OBJECTS)
 nl_list_sockets_LDADD = $(LDADD)
+nl_list_sockets_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_monitor_OBJECTS = nl-monitor.$(OBJEXT)
 nl_monitor_OBJECTS = $(am_nl_monitor_OBJECTS)
 nl_monitor_LDADD = $(LDADD)
+nl_monitor_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_neigh_add_OBJECTS = nl-neigh-add.$(OBJEXT)
 nl_neigh_add_OBJECTS = $(am_nl_neigh_add_OBJECTS)
 nl_neigh_add_LDADD = $(LDADD)
+nl_neigh_add_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_neigh_delete_OBJECTS = nl-neigh-delete.$(OBJEXT)
 nl_neigh_delete_OBJECTS = $(am_nl_neigh_delete_OBJECTS)
 nl_neigh_delete_LDADD = $(LDADD)
+nl_neigh_delete_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_neigh_list_OBJECTS = nl-neigh-list.$(OBJEXT)
 nl_neigh_list_OBJECTS = $(am_nl_neigh_list_OBJECTS)
 nl_neigh_list_LDADD = $(LDADD)
+nl_neigh_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_neightbl_list_OBJECTS = nl-neightbl-list.$(OBJEXT)
 nl_neightbl_list_OBJECTS = $(am_nl_neightbl_list_OBJECTS)
 nl_neightbl_list_LDADD = $(LDADD)
+nl_neightbl_list_DEPENDENCIES =  \
+	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_pktloc_lookup_OBJECTS = nl-pktloc-lookup.$(OBJEXT)
 nl_pktloc_lookup_OBJECTS = $(am_nl_pktloc_lookup_OBJECTS)
 nl_pktloc_lookup_LDADD = $(LDADD)
+nl_pktloc_lookup_DEPENDENCIES =  \
+	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_qdisc_add_OBJECTS = nl-qdisc-add.$(OBJEXT)
 nl_qdisc_add_OBJECTS = $(am_nl_qdisc_add_OBJECTS)
 nl_qdisc_add_LDADD = $(LDADD)
+nl_qdisc_add_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_qdisc_delete_OBJECTS = nl-qdisc-delete.$(OBJEXT)
 nl_qdisc_delete_OBJECTS = $(am_nl_qdisc_delete_OBJECTS)
 nl_qdisc_delete_LDADD = $(LDADD)
+nl_qdisc_delete_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_qdisc_list_OBJECTS = nl-qdisc-list.$(OBJEXT)
 nl_qdisc_list_OBJECTS = $(am_nl_qdisc_list_OBJECTS)
 nl_qdisc_list_LDADD = $(LDADD)
+nl_qdisc_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_route_add_OBJECTS = nl-route-add.$(OBJEXT)
 nl_route_add_OBJECTS = $(am_nl_route_add_OBJECTS)
 nl_route_add_LDADD = $(LDADD)
+nl_route_add_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_route_delete_OBJECTS = nl-route-delete.$(OBJEXT)
 nl_route_delete_OBJECTS = $(am_nl_route_delete_OBJECTS)
 nl_route_delete_LDADD = $(LDADD)
+nl_route_delete_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_route_get_OBJECTS = nl-route-get.$(OBJEXT)
 nl_route_get_OBJECTS = $(am_nl_route_get_OBJECTS)
 nl_route_get_LDADD = $(LDADD)
+nl_route_get_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_route_list_OBJECTS = nl-route-list.$(OBJEXT)
 nl_route_list_OBJECTS = $(am_nl_route_list_OBJECTS)
 nl_route_list_LDADD = $(LDADD)
+nl_route_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_rule_list_OBJECTS = nl-rule-list.$(OBJEXT)
 nl_rule_list_OBJECTS = $(am_nl_rule_list_OBJECTS)
 nl_rule_list_LDADD = $(LDADD)
+nl_rule_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_tctree_list_OBJECTS = nl-tctree-list.$(OBJEXT)
 nl_tctree_list_OBJECTS = $(am_nl_tctree_list_OBJECTS)
 nl_tctree_list_LDADD = $(LDADD)
+nl_tctree_list_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 am_nl_util_addr_OBJECTS = nl-util-addr.$(OBJEXT)
 nl_util_addr_OBJECTS = $(am_nl_util_addr_OBJECTS)
 nl_util_addr_LDADD = $(LDADD)
+nl_util_addr_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -223,8 +440,9 @@ SOURCES = $(genl_ctrl_list_SOURCES) $(nf_ct_list_SOURCES) \
 	$(nl_class_delete_SOURCES) $(nl_class_list_SOURCES) \
 	$(nl_classid_lookup_SOURCES) $(nl_cls_add_SOURCES) \
 	$(nl_cls_delete_SOURCES) $(nl_cls_list_SOURCES) \
-	$(nl_fib_lookup_SOURCES) $(nl_link_ifindex2name_SOURCES) \
-	$(nl_link_list_SOURCES) $(nl_link_name2ifindex_SOURCES) \
+	$(nl_fib_lookup_SOURCES) nl-link-enslave.c \
+	$(nl_link_ifindex2name_SOURCES) $(nl_link_list_SOURCES) \
+	$(nl_link_name2ifindex_SOURCES) nl-link-release.c \
 	$(nl_link_set_SOURCES) $(nl_link_stats_SOURCES) \
 	$(nl_list_caches_SOURCES) $(nl_list_sockets_SOURCES) \
 	$(nl_monitor_SOURCES) $(nl_neigh_add_SOURCES) \
@@ -242,8 +460,9 @@ DIST_SOURCES = $(genl_ctrl_list_SOURCES) $(nf_ct_list_SOURCES) \
 	$(nl_class_delete_SOURCES) $(nl_class_list_SOURCES) \
 	$(nl_classid_lookup_SOURCES) $(nl_cls_add_SOURCES) \
 	$(nl_cls_delete_SOURCES) $(nl_cls_list_SOURCES) \
-	$(nl_fib_lookup_SOURCES) $(nl_link_ifindex2name_SOURCES) \
-	$(nl_link_list_SOURCES) $(nl_link_name2ifindex_SOURCES) \
+	$(nl_fib_lookup_SOURCES) nl-link-enslave.c \
+	$(nl_link_ifindex2name_SOURCES) $(nl_link_list_SOURCES) \
+	$(nl_link_name2ifindex_SOURCES) nl-link-release.c \
 	$(nl_link_set_SOURCES) $(nl_link_stats_SOURCES) \
 	$(nl_list_caches_SOURCES) $(nl_list_sockets_SOURCES) \
 	$(nl_monitor_SOURCES) $(nl_neigh_add_SOURCES) \
@@ -311,6 +530,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -330,14 +550,20 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LIBNL_VERSION = @LIBNL_VERSION@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_REVISION = @LT_REVISION@
 MAJ_VERSION = @MAJ_VERSION@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
+MIC_VERSION = @MIC_VERSION@
 MIN_VERSION = @MIN_VERSION@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
@@ -366,6 +592,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -398,7 +625,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -416,8 +642,14 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = lib
-AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE
-AM_LDFLAGS = -L${top_builddir}/lib -L${top_builddir}/src/lib -lnl-cli -lnl -lnl-nf -lnl-genl -lnl-route
+AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
+LDADD = \
+	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
+
 genl_ctrl_list_SOURCES = genl-ctrl-list.c 
 nf_ct_list_SOURCES = nf-ct-list.c 
 nf_log_SOURCES = nf-log.c
@@ -591,6 +823,9 @@ nl-cls-list$(EXEEXT): $(nl_cls_list_OBJECTS) $(nl_cls_list_DEPENDENCIES)
 nl-fib-lookup$(EXEEXT): $(nl_fib_lookup_OBJECTS) $(nl_fib_lookup_DEPENDENCIES) 
 	@rm -f nl-fib-lookup$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(nl_fib_lookup_OBJECTS) $(nl_fib_lookup_LDADD) $(LIBS)
+nl-link-enslave$(EXEEXT): $(nl_link_enslave_OBJECTS) $(nl_link_enslave_DEPENDENCIES) 
+	@rm -f nl-link-enslave$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(nl_link_enslave_OBJECTS) $(nl_link_enslave_LDADD) $(LIBS)
 nl-link-ifindex2name$(EXEEXT): $(nl_link_ifindex2name_OBJECTS) $(nl_link_ifindex2name_DEPENDENCIES) 
 	@rm -f nl-link-ifindex2name$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(nl_link_ifindex2name_OBJECTS) $(nl_link_ifindex2name_LDADD) $(LIBS)
@@ -600,6 +835,9 @@ nl-link-list$(EXEEXT): $(nl_link_list_OBJECTS) $(nl_link_list_DEPENDENCIES)
 nl-link-name2ifindex$(EXEEXT): $(nl_link_name2ifindex_OBJECTS) $(nl_link_name2ifindex_DEPENDENCIES) 
 	@rm -f nl-link-name2ifindex$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(nl_link_name2ifindex_OBJECTS) $(nl_link_name2ifindex_LDADD) $(LIBS)
+nl-link-release$(EXEEXT): $(nl_link_release_OBJECTS) $(nl_link_release_DEPENDENCIES) 
+	@rm -f nl-link-release$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(nl_link_release_OBJECTS) $(nl_link_release_LDADD) $(LIBS)
 nl-link-set$(EXEEXT): $(nl_link_set_OBJECTS) $(nl_link_set_DEPENDENCIES) 
 	@rm -f nl-link-set$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(nl_link_set_OBJECTS) $(nl_link_set_LDADD) $(LIBS)
@@ -683,9 +921,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-cls-delete.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-cls-list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-fib-lookup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-link-enslave.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-link-ifindex2name.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-link-list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-link-name2ifindex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-link-release.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-link-set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-link-stats.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nl-list-caches.Po@am__quote@

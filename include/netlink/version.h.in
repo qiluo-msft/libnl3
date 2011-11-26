@@ -17,7 +17,12 @@
 
 #define LIBNL_VER_MAJ		@MAJ_VERSION@
 #define LIBNL_VER_MIN		@MIN_VERSION@
+#define LIBNL_VER_MIC		@MIC_VERSION@
 #define LIBNL_VER(maj,min)	((maj) << 8 | (min))
 #define LIBNL_VER_NUM		LIBNL_VER(LIBNL_VER_MAJ, LIBNL_VER_MIN)
+
+#define LIBNL_CURRENT		@LT_CURRENT@
+#define LIBNL_REVISION		@LT_REVISION@
+#define LIBNL_AGE		@LT_AGE@
 
 #endif

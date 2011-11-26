@@ -2,8 +2,14 @@
 
 SUBDIRS = lib
 
-AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE
-AM_LDFLAGS = -L${top_builddir}/lib -L${top_builddir}/src/lib -lnl-cli -lnl -lnl-nf -lnl-genl -lnl-route
+AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
+
+LDADD = \
+	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la
 
 sbin_PROGRAMS = \
 	nl-qdisc-add nl-qdisc-list nl-qdisc-delete \
@@ -27,7 +33,9 @@ noinst_PROGRAMS = \
 	nl-route-add nl-route-delete nl-route-get nl-route-list \
 	nl-fib-lookup \
 	nl-list-caches nl-list-sockets \
-	nl-util-addr
+	nl-util-addr \
+	nl-link-enslave \
+	nl-link-release
 
 genl_ctrl_list_SOURCES = genl-ctrl-list.c 
 

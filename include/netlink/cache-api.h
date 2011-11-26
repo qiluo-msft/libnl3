@@ -151,21 +151,40 @@ struct nl_af_group
 
 #define END_OF_GROUP_LIST AF_UNSPEC, 0
 
+/**
+ * Parser parameters
+ *
+ * This structure is used to configure what kind of parser to use
+ * when parsing netlink messages to create objects.
+ */
 struct nl_parser_param
 {
+	/** Function to parse netlink messages into objects */
 	int             (*pp_cb)(struct nl_object *, struct nl_parser_param *);
+
+	/** Arbitary argument to be passed to the parser */
 	void *            pp_arg;
 };
 
 /**
  * Cache Operations
+ *
+ * This structure defines the characterstics of a cache type. It contains
+ * pointers to functions which implement the specifics of the object type
+ * the cache can hold.
  */
 struct nl_cache_ops
 {
+	/** Name of cache type (must be unique) */
 	char  *			co_name;
 
+	/** Size of family specific netlink header */
 	int			co_hdrsize;
+
+	/** Netlink protocol */
 	int			co_protocol;
+
+	/** Group definition */
 	struct nl_af_group *	co_groups;
 	
 	/**
@@ -182,11 +201,23 @@ struct nl_cache_ops
 	int   (*co_msg_parser)(struct nl_cache_ops *, struct sockaddr_nl *,
 			       struct nlmsghdr *, struct nl_parser_param *);
 
+	/**
+	 * Called whenever a notification has been parsed into an object and
+	 * is considered for inclusion into a cache. Must return NL_SKIP if
+	 * the object should not be included in the cache.
+	 */
+	int   (*co_event_filter)(struct nl_cache *, struct nl_object *obj);
+
+	/** Object operations */
 	struct nl_object_ops *	co_obj_ops;
 
+	/** Internal, do not touch! */
 	struct nl_cache_ops *co_next;
+
 	struct nl_cache *co_major_cache;
 	struct genl_ops *	co_genl;
+
+	/* Message type definition */
 	struct nl_msgtype	co_msgtypes[];
 };
 

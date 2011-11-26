@@ -151,6 +151,27 @@ double nl_cancel_down_bits(unsigned long long l, char **unit)
 		
 }
 
+int nl_rate2str(unsigned long long rate, int type, char *buf, size_t len)
+{
+	char *unit;
+	double frac;
+
+	switch (type) {
+	case NL_BYTE_RATE:
+		frac = nl_cancel_down_bytes(rate, &unit);
+		break;
+	
+	case NL_BIT_RATE:
+		frac = nl_cancel_down_bits(rate, &unit);
+		break;
+	
+	default:
+		BUG();
+	}
+
+	return snprintf(buf, len, "%.2f%s/s", frac, unit);
+}
+
 /**
  * Cancel down a micro second value
  * @arg	l		micro seconds
@@ -608,6 +629,9 @@ static const struct trans_tbl llprotos[] = {
 #ifdef ARPHRD_VOID
 	__ADD(ARPHRD_VOID,void)
 #endif
+#ifdef ARPHRD_NONE
+	__ADD(ARPHRD_NONE,nohdr)
+#endif
 };
 
 char * nl_llproto2str(int llproto, char *buf, size_t len)
@@ -665,6 +689,7 @@ static const struct trans_tbl ether_protos[] = {
 	__ADD(ETH_P_MPLS_UC,mpls_uc)
 	__ADD(ETH_P_MPLS_MC,mpls_mc)
 	__ADD(ETH_P_ATMMPOA,atmmpoa)
+	__ADD(ETH_P_LINK_CTL,link_ctl)
 	__ADD(ETH_P_ATMFATE,atmfate)
 	__ADD(ETH_P_PAE,pae)
 	__ADD(ETH_P_AOE,aoe)
@@ -790,13 +815,14 @@ static void dump_one(struct nl_dump_params *parms, const char *fmt,
 		vfprintf(parms->dp_fd, fmt, args);
 	else if (parms->dp_buf || parms->dp_cb) {
 		char *buf = NULL;
-		vasprintf(&buf, fmt, args);
-		if (parms->dp_cb)
-			parms->dp_cb(parms, buf);
-		else
-			strncat(parms->dp_buf, buf,
-			        parms->dp_buflen - strlen(parms->dp_buf) - 1);
-		free(buf);
+		if (vasprintf(&buf, fmt, args) >= 0) {
+			if (parms->dp_cb)
+				parms->dp_cb(parms, buf);
+			else
+				strncat(parms->dp_buf, buf,
+					parms->dp_buflen - strlen(parms->dp_buf) - 1);
+			free(buf);
+		}
 	}
 }
 
@@ -859,6 +885,8 @@ void __trans_list_clear(struct nl_list_head *head)
 		free(tl->a);
 		free(tl);
 	}
+
+	nl_init_list_head(head);
 }
 
 char *__type2str(int type, char *buf, size_t len,
@@ -999,6 +1027,9 @@ void dump_from_ops(struct nl_object *obj, struct nl_dump_params *params)
 #endif
 		params->dp_pre_dump = 1;
 	}
+
+	if (params->dp_buf)
+                memset(params->dp_buf, 0, params->dp_buflen);
 
 	if (obj->ce_ops->oo_dump[type])
 		obj->ce_ops->oo_dump[type](obj, params);

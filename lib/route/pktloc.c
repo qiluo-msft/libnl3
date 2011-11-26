@@ -2,10 +2,11 @@
  * lib/route/pktloc.c     Packet Location Aliasing
  *
  *	This library is free software; you can redistribute it and/or
- *	modify it under the terms of the GNU General Public License as
- *	published by the Free Software Foundation version 2 of the License.
+ *	modify it under the terms of the GNU Lesser General Public
+ *	License as published by the Free Software Foundation version 2.1
+ *	of the License.
  *
- * Copyright (c) 2008-2010 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2008-2011 Thomas Graf <tgraf@suug.ch>
  */
 
 /**
@@ -20,7 +21,7 @@
  * library and provides a well defined set of definitions for most common
  * protocol fields.
  *
- * @subsection pktloc_examples Examples
+ * @section pktloc_examples Examples
  * @par Example 1.1 Looking up a packet location
  * @code
  * struct rtnl_pktloc *loc;
@@ -45,7 +46,7 @@
 static struct nl_list_head pktloc_name_ht[PKTLOC_NAME_HT_SIZ];
 
 /* djb2 */
-unsigned int pktloc_hash(const char *str)
+static unsigned int pktloc_hash(const char *str)
 {
 	unsigned long hash = 5381;
 	int c;
@@ -94,7 +95,8 @@ static int read_pktlocs(void)
 	int i, err;
 	FILE *fd;
 
-	asprintf(&path, "%s/pktloc", SYSCONFDIR);
+	if (build_sysconf_path(&path, "pktloc") < 0)
+		return -NLE_NOMEM;
 
 	/* if stat fails, just try to read the file */
 	if (stat(path, &st) == 0) {
@@ -151,6 +153,7 @@ errout:
 /**
  * Lookup packet location alias
  * @arg name		Name of packet location.
+ * @arg result		Result pointer
  *
  * Tries to find a matching packet location alias for the supplied
  * packet location name.

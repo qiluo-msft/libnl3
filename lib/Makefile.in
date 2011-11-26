@@ -131,42 +131,45 @@ cli_qdisc_pfifo_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @ENABLE_CLI_TRUE@am_cli_qdisc_pfifo_la_rpath = -rpath \
 @ENABLE_CLI_TRUE@	$(pkglibdir)/cli/qdisc
-libnl_genl_la_DEPENDENCIES = libnl.la
-am_libnl_genl_la_OBJECTS = genl/ctrl.lo genl/family.lo genl/genl.lo \
+libnl_3_la_LIBADD =
+am_libnl_3_la_OBJECTS = addr.lo attr.lo cache.lo cache_mngr.lo \
+	cache_mngt.lo data.lo error.lo handlers.lo msg.lo nl.lo \
+	object.lo socket.lo utils.lo
+libnl_3_la_OBJECTS = $(am_libnl_3_la_OBJECTS)
+libnl_genl_3_la_DEPENDENCIES = libnl-3.la
+am_libnl_genl_3_la_OBJECTS = genl/ctrl.lo genl/family.lo genl/genl.lo \
 	genl/mngt.lo
-libnl_genl_la_OBJECTS = $(am_libnl_genl_la_OBJECTS)
-libnl_nf_la_DEPENDENCIES = libnl-route.la
-am_libnl_nf_la_OBJECTS = netfilter/ct.lo netfilter/ct_obj.lo \
+libnl_genl_3_la_OBJECTS = $(am_libnl_genl_3_la_OBJECTS)
+libnl_nf_3_la_DEPENDENCIES = libnl-route-3.la
+am_libnl_nf_3_la_OBJECTS = netfilter/ct.lo netfilter/ct_obj.lo \
 	netfilter/log.lo netfilter/log_msg.lo netfilter/log_msg_obj.lo \
 	netfilter/log_obj.lo netfilter/netfilter.lo netfilter/nfnl.lo \
 	netfilter/queue.lo netfilter/queue_msg.lo \
 	netfilter/queue_msg_obj.lo netfilter/queue_obj.lo
-libnl_nf_la_OBJECTS = $(am_libnl_nf_la_OBJECTS)
-libnl_route_la_DEPENDENCIES = libnl.la
-am_libnl_route_la_OBJECTS = route/addr.lo route/class.lo route/cls.lo \
-	route/link.lo route/neigh.lo route/neightbl.lo \
+libnl_nf_3_la_OBJECTS = $(am_libnl_nf_3_la_OBJECTS)
+libnl_route_3_la_DEPENDENCIES = libnl-3.la
+am_libnl_route_3_la_OBJECTS = route/addr.lo route/class.lo \
+	route/cls.lo route/link.lo route/neigh.lo route/neightbl.lo \
 	route/nexthop.lo route/qdisc.lo route/route.lo \
 	route/route_obj.lo route/route_utils.lo route/rtnl.lo \
 	route/rule.lo route/tc.lo route/classid.lo route/cls/fw.lo \
 	route/cls/police.lo route/cls/u32.lo route/cls/basic.lo \
-	route/cls/cgroup.lo route/cls/ematch_syntax.lo \
-	route/cls/ematch_grammar.lo route/cls/ematch.lo \
+	route/cls/cgroup.lo route/cls/ematch.lo \
 	route/cls/ematch/container.lo route/cls/ematch/cmp.lo \
 	route/cls/ematch/nbyte.lo route/cls/ematch/text.lo \
 	route/cls/ematch/meta.lo route/link/api.lo route/link/vlan.lo \
-	route/link/bridge.lo route/link/inet6.lo route/link/inet.lo \
+	route/link/dummy.lo route/link/bridge.lo route/link/inet6.lo \
+	route/link/inet.lo route/link/bonding.lo \
 	route/qdisc/blackhole.lo route/qdisc/cbq.lo \
 	route/qdisc/dsmark.lo route/qdisc/fifo.lo route/qdisc/htb.lo \
 	route/qdisc/netem.lo route/qdisc/prio.lo route/qdisc/red.lo \
 	route/qdisc/sfq.lo route/qdisc/tbf.lo fib_lookup/lookup.lo \
-	fib_lookup/request.lo route/pktloc_syntax.lo \
-	route/pktloc_grammar.lo route/pktloc.lo
-libnl_route_la_OBJECTS = $(am_libnl_route_la_OBJECTS)
-libnl_la_LIBADD =
-am_libnl_la_OBJECTS = addr.lo attr.lo cache.lo cache_mngr.lo \
-	cache_mngt.lo data.lo error.lo handlers.lo msg.lo nl.lo \
-	object.lo socket.lo utils.lo
-libnl_la_OBJECTS = $(am_libnl_la_OBJECTS)
+	fib_lookup/request.lo route/pktloc.lo
+nodist_libnl_route_3_la_OBJECTS = route/pktloc_syntax.lo \
+	route/pktloc_grammar.lo route/cls/ematch_syntax.lo \
+	route/cls/ematch_grammar.lo
+libnl_route_3_la_OBJECTS = $(am_libnl_route_3_la_OBJECTS) \
+	$(nodist_libnl_route_3_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -195,12 +198,13 @@ am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = cli/cls/basic.c cli/cls/cgroup.c cli/qdisc/bfifo.c \
 	cli/qdisc/blackhole.c cli/qdisc/htb.c cli/qdisc/pfifo.c \
-	$(libnl_genl_la_SOURCES) $(libnl_nf_la_SOURCES) \
-	$(libnl_route_la_SOURCES) $(libnl_la_SOURCES)
+	$(libnl_3_la_SOURCES) $(libnl_genl_3_la_SOURCES) \
+	$(libnl_nf_3_la_SOURCES) $(libnl_route_3_la_SOURCES) \
+	$(nodist_libnl_route_3_la_SOURCES)
 DIST_SOURCES = cli/cls/basic.c cli/cls/cgroup.c cli/qdisc/bfifo.c \
 	cli/qdisc/blackhole.c cli/qdisc/htb.c cli/qdisc/pfifo.c \
-	$(libnl_genl_la_SOURCES) $(libnl_nf_la_SOURCES) \
-	$(libnl_route_la_SOURCES) $(libnl_la_SOURCES)
+	$(libnl_3_la_SOURCES) $(libnl_genl_3_la_SOURCES) \
+	$(libnl_nf_3_la_SOURCES) $(libnl_route_3_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -220,6 +224,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -239,14 +244,20 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LIBNL_VERSION = @LIBNL_VERSION@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_REVISION = @LT_REVISION@
 MAJ_VERSION = @MAJ_VERSION@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
+MIC_VERSION = @MIC_VERSION@
 MIN_VERSION = @MIN_VERSION@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
@@ -275,6 +286,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -307,7 +319,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -324,21 +335,31 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
-AM_LDFLAGS = -version-info 3:0:0
-lib_LTLIBRARIES = \
-	libnl.la libnl-genl.la libnl-route.la libnl-nf.la
+AM_CPPFLAGS = \
+	-Wall \
+	-I${top_srcdir}/include \
+	-I${top_builddir}/include \
+	-I${builddir}/route \
+	-I${builddir}/route/cls \
+	-D_GNU_SOURCE \
+	-DSYSCONFDIR=\"$(sysconfdir)/libnl\"
 
-libnl_la_SOURCES = \
+AM_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+
+lib_LTLIBRARIES = \
+	libnl-3.la libnl-genl-3.la libnl-route-3.la libnl-nf-3.la
+
+libnl_3_la_SOURCES = \
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c \
 	error.c handlers.c msg.c nl.c object.c socket.c utils.c
 
-libnl_genl_la_LIBADD = libnl.la
-libnl_genl_la_SOURCES = \
+libnl_genl_3_la_LIBADD = libnl-3.la
+libnl_genl_3_la_SOURCES = \
 	genl/ctrl.c genl/family.c genl/genl.c genl/mngt.c
 
-libnl_nf_la_LIBADD = libnl-route.la
-libnl_nf_la_SOURCES = \
+libnl_nf_3_la_LIBADD = libnl-route-3.la
+libnl_nf_3_la_SOURCES = \
 	netfilter/ct.c netfilter/ct_obj.c netfilter/log.c \
 	netfilter/log_msg.c netfilter/log_msg_obj.c netfilter/log_obj.c \
 	netfilter/netfilter.c netfilter/nfnl.c netfilter/queue.c \
@@ -350,8 +371,8 @@ CLEANFILES = \
 	route/cls/ematch_grammar.c route/cls/ematch_grammar.h \
 	route/cls/ematch_syntax.c route/cls/ematch_syntax.h
 
-libnl_route_la_LIBADD = libnl.la
-libnl_route_la_SOURCES = \
+libnl_route_3_la_LIBADD = libnl-3.la
+libnl_route_3_la_SOURCES = \
 	route/addr.c route/class.c route/cls.c route/link.c \
 	route/neigh.c route/neightbl.c route/nexthop.c route/qdisc.c \
 	route/route.c route/route_obj.c route/route_utils.c route/rtnl.c \
@@ -360,14 +381,14 @@ libnl_route_la_SOURCES = \
 	route/cls/fw.c route/cls/police.c route/cls/u32.c route/cls/basic.c \
 	route/cls/cgroup.c \
 	\
-	route/cls/ematch_syntax.c route/cls/ematch_grammar.c \
 	route/cls/ematch.c \
 	route/cls/ematch/container.c route/cls/ematch/cmp.c \
 	route/cls/ematch/nbyte.c route/cls/ematch/text.c \
 	route/cls/ematch/meta.c \
 	\
-	route/link/api.c route/link/vlan.c \
+	route/link/api.c route/link/vlan.c route/link/dummy.c \
 	route/link/bridge.c route/link/inet6.c route/link/inet.c \
+	route/link/bonding.c \
 	\
 	route/qdisc/blackhole.c route/qdisc/cbq.c route/qdisc/dsmark.c \
 	route/qdisc/fifo.c route/qdisc/htb.c route/qdisc/netem.c \
@@ -376,7 +397,25 @@ libnl_route_la_SOURCES = \
 	\
 	fib_lookup/lookup.c fib_lookup/request.c \
 	\
-	route/pktloc_syntax.c route/pktloc_grammar.c route/pktloc.c
+	route/pktloc.c
+
+nodist_libnl_route_3_la_SOURCES = \
+	route/pktloc_syntax.c route/pktloc_syntax.h \
+	route/pktloc_grammar.c route/pktloc_grammar.h \
+	route/cls/ematch_syntax.c route/cls/ematch_syntax.h \
+	route/cls/ematch_grammar.c route/cls/ematch_grammar.h
+
+BUILT_SOURCES = \
+	route/cls/ematch_grammar.c \
+	route/cls/ematch_syntax.c \
+	route/pktloc_grammar.c \
+	route/pktloc_syntax.c
+
+EXTRA_DIST = \
+	route/pktloc_grammar.l \
+	route/pktloc_syntax.y \
+	route/cls/ematch_grammar.l \
+	route/cls/ematch_syntax.y
 
 @ENABLE_CLI_TRUE@nobase_pkglib_LTLIBRARIES = \
 @ENABLE_CLI_TRUE@	cli/qdisc/htb.la \
@@ -392,7 +431,7 @@ libnl_route_la_SOURCES = \
 @ENABLE_CLI_TRUE@cli_qdisc_bfifo_la_LDFLAGS = -module -version-info 0:0:0
 @ENABLE_CLI_TRUE@cli_cls_basic_la_LDFLAGS = -module -version-info 0:0:0
 @ENABLE_CLI_TRUE@cli_cls_cgroup_la_LDFLAGS = -module -version-info 0:0:0
-all: defs.h
+all: $(BUILT_SOURCES) defs.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
@@ -548,6 +587,8 @@ cli/qdisc/pfifo.lo: cli/qdisc/$(am__dirstamp) \
 	cli/qdisc/$(DEPDIR)/$(am__dirstamp)
 cli/qdisc/pfifo.la: $(cli_qdisc_pfifo_la_OBJECTS) $(cli_qdisc_pfifo_la_DEPENDENCIES) cli/qdisc/$(am__dirstamp)
 	$(AM_V_CCLD)$(cli_qdisc_pfifo_la_LINK) $(am_cli_qdisc_pfifo_la_rpath) $(cli_qdisc_pfifo_la_OBJECTS) $(cli_qdisc_pfifo_la_LIBADD) $(LIBS)
+libnl-3.la: $(libnl_3_la_OBJECTS) $(libnl_3_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_3_la_OBJECTS) $(libnl_3_la_LIBADD) $(LIBS)
 genl/$(am__dirstamp):
 	@$(MKDIR_P) genl
 	@: > genl/$(am__dirstamp)
@@ -558,8 +599,8 @@ genl/ctrl.lo: genl/$(am__dirstamp) genl/$(DEPDIR)/$(am__dirstamp)
 genl/family.lo: genl/$(am__dirstamp) genl/$(DEPDIR)/$(am__dirstamp)
 genl/genl.lo: genl/$(am__dirstamp) genl/$(DEPDIR)/$(am__dirstamp)
 genl/mngt.lo: genl/$(am__dirstamp) genl/$(DEPDIR)/$(am__dirstamp)
-libnl-genl.la: $(libnl_genl_la_OBJECTS) $(libnl_genl_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_genl_la_OBJECTS) $(libnl_genl_la_LIBADD) $(LIBS)
+libnl-genl-3.la: $(libnl_genl_3_la_OBJECTS) $(libnl_genl_3_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_genl_3_la_OBJECTS) $(libnl_genl_3_la_LIBADD) $(LIBS)
 netfilter/$(am__dirstamp):
 	@$(MKDIR_P) netfilter
 	@: > netfilter/$(am__dirstamp)
@@ -590,8 +631,8 @@ netfilter/queue_msg_obj.lo: netfilter/$(am__dirstamp) \
 	netfilter/$(DEPDIR)/$(am__dirstamp)
 netfilter/queue_obj.lo: netfilter/$(am__dirstamp) \
 	netfilter/$(DEPDIR)/$(am__dirstamp)
-libnl-nf.la: $(libnl_nf_la_OBJECTS) $(libnl_nf_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_nf_la_OBJECTS) $(libnl_nf_la_LIBADD) $(LIBS)
+libnl-nf-3.la: $(libnl_nf_3_la_OBJECTS) $(libnl_nf_3_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_nf_3_la_OBJECTS) $(libnl_nf_3_la_LIBADD) $(LIBS)
 route/$(am__dirstamp):
 	@$(MKDIR_P) route
 	@: > route/$(am__dirstamp)
@@ -634,10 +675,6 @@ route/cls/basic.lo: route/cls/$(am__dirstamp) \
 	route/cls/$(DEPDIR)/$(am__dirstamp)
 route/cls/cgroup.lo: route/cls/$(am__dirstamp) \
 	route/cls/$(DEPDIR)/$(am__dirstamp)
-route/cls/ematch_syntax.lo: route/cls/$(am__dirstamp) \
-	route/cls/$(DEPDIR)/$(am__dirstamp)
-route/cls/ematch_grammar.lo: route/cls/$(am__dirstamp) \
-	route/cls/$(DEPDIR)/$(am__dirstamp)
 route/cls/ematch.lo: route/cls/$(am__dirstamp) \
 	route/cls/$(DEPDIR)/$(am__dirstamp)
 route/cls/ematch/$(am__dirstamp):
@@ -666,11 +703,15 @@ route/link/api.lo: route/link/$(am__dirstamp) \
 	route/link/$(DEPDIR)/$(am__dirstamp)
 route/link/vlan.lo: route/link/$(am__dirstamp) \
 	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/dummy.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
 route/link/bridge.lo: route/link/$(am__dirstamp) \
 	route/link/$(DEPDIR)/$(am__dirstamp)
 route/link/inet6.lo: route/link/$(am__dirstamp) \
 	route/link/$(DEPDIR)/$(am__dirstamp)
 route/link/inet.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/bonding.lo: route/link/$(am__dirstamp) \
 	route/link/$(DEPDIR)/$(am__dirstamp)
 route/qdisc/$(am__dirstamp):
 	@$(MKDIR_P) route/qdisc
@@ -708,15 +749,17 @@ fib_lookup/lookup.lo: fib_lookup/$(am__dirstamp) \
 	fib_lookup/$(DEPDIR)/$(am__dirstamp)
 fib_lookup/request.lo: fib_lookup/$(am__dirstamp) \
 	fib_lookup/$(DEPDIR)/$(am__dirstamp)
+route/pktloc.lo: route/$(am__dirstamp) route/$(DEPDIR)/$(am__dirstamp)
 route/pktloc_syntax.lo: route/$(am__dirstamp) \
 	route/$(DEPDIR)/$(am__dirstamp)
 route/pktloc_grammar.lo: route/$(am__dirstamp) \
 	route/$(DEPDIR)/$(am__dirstamp)
-route/pktloc.lo: route/$(am__dirstamp) route/$(DEPDIR)/$(am__dirstamp)
-libnl-route.la: $(libnl_route_la_OBJECTS) $(libnl_route_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_route_la_OBJECTS) $(libnl_route_la_LIBADD) $(LIBS)
-libnl.la: $(libnl_la_OBJECTS) $(libnl_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_la_OBJECTS) $(libnl_la_LIBADD) $(LIBS)
+route/cls/ematch_syntax.lo: route/cls/$(am__dirstamp) \
+	route/cls/$(DEPDIR)/$(am__dirstamp)
+route/cls/ematch_grammar.lo: route/cls/$(am__dirstamp) \
+	route/cls/$(DEPDIR)/$(am__dirstamp)
+libnl-route-3.la: $(libnl_route_3_la_OBJECTS) $(libnl_route_3_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_route_3_la_OBJECTS) $(libnl_route_3_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -806,8 +849,12 @@ mostlyclean-compile:
 	-rm -f route/link.lo
 	-rm -f route/link/api.$(OBJEXT)
 	-rm -f route/link/api.lo
+	-rm -f route/link/bonding.$(OBJEXT)
+	-rm -f route/link/bonding.lo
 	-rm -f route/link/bridge.$(OBJEXT)
 	-rm -f route/link/bridge.lo
+	-rm -f route/link/dummy.$(OBJEXT)
+	-rm -f route/link/dummy.lo
 	-rm -f route/link/inet.$(OBJEXT)
 	-rm -f route/link/inet.lo
 	-rm -f route/link/inet6.$(OBJEXT)
@@ -933,7 +980,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@route/cls/ematch/$(DEPDIR)/nbyte.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/cls/ematch/$(DEPDIR)/text.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/api.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/bonding.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/bridge.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/inet.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/inet6.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/vlan.Plo@am__quote@
@@ -1074,13 +1123,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) defs.h
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkglibdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -1126,6 +1177,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -1199,7 +1251,7 @@ ps-am:
 uninstall-am: uninstall-libLTLIBRARIES \
 	uninstall-nobase_pkglibLTLIBRARIES
 
-.MAKE: all install-am install-strip
+.MAKE: all check install install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libLTLIBRARIES clean-libtool \

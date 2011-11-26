@@ -125,11 +125,8 @@ static int route_clone(struct nl_object *_dst, struct nl_object *_src)
 static void route_dump_line(struct nl_object *a, struct nl_dump_params *p)
 {
 	struct rtnl_route *r = (struct rtnl_route *) a;
-	struct nl_cache *link_cache;
 	int cache = 0, flags;
 	char buf[64];
-
-	link_cache = nl_cache_mngt_require("route/link");
 
 	if (r->rt_flags & RTM_F_CLONED)
 		cache = 1;
@@ -346,9 +343,10 @@ static int route_compare(struct nl_object *_a, struct nl_object *_b,
 			found = 0;
 			nl_list_for_each_entry(nh_b, &b->rt_nexthops,
 					       rtnh_list) {
-				if (!rtnl_route_nh_compare(nh_a, nh_b, ~0, 0))
+				if (!rtnl_route_nh_compare(nh_a, nh_b, ~0, 0)) {
 					found = 1;
 					break;
+				}
 			}
 			if (!found)
 				goto nh_mismatch;
@@ -360,9 +358,10 @@ static int route_compare(struct nl_object *_a, struct nl_object *_b,
 			found = 0;
 			nl_list_for_each_entry(nh_a, &a->rt_nexthops,
 					       rtnh_list) {
-				if (!rtnl_route_nh_compare(nh_a, nh_b, ~0, 0))
+				if (!rtnl_route_nh_compare(nh_a, nh_b, ~0, 0)) {
 					found = 1;
 					break;
+				}
 			}
 			if (!found)
 				goto nh_mismatch;
@@ -687,18 +686,26 @@ void rtnl_route_add_nexthop(struct rtnl_route *route, struct rtnl_nexthop *nh)
 
 void rtnl_route_remove_nexthop(struct rtnl_route *route, struct rtnl_nexthop *nh)
 {
-	route->rt_nr_nh--;
-	nl_list_del(&nh->rtnh_list);
+	if (route->ce_mask & ROUTE_ATTR_MULTIPATH) {
+		route->rt_nr_nh--;
+		nl_list_del(&nh->rtnh_list);
+	}
 }
 
 struct nl_list_head *rtnl_route_get_nexthops(struct rtnl_route *route)
 {
-	return &route->rt_nexthops;
+	if (route->ce_mask & ROUTE_ATTR_MULTIPATH)
+		return &route->rt_nexthops;
+
+	return NULL;
 }
 
 int rtnl_route_get_nnexthops(struct rtnl_route *route)
 {
-	return route->rt_nr_nh;
+	if (route->ce_mask & ROUTE_ATTR_MULTIPATH)
+		return route->rt_nr_nh;
+
+	return 0;
 }
 
 void rtnl_route_foreach_nexthop(struct rtnl_route *r,
@@ -1071,7 +1078,17 @@ int rtnl_route_build_msg(struct nl_msg *msg, struct rtnl_route *route)
 		nla_nest_end(msg, metrics);
 	}
 
-	if (rtnl_route_get_nnexthops(route) > 0) {
+	if (rtnl_route_get_nnexthops(route) == 1) {
+		struct rtnl_nexthop *nh;
+
+		nh = rtnl_route_nexthop_n(route, 0);
+		if (nh->rtnh_gateway)
+			NLA_PUT_ADDR(msg, RTA_GATEWAY, nh->rtnh_gateway);
+		if (nh->rtnh_ifindex)
+			NLA_PUT_U32(msg, RTA_OIF, nh->rtnh_ifindex);
+		if (nh->rtnh_realms)
+			NLA_PUT_U32(msg, RTA_FLOW, nh->rtnh_realms);
+	} else if (rtnl_route_get_nnexthops(route) > 1) {
 		struct nlattr *multipath;
 		struct rtnl_nexthop *nh;
 

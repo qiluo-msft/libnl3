@@ -408,7 +408,7 @@ void rtnl_neigh_put(struct rtnl_neigh *neigh)
 
 /**
  * Build a neighbour cache including all neighbours currently configured in the kernel.
- * @arg sk		Netlink socket.
+ * @arg sock		Netlink socket.
  * @arg result		Pointer to store resulting cache.
  *
  * Allocates a new neighbour cache, initializes it properly and updates it
@@ -464,6 +464,9 @@ static int build_neigh_msg(struct rtnl_neigh *tmpl, int cmd, int flags,
 		return -NLE_MISSING_ATTR;
 
 	nhdr.ndm_family = nl_addr_get_family(tmpl->n_dst);
+
+	if (tmpl->ce_mask & NEIGH_ATTR_FLAGS)
+		nhdr.ndm_flags = tmpl->n_flags;
 
 	if (tmpl->ce_mask & NEIGH_ATTR_STATE)
 		nhdr.ndm_state = tmpl->n_state;

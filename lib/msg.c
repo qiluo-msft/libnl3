@@ -27,7 +27,7 @@
  * Netlink header type \c NLMSG_DONE.
  *
  * @par
- * The Netlink message header (\link nlmsghdr struct nlmsghdr\endlink) is shown below.
+ * The Netlink message header (struct nlmsghdr) is shown below.
  * @code   
  * 0                   1                   2                   3
  * 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -181,8 +181,6 @@ static void __init init_msg_size(void)
  * Calculates size of netlink message based on payload length.
  * @arg payload		Length of payload
  *
- * See \ref core_msg_fmt_align for more information on alignment.
- *
  * @return size of netlink message without padding.
  */
 int nlmsg_size(int payload)
@@ -190,7 +188,7 @@ int nlmsg_size(int payload)
 	return NLMSG_HDRLEN + payload;
 }
 
-int nlmsg_msg_size(int payload)
+static int nlmsg_msg_size(int payload)
 {
 	return nlmsg_size(payload);
 }
@@ -200,8 +198,6 @@ int nlmsg_msg_size(int payload)
  * @arg payload		Length of payload
  *
  * This function is idential to nlmsg_size() + nlmsg_padlen().
- *
- * See \ref core_msg_fmt_align for more information on alignment.
  *
  * @return Size of netlink message including padding.
  */
@@ -217,8 +213,6 @@ int nlmsg_total_size(int payload)
  * Calculates the number of bytes of padding which is required to be added to
  * the end of the message to ensure that the next netlink message header begins
  * properly aligned to NLMSG_ALIGNTO.
- *
- * See \ref core_msg_fmt_align for more information on alignment.
  *
  * @return Number of bytes of padding needed.
  */
@@ -261,7 +255,7 @@ int nlmsg_datalen(const struct nlmsghdr *nlh)
 	return nlh->nlmsg_len - NLMSG_HDRLEN;
 }
 
-int nlmsg_len(const struct nlmsghdr *nlh)
+static int nlmsg_len(const struct nlmsghdr *nlh)
 {
 	return nlmsg_datalen(nlh);
 }

@@ -101,14 +101,20 @@
  * Creates a netlink socket using the specified protocol, binds the socket
  * and issues a connection attempt.
  *
+ * @note SOCK_CLOEXEC is set on the socket if available.
+ *
  * @return 0 on success or a negative error code.
  */
 int nl_connect(struct nl_sock *sk, int protocol)
 {
-	int err;
+	int err, flags = 0;
 	socklen_t addrlen;
 
-	sk->s_fd = socket(AF_NETLINK, SOCK_RAW, protocol);
+#ifdef SOCK_CLOEXEC
+	flags |= SOCK_CLOEXEC;
+#endif
+
+	sk->s_fd = socket(AF_NETLINK, SOCK_RAW | flags, protocol);
 	if (sk->s_fd < 0) {
 		err = -nl_syserr2nlerr(errno);
 		goto errout;
@@ -346,6 +352,37 @@ int nl_send_auto_complete(struct nl_sock *sk, struct nl_msg *msg)
 }
 
 /**
+ * Send netlink message and wait for response (sync request-response)
+ * @arg sk		Netlink socket
+ * @arg msg		Netlink message to be sent
+ *
+ * This function takes a netlink message and sends it using nl_send_auto().
+ * It will then wait for the response (ACK or error message) to be
+ * received. Threfore this function will block until the operation has
+ * been completed.
+ *
+ * @note Disabling auto-ack (nl_socket_disable_auto_ack()) will cause
+ *       this function to return immediately after sending. In this case,
+ *       it is the responsibility of the caller to handle any eventual
+ *       error messages returned.
+ *
+ * @see nl_send_auto().
+ *
+ * @return 0 on success or a negative error code.
+ */
+int nl_send_sync(struct nl_sock *sk, struct nl_msg *msg)
+{
+	int err;
+
+	err = nl_send_auto(sk, msg);
+	nlmsg_free(msg);
+	if (err < 0)
+		return err;
+
+	return wait_for_ack(sk);
+}
+
+/**
  * Send simple netlink message using nl_send_auto_complete()
  * @arg sk		Netlink socket.
  * @arg type		Netlink message type.
@@ -522,7 +559,7 @@ do { \
 
 static int recvmsgs(struct nl_sock *sk, struct nl_cb *cb)
 {
-	int n, err = 0, multipart = 0;
+	int n, err = 0, multipart = 0, interrupted = 0;
 	unsigned char *buf = NULL;
 	struct nlmsghdr *hdr;
 	struct sockaddr_nl nla = {0};
@@ -543,7 +580,7 @@ continue_reading:
 
 	hdr = (struct nlmsghdr *) buf;
 	while (nlmsg_ok(hdr, n)) {
-		NL_DBG(3, "recgmsgs(%p): Processing valid message...\n", sk);
+		NL_DBG(3, "recvmsgs(%p): Processing valid message...\n", sk);
 
 		nlmsg_free(msg);
 		msg = nlmsg_convert(hdr);
@@ -594,6 +631,19 @@ continue_reading:
 
 		if (hdr->nlmsg_flags & NLM_F_MULTI)
 			multipart = 1;
+
+		if (hdr->nlmsg_flags & NLM_F_DUMP_INTR) {
+			if (cb->cb_set[NL_CB_DUMP_INTR])
+				NL_CB_CALL(cb, NL_CB_DUMP_INTR, msg);
+			else {
+				/*
+				 * We have to continue reading to clear
+				 * all messages until a NLMSG_DONE is
+				 * received and report the inconsistency.
+				 */
+				interrupted = 1;
+			}
+		}
 	
 		/* Other side wishes to see an ack for this message */
 		if (hdr->nlmsg_flags & NLM_F_ACK) {
@@ -701,6 +751,9 @@ out:
 	free(buf);
 	free(creds);
 
+	if (interrupted)
+		err = -NLE_DUMP_INTR;
+
 	return err;
 }
 
@@ -763,6 +816,76 @@ int nl_wait_for_ack(struct nl_sock *sk)
 
 	nl_cb_set(cb, NL_CB_ACK, NL_CB_CUSTOM, ack_wait_handler, NULL);
 	err = nl_recvmsgs(sk, cb);
+	nl_cb_put(cb);
+
+	return err;
+}
+
+/** @cond SKIP */
+struct pickup_param
+{
+	int (*parser)(struct nl_cache_ops *, struct sockaddr_nl *,
+		      struct nlmsghdr *, struct nl_parser_param *);
+	struct nl_object *result;
+};
+
+static int __store_answer(struct nl_object *obj, struct nl_parser_param *p)
+{
+	struct pickup_param *pp = p->pp_arg;
+	/*
+	 * the parser will put() the object at the end, expecting the cache
+	 * to take the reference.
+	 */
+	nl_object_get(obj);
+	pp->result =  obj;
+
+	return 0;
+}
+
+static int __pickup_answer(struct nl_msg *msg, void *arg)
+{
+	struct pickup_param *pp = arg;
+	struct nl_parser_param parse_arg = {
+		.pp_cb = __store_answer,
+		.pp_arg = pp,
+	};
+
+	return pp->parser(NULL, &msg->nm_src, msg->nm_nlh, &parse_arg);
+}
+
+/** @endcond */
+
+/**
+ * Pickup netlink answer, parse is and return object
+ * @arg sk		Netlink socket
+ * @arg parser		Parser function to parse answer
+ * @arg result		Result pointer to return parsed object
+ *
+ * @return 0 on success or a negative error code.
+ */
+int nl_pickup(struct nl_sock *sk,
+	      int (*parser)(struct nl_cache_ops *, struct sockaddr_nl *,
+			    struct nlmsghdr *, struct nl_parser_param *),
+	      struct nl_object **result)
+{
+	struct nl_cb *cb;
+	int err;
+	struct pickup_param pp = {
+		.parser = parser,
+	};
+
+	cb = nl_cb_clone(sk->s_cb);
+	if (cb == NULL)
+		return -NLE_NOMEM;
+
+	nl_cb_set(cb, NL_CB_VALID, NL_CB_CUSTOM, __pickup_answer, &pp);
+
+	err = nl_recvmsgs(sk, cb);
+	if (err < 0)
+		goto errout;
+
+	*result = pp.result;
+errout:
 	nl_cb_put(cb);
 
 	return err;
