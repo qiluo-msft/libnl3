@@ -1,2 +1,2 @@
-debian/tmp/usr/lib/libnl*.so.*
+debian/tmp/usr/lib/libnl-3*.so.*
 debian/tmp/etc/libnl/* etc/libnl

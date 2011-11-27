@@ -1,5 +1,8 @@
 libnl3 (3.2.3-1) UNRELEASED; urgency=low
 
+  * Split library packages
+
+  [Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>]
   * New upstream release.
   * debian/patches/0001-fix-headers.patch,
     debian/patches/0002-link-sub-libs.patch,
@@ -18,7 +21,7 @@ libnl3 (3.2.3-1) UNRELEASED; urgency=low
   * debian/libnl-3-doc.install,
     debian/libnl-3-doc.doc-base: update to take into account new paths.
 
- -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Fri, 25 Nov 2011 10:20:37 -0500
+ -- Heiko Stuebner <mmind@debian.org>  Fri, 25 Nov 2011 10:20:37 -0500
 
 libnl3 (3.0-2) unstable; urgency=low
 
