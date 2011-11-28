@@ -1,6 +1,7 @@
 libnl3 (3.2.3-1) UNRELEASED; urgency=low
 
-  * Split library packages
+  * Split library and dev packages
+  * Add utils package
 
   [Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>]
   * New upstream release.
