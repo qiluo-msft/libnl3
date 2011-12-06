@@ -1,10 +1,11 @@
-libnl3 (3.2.3-1) UNRELEASED; urgency=low
+libnl3 (3.2.3-1) experimental; urgency=low
 
-  * Split library and dev packages
+  * Upload to experimental to not break debian-installer
+  * Split library and dev packages for the individual libraries
   * Add utils package
 
   [Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>]
-  * New upstream release.
+  * New upstream release (Closes: #648819)
   * debian/patches/0001-fix-headers.patch,
     debian/patches/0002-link-sub-libs.patch,
     debian/patches/0003-fix-out-of-tree-build.patch: dropped.
@@ -22,7 +23,7 @@ libnl3 (3.2.3-1) UNRELEASED; urgency=low
   * debian/libnl-3-doc.install,
     debian/libnl-3-doc.doc-base: update to take into account new paths.
 
- -- Heiko Stuebner <mmind@debian.org>  Fri, 25 Nov 2011 10:20:37 -0500
+ -- Heiko Stuebner <mmind@debian.org>  Tue, 06 Nov 2012 21:23:12 +0200
 
 libnl3 (3.0-2) unstable; urgency=low
 
