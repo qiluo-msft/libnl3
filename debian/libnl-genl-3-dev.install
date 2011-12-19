@@ -1,2 +1,2 @@
 debian/tmp/usr/lib/pkgconfig/libnl-genl-3*
-debian/tmp/usr/lib/libnl-genl-3*.so
+debian/tmp/usr/lib/libnl-genl-3*.so lib
