@@ -425,12 +425,12 @@ EXTRA_DIST = \
 @ENABLE_CLI_TRUE@	cli/cls/basic.la \
 @ENABLE_CLI_TRUE@	cli/cls/cgroup.la
 
-@ENABLE_CLI_TRUE@cli_qdisc_htb_la_LDFLAGS = -module -version-info 0:0:0
-@ENABLE_CLI_TRUE@cli_qdisc_blackhole_la_LDFLAGS = -module -version-info 0:0:0
-@ENABLE_CLI_TRUE@cli_qdisc_pfifo_la_LDFLAGS = -module -version-info 0:0:0
-@ENABLE_CLI_TRUE@cli_qdisc_bfifo_la_LDFLAGS = -module -version-info 0:0:0
-@ENABLE_CLI_TRUE@cli_cls_basic_la_LDFLAGS = -module -version-info 0:0:0
-@ENABLE_CLI_TRUE@cli_cls_cgroup_la_LDFLAGS = -module -version-info 0:0:0
+@ENABLE_CLI_TRUE@cli_qdisc_htb_la_LDFLAGS = -module -avoid-version
+@ENABLE_CLI_TRUE@cli_qdisc_blackhole_la_LDFLAGS = -module -avoid-version
+@ENABLE_CLI_TRUE@cli_qdisc_pfifo_la_LDFLAGS = -module -avoid-version
+@ENABLE_CLI_TRUE@cli_qdisc_bfifo_la_LDFLAGS = -module -avoid-version
+@ENABLE_CLI_TRUE@cli_cls_basic_la_LDFLAGS = -module -avoid-version
+@ENABLE_CLI_TRUE@cli_cls_cgroup_la_LDFLAGS = -module -avoid-version
 all: $(BUILT_SOURCES) defs.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 

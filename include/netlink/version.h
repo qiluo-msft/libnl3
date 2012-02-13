@@ -12,17 +12,17 @@
 #ifndef NETLINK_VERSION_H_
 #define NETLINK_VERSION_H_
 
-#define LIBNL_STRING "libnl 3.2.3"
-#define LIBNL_VERSION "3.2.3"
+#define LIBNL_STRING "libnl 3.2.7"
+#define LIBNL_VERSION "3.2.7"
 
 #define LIBNL_VER_MAJ		3
 #define LIBNL_VER_MIN		2
-#define LIBNL_VER_MIC		3
+#define LIBNL_VER_MIC		7
 #define LIBNL_VER(maj,min)	((maj) << 8 | (min))
 #define LIBNL_VER_NUM		LIBNL_VER(LIBNL_VER_MAJ, LIBNL_VER_MIN)
 
-#define LIBNL_CURRENT		203
-#define LIBNL_REVISION		0
-#define LIBNL_AGE		3
+#define LIBNL_CURRENT		205
+#define LIBNL_REVISION		2
+#define LIBNL_AGE		5
 
 #endif
