@@ -1,8 +1,9 @@
-libnl3 (3.2.3-3) unstable; urgency=low
+libnl3 (3.2.7-1) unstable; urgency=low
 
+  * New upstream release
   * Build-depend on source-highlight (Closes: #657254)
 
- -- Heiko Stuebner <mmind@debian.org>  Thu, 09 Feb 2012 21:59:30 +0100
+ -- Heiko Stuebner <mmind@debian.org>  Mon, 13 Feb 2012 18:59:30 +0100
 
 libnl3 (3.2.3-2) unstable; urgency=low
 
