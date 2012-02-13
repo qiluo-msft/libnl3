@@ -1,3 +1,3 @@
 debian/tmp/usr/lib/libnl-cli-3*.so.*
-debian/tmp/usr/lib/libnl/cli/cls/*.so.* usr/lib/libnl-3/cli/cls
-debian/tmp/usr/lib/libnl/cli/qdisc/*.so.* usr/lib/libnl-3/cli/qdisc
+debian/tmp/usr/lib/libnl/cli/cls/*.so usr/lib/libnl-3/cli/cls
+debian/tmp/usr/lib/libnl/cli/qdisc/*.so usr/lib/libnl-3/cli/qdisc
