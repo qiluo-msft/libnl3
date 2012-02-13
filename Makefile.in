@@ -272,15 +272,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-OPT_DIRS = $(am__append_1)
-PKGCONFIGS = $(am__append_2)
-SUBDIRS = include lib doc man python $(OPT_DIRS)
-pkgconfig_DATA = libnl-3.0.pc \
-		 libnl-route-3.0.pc \
-		 libnl-genl-3.0.pc \
-		 libnl-nf-3.0.pc \
-		 $(PKGCONFIGS)
-
+SUBDIRS = include lib doc man python $(am__append_1)
+pkgconfig_DATA = libnl-3.0.pc libnl-route-3.0.pc libnl-genl-3.0.pc \
+	libnl-nf-3.0.pc $(am__append_2)
 pkgsysconfdir = ${sysconfdir}/libnl
 pkgsysconf_DATA = etc/pktloc etc/classid
 EXTRA_DIST = \
