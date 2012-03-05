@@ -1,3 +1,10 @@
+libnl3 (3.2.7-2) unstable; urgency=low
+
+  * Force doxygen dot-threads to 1 to circumvent segfaults on armel
+  * Add missing build-dependency on ghostscript
+
+ -- Heiko Stuebner <mmind@debian.org>  Mon, 05 Mar 2012 23:29:10 +0100
+
 libnl3 (3.2.7-1) unstable; urgency=low
 
   * New upstream release
