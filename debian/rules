@@ -6,6 +6,15 @@ DEB_MAKE_FLAVORS = main udeb
 udeb_libnl=libnl-3-200-udeb
 udeb_libnl_genl=libnl-genl-3-200-udeb
 
+TG_BRANCHES := debian/etc-libnl-3,debian/out-of-tree,fixes/dot-threads
+
+-include /usr/share/topgit/tg2quilt.mk
+
+# to export the patch series use
+#	debian/rules tg-clean
+#	debian/rules tg-export
+
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
