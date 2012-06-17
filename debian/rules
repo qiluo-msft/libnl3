@@ -17,7 +17,6 @@ TG_BRANCHES := debian/etc-libnl-3,debian/out-of-tree,fixes/dot-threads
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
 # FIXME: not honoured
 #CFLAGS_udeb += $(CFLAGS) -Os

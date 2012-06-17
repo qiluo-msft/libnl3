@@ -1,7 +1,9 @@
-From 91b45880ed2b1ecc09ac0f831f3dba233478755f Mon Sep 17 00:00:00 2001
 From: Heiko Stuebner <heiko@sntech.de>
-Date: Mon, 28 Nov 2011 09:56:02 +0100
-Subject: [PATCH] install in libnl-3
+Subject: [PATCH] install into etc/libnl-3
+
+Prevent naming conflicts with libnl2 or later conffiles.
+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 
 ---
  Makefile.am         |    2 +-
@@ -11,11 +13,11 @@ Subject: [PATCH] install in libnl-3
  4 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 4b8f020..b57da04 100644
+index e21060f..e8ad738 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -19,7 +19,7 @@ pkgconfig_DATA = libnl-3.0.pc \
- 		 $(PKGCONFIGS)
+@@ -15,7 +15,7 @@ pkgconfig_DATA += libnl-cli-3.0.pc
+ endif
  
  
 -pkgsysconfdir = ${sysconfdir}/libnl
@@ -24,7 +26,7 @@ index 4b8f020..b57da04 100644
  
  EXTRA_DIST = \
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index da2dbf6..58a548f 100644
+index c2668ef..e6f1664 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -7,7 +7,7 @@ AM_CPPFLAGS  =			 	\
@@ -62,5 +64,4 @@ index a88163a..32fcaae 100644
  	-L${top_builddir}/lib \
  	-ldl \
 -- 
-1.7.5.4
-
+tg: (782035e..) debian/etc-libnl-3 (depends on: upstream-dist)
