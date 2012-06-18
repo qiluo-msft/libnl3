@@ -2,6 +2,7 @@ libnl3 (3.2.7-3) unstable; urgency=low
 
   * Fix FTBFS due to failing gen-tags.sh (Closes: #674322)
   * Convert to Multi-Arch (Closes: #676611)
+  * Update standards to 3.9.3 - no changes
   * Switch to dpkg-source format 3.0 (quilt)
 
  -- Heiko Stuebner <mmind@debian.org>  Mon, 18 Jun 2012 21:19:30 +0200
