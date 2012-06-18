@@ -1,3 +1,11 @@
+libnl3 (3.2.7-3) unstable; urgency=low
+
+  * Fix FTBFS due to failing gen-tags.sh (Closes: #674322)
+  * Convert to Multi-Arch (Closes: #676611)
+  * Switch to dpkg-source format 3.0 (quilt)
+
+ -- Heiko Stuebner <mmind@debian.org>  Mon, 18 Jun 2012 21:19:30 +0200
+
 libnl3 (3.2.7-2) unstable; urgency=low
 
   * Force doxygen dot-threads to 1 to circumvent segfaults on armel
