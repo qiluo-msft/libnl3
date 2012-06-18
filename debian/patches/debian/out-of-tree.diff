@@ -1,16 +1,19 @@
 From: Heiko Stuebner <heiko@sntech.de>
 Subject: [PATCH] Enable out of tree build
 
+This also includes a backported gen-tags.sh to fix
+build-failures.
 
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 
 ---
  doc/Makefile.am |    6 +++---
+ doc/gen-tags.sh |   10 ++--------
  lib/Makefile.am |    4 ++++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ 3 files changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/doc/Makefile.am b/doc/Makefile.am
-index 9b964b5..e29e441 100644
+index 9b964b5..e60fed7 100644
 --- a/doc/Makefile.am
 +++ b/doc/Makefile.am
 @@ -79,16 +79,16 @@ EXTRA_DIST = \
@@ -29,10 +32,33 @@ index 9b964b5..e29e441 100644
  api_ref:
  	doxygen Doxyfile;
 -	./gen-tags.sh | ./tags2dict.sh > libnl.dict
-+	../../../../doc/gen-tags.sh | ../../../../doc/tags2dict.sh > libnl.dict
++	../../../../doc/gen-tags.sh > libnl.dict
  
  gendoc:
  	$(MAKE) api_ref
+diff --git a/doc/gen-tags.sh b/doc/gen-tags.sh
+index aba6672..862ec09 100755
+--- a/doc/gen-tags.sh
++++ b/doc/gen-tags.sh
+@@ -5,16 +5,10 @@
+ # written by Carsten Haitzler <ras...@rasterman.com>
+ #
+ 
+-echo '<libnltags>'
+ for f in api/group__*.html
+ do
+ 	bf=$(basename $f)
+ 
+-	grep -oE '<!-- doxytag.* -->' $f |
+-		sed 's/<!-- doxytag:/<libnltag/' |
+-		sed "s/-->/file=\"$bf\" \/>/" |
+-		sed "s/ ref=\"/ href=\"$bf#/" |
+-		sed 's/ member="\([^:]*::\)\([^"]*\)"/ member="\2"/' |
+-		sed 's/ member="\([^"]*\)"/ short="\1"/'
++	grep -oE "href=\"$bf#[a-z0-9]+\">[^<]+</a>" $f |
++		sed 's/href="\([^"]*\)">\([^<]*\)<\/a>/\2=api\/\1/'
+ done
+-echo '</libnltags>'
 diff --git a/lib/Makefile.am b/lib/Makefile.am
 index c2668ef..e37d77e 100644
 --- a/lib/Makefile.am
