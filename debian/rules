@@ -16,6 +16,7 @@ TG_BRANCHES := debian/etc-libnl-3,debian/out-of-tree,fixes/dot-threads
 
 
 include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/autoreconf.mk
 include /usr/share/cdbs/1/class/autotools.mk
 
 # FIXME: not honoured
@@ -25,8 +26,6 @@ CFLAGS += $(if $(findstring udeb,$(cdbs_make_curflavor)),-Os)
 DEB_DH_STRIP_ARGS := --dbg-package=libnl-3-200-dbg
 DEB_DH_MAKESHLIBS_ARGS_libnl-3-200 := -V"libnl-3-200 (>= $(DEB_UPSTREAM_VERSION))" --add-udeb=$(udeb_libnl)
 DEB_DH_MAKESHLIBS_ARGS_libnl-genl-3-200 := -V"libnl-genl-3-200 (>= $(DEB_UPSTREAM_VERSION))" --add-udeb=$(udeb_libnl_genl)
-
-DEB_AUTO_UPDATE_ACLOCAL=1.11
 
 DEB_MAKE_DESTDIRSKEL = $(CURDIR)/debian/tmp
 DEB_MAKE_DESTDIRSKEL_udeb = $(CURDIR)/debian/tmp/udeb
