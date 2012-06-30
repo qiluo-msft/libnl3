@@ -1,3 +1,10 @@
+libnl3 (3.2.7-4) unstable; urgency=low
+
+  * Add watch file (Closes: #679473)
+  * Use dh-autoreconf to update the build system (Closes: 679474)
+
+ -- Heiko Stuebner <mmind@debian.org>  Sat, 30 Jun 2012 15:54:25 +0200
+
 libnl3 (3.2.7-3) unstable; urgency=low
 
   * Fix FTBFS due to failing gen-tags.sh (Closes: #674322)
