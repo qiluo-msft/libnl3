@@ -1,3 +1,12 @@
+libnl3 (3.2.21-1) unstable; urgency=low
+
+  * New upstream release (Closes: #707081)
+    Including CAN support (Closes: #698954)
+  * Add symbols files (Closes: #654758)
+  * Provide static libraries (Closes: #693939, #693940)
+
+ -- Heiko Stuebner <mmind@debian.org>  Tue, 14 May 2013 11:39:13 +0200
+
 libnl3 (3.2.7-4) unstable; urgency=low
 
   * Add watch file (Closes: #679473)
