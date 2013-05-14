@@ -18,12 +18,12 @@
  * @{
  */
 
-#include <netlink-local.h>
-#include <netlink-tc.h>
+#include <netlink-private/netlink.h>
+#include <netlink-private/tc.h>
 #include <netlink/netlink.h>
 #include <netlink/cache.h>
 #include <netlink/utils.h>
-#include <netlink/route/tc-api.h>
+#include <netlink-private/route/tc-api.h>
 #include <netlink/route/qdisc.h>
 #include <netlink/route/class.h>
 #include <netlink/route/link.h>
@@ -86,9 +86,9 @@ static int htb_class_msg_parser(struct rtnl_tc *tc, void *data)
 		htb->ch_prio = opts.prio;
 		rtnl_copy_ratespec(&htb->ch_rate, &opts.rate);
 		rtnl_copy_ratespec(&htb->ch_ceil, &opts.ceil);
-		htb->ch_rbuffer = rtnl_tc_calc_bufsize(opts.buffer,
+		htb->ch_rbuffer = rtnl_tc_calc_bufsize(nl_ticks2us(opts.buffer),
 						       opts.rate.rate);
-		htb->ch_cbuffer = rtnl_tc_calc_bufsize(opts.cbuffer,
+		htb->ch_cbuffer = rtnl_tc_calc_bufsize(nl_ticks2us(opts.cbuffer),
 						       opts.ceil.rate);
 		htb->ch_quantum = opts.quantum;
 		htb->ch_level = opts.level;
@@ -190,10 +190,10 @@ static int htb_qdisc_msg_fill(struct rtnl_tc *tc, void *data,
 			      struct nl_msg *msg)
 {
 	struct rtnl_htb_qdisc *htb = data;
-	struct tc_htb_glob opts = {0};
-
-	opts.version = TC_HTB_PROTOVER;
-	opts.rate2quantum = 10;
+	struct tc_htb_glob opts = {
+        	.version = TC_HTB_PROTOVER,
+	        .rate2quantum = 10,
+        };
 
 	if (htb) {
 		if (htb->qh_mask & SCH_HTB_HAS_RATE2QUANTUM)
@@ -242,16 +242,16 @@ static int htb_class_msg_fill(struct rtnl_tc *tc, void *data,
 	if (htb->ch_mask & SCH_HTB_HAS_RBUFFER)
 		buffer = htb->ch_rbuffer;
 	else
-		buffer = opts.rate.rate / nl_get_user_hz() + mtu; /* XXX */
+		buffer = opts.rate.rate / nl_get_psched_hz() + mtu; /* XXX */
 
-	opts.buffer = rtnl_tc_calc_txtime(buffer, opts.rate.rate);
+	opts.buffer = nl_us2ticks(rtnl_tc_calc_txtime(buffer, opts.rate.rate));
 
 	if (htb->ch_mask & SCH_HTB_HAS_CBUFFER)
 		cbuffer = htb->ch_cbuffer;
 	else
-		cbuffer = opts.ceil.rate / nl_get_user_hz() + mtu; /* XXX */
+		cbuffer = opts.ceil.rate / nl_get_psched_hz() + mtu; /* XXX */
 
-	opts.cbuffer = rtnl_tc_calc_txtime(cbuffer, opts.ceil.rate);
+	opts.cbuffer = nl_us2ticks(rtnl_tc_calc_txtime(cbuffer, opts.ceil.rate));
 
 	if (htb->ch_mask & SCH_HTB_HAS_QUANTUM)
 		opts.quantum = htb->ch_quantum;

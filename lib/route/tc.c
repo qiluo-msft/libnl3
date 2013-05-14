@@ -15,14 +15,14 @@
  * @{
  */
 
-#include <netlink-local.h>
-#include <netlink-tc.h>
+#include <netlink-private/netlink.h>
+#include <netlink-private/tc.h>
 #include <netlink/netlink.h>
 #include <netlink/utils.h>
 #include <netlink/route/rtnl.h>
 #include <netlink/route/link.h>
 #include <netlink/route/tc.h>
-#include <netlink/route/tc-api.h>
+#include <netlink-private/route/tc-api.h>
 
 /** @cond SKIP */
 
@@ -710,7 +710,7 @@ int rtnl_tc_build_rate_table(struct rtnl_tc *tc, struct rtnl_ratespec *spec,
 
 	for (i = 0; i < RTNL_TC_RTABLE_SIZE; i++) {
 		size = adjust_size((i + 1) << cell_log, spec->rs_mpu, linktype);
-		dst[i] = rtnl_tc_calc_txtime(size, spec->rs_rate);
+		dst[i] = nl_us2ticks(rtnl_tc_calc_txtime(size, spec->rs_rate));
 	}
 
 	spec->rs_cell_align = -1;
@@ -822,7 +822,7 @@ void rtnl_tc_dump_line(struct nl_object *obj, struct nl_dump_params *p)
 
 	nl_dump(p, "%s ", tc->tc_kind);
 
-	if ((link_cache = nl_cache_mngt_require("route/link"))) {
+	if ((link_cache = nl_cache_mngt_require_safe("route/link"))) {
 		nl_dump(p, "dev %s ",
 			rtnl_link_i2name(link_cache, tc->tc_ifindex,
 					 buf, sizeof(buf)));
@@ -837,6 +837,9 @@ void rtnl_tc_dump_line(struct nl_object *obj, struct nl_dump_params *p)
 
 	tc_dump(tc, NL_DUMP_LINE, p);
 	nl_dump(p, "\n");
+
+	if (link_cache)
+		nl_cache_put(link_cache);
 }
 
 void rtnl_tc_dump_details(struct nl_object *obj, struct nl_dump_params *p)

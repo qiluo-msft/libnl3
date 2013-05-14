@@ -32,13 +32,14 @@
 #include <netlink/handlers.h>
 #include <netlink/socket.h>
 #include <netlink/object.h>
-#include <netlink/cache-api.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 struct ucred;
+struct nl_cache_ops;
+struct nl_parser_param;
 
 extern int nl_debug;
 extern struct nl_dump_params nl_debug_dp;
@@ -71,6 +72,7 @@ extern int			nl_recv(struct nl_sock *,
 					struct ucred **);
 
 extern int			nl_recvmsgs(struct nl_sock *, struct nl_cb *);
+extern int			nl_recvmsgs_report(struct nl_sock *, struct nl_cb *);
 
 extern int			nl_recvmsgs_default(struct nl_sock *);
 

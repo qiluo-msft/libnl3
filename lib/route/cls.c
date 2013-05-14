@@ -6,7 +6,7 @@
  *	License as published by the Free Software Foundation version 2.1
  *	of the License.
  *
- * Copyright (c) 2003-2011 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2003-2013 Thomas Graf <tgraf@suug.ch>
  */
 
 /**
@@ -15,11 +15,11 @@
  * @{
  */
 
-#include <netlink-local.h>
-#include <netlink-tc.h>
+#include <netlink-private/netlink.h>
+#include <netlink-private/tc.h>
 #include <netlink/netlink.h>
 #include <netlink/utils.h>
-#include <netlink/route/tc-api.h>
+#include <netlink-private/route/tc-api.h>
 #include <netlink/route/classifier.h>
 #include <netlink/route/link.h>
 
@@ -37,7 +37,7 @@ static int cls_build(struct rtnl_cls *cls, int type, int flags,
 {
 	int err, prio, proto;
 	struct tcmsg *tchdr;
-	int required = TCA_ATTR_IFINDEX;
+	uint32_t required = TCA_ATTR_IFINDEX;
 
 	if ((cls->ce_mask & required) != required) {
 		APPBUG("ifindex must be specified");
@@ -251,7 +251,7 @@ int rtnl_cls_change(struct nl_sock *sk, struct rtnl_cls *cls, int flags)
 int rtnl_cls_build_delete_request(struct rtnl_cls *cls, int flags,
 				  struct nl_msg **result)
 {
-	int required = CLS_ATTR_PRIO;
+	uint32_t required = CLS_ATTR_PRIO;
 
 	if ((cls->ce_mask & required) != required) {
 		APPBUG("prio must be specified");

@@ -6,7 +6,7 @@
  *	License as published by the Free Software Foundation version 2.1
  *	of the License.
  *
- * Copyright (c) 2003-2008 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2003-2012 Thomas Graf <tgraf@suug.ch>
  */
 
 /**
@@ -37,13 +37,23 @@
  *                                |      |                 Core Netlink
  * @endcode
  * 
+ * Related sections in the development guide:
+ * - @core_doc{core_cache, Caching System}
+ *
  * @{
+ *
+ * Header
+ * ------
+ * ~~~~{.c}
+ * #include <netlink/cache.h>
+ * ~~~~
  */
 
-#include <netlink-local.h>
+#include <netlink-private/netlink.h>
 #include <netlink/netlink.h>
 #include <netlink/cache.h>
 #include <netlink/object.h>
+#include <netlink/hashtable.h>
 #include <netlink/utils.h>
 
 /**
@@ -180,6 +190,24 @@ struct nl_cache *nl_cache_alloc(struct nl_cache_ops *ops)
 
 	nl_init_list_head(&cache->c_items);
 	cache->c_ops = ops;
+	cache->c_flags |= ops->co_flags;
+	cache->c_refcnt = 1;
+
+	/*
+	 * If object type provides a hash keygen
+	 * functions, allocate a hash table for the
+	 * cache objects for faster lookups
+	 */
+	if (ops->co_obj_ops->oo_keygen) {
+		int hashtable_size;
+
+		if (ops->co_hash_size)
+			hashtable_size = ops->co_hash_size;
+		else
+			hashtable_size = NL_MAX_HASH_ENTRIES;
+
+		cache->hashtable = nl_hash_table_alloc(hashtable_size);
+	}
 
 	NL_DBG(2, "Allocated cache %p <%s>.\n", cache, nl_cache_name(cache));
 
@@ -238,11 +266,13 @@ int nl_cache_alloc_name(const char *kind, struct nl_cache **result)
 	struct nl_cache_ops *ops;
 	struct nl_cache *cache;
 
-	ops = nl_cache_ops_lookup(kind);
+	ops = nl_cache_ops_lookup_safe(kind);
 	if (!ops)
 		return -NLE_NOCACHE;
 
-	if (!(cache = nl_cache_alloc(ops)))
+	cache = nl_cache_alloc(ops);
+	nl_cache_ops_put(ops);
+	if (!cache)
 		return -NLE_NOMEM;
 
 	*result = cache;
@@ -288,6 +318,36 @@ struct nl_cache *nl_cache_subset(struct nl_cache *orig,
 }
 
 /**
+ * Allocate new cache and copy the contents of an existing cache
+ * @arg cache		Original cache to base new cache on
+ *
+ * Allocates a new cache matching the type of the cache specified by
+ * \p cache. Iterates over the \p cache cache and copies all objects
+ * to the new cache.
+ *
+ * The copied objects are clones but do not contain a reference to each
+ * other. Later modifications to objects in the original cache will
+ * not affect objects in the new cache.
+ *
+ * @return A newly allocated cache or NULL.
+ */
+struct nl_cache *nl_cache_clone(struct nl_cache *cache)
+{
+	struct nl_cache_ops *ops = nl_cache_get_ops(cache);
+	struct nl_cache *clone;
+	struct nl_object *obj;
+
+	clone = nl_cache_alloc(ops);
+	if (!clone)
+		return NULL;
+
+	nl_list_for_each_entry(obj, &cache->c_items, ce_list)
+		nl_cache_add(clone, obj);
+
+	return clone;
+}
+
+/**
  * Remove all objects of a cache.
  * @arg cache		Cache to clear
  *
@@ -308,6 +368,26 @@ void nl_cache_clear(struct nl_cache *cache)
 		nl_cache_remove(obj);
 }
 
+static void __nl_cache_free(struct nl_cache *cache)
+{
+	nl_cache_clear(cache);
+
+	if (cache->hashtable)
+		nl_hash_table_free(cache->hashtable);
+
+	NL_DBG(1, "Freeing cache %p <%s>...\n", cache, nl_cache_name(cache));
+	free(cache);
+}
+
+/**
+ * Increase reference counter of cache
+ * @arg cache		Cache
+ */
+void nl_cache_get(struct nl_cache *cache)
+{
+	cache->c_refcnt++;
+}
+
 /**
  * Free a cache.
  * @arg cache		Cache to free.
@@ -322,9 +402,17 @@ void nl_cache_free(struct nl_cache *cache)
 	if (!cache)
 		return;
 
-	nl_cache_clear(cache);
-	NL_DBG(1, "Freeing cache %p <%s>...\n", cache, nl_cache_name(cache));
-	free(cache);
+	cache->c_refcnt--;
+	NL_DBG(4, "Returned cache reference %p, %d remaining\n",
+	       cache, cache->c_refcnt);
+
+	if (cache->c_refcnt <= 0)
+		__nl_cache_free(cache);
+}
+
+void nl_cache_put(struct nl_cache *cache)
+{
+	return nl_cache_free(cache);
 }
 
 /** @} */
@@ -336,7 +424,17 @@ void nl_cache_free(struct nl_cache *cache)
 
 static int __cache_add(struct nl_cache *cache, struct nl_object *obj)
 {
+	int ret;
+
 	obj->ce_cache = cache;
+
+	if (cache->hashtable) {
+		ret = nl_hash_table_add(cache->hashtable, obj);
+		if (ret < 0) {
+			obj->ce_cache = NULL;
+			return ret;
+		}
+	}
 
 	nl_list_add_tail(&obj->ce_list, &cache->c_items);
 	cache->c_nitems++;
@@ -372,6 +470,7 @@ static int __cache_add(struct nl_cache *cache, struct nl_object *obj)
 int nl_cache_add(struct nl_cache *cache, struct nl_object *obj)
 {
 	struct nl_object *new;
+	int ret = 0;
 
 	if (cache->c_ops->co_obj_ops != obj->ce_ops)
 		return -NLE_OBJ_MISMATCH;
@@ -385,7 +484,11 @@ int nl_cache_add(struct nl_cache *cache, struct nl_object *obj)
 		new = obj;
 	}
 
-	return __cache_add(cache, new);
+	ret = __cache_add(cache, new);
+	if (ret < 0)
+		nl_object_put(new);
+
+	return ret;
 }
 
 /**
@@ -435,10 +538,18 @@ int nl_cache_move(struct nl_cache *cache, struct nl_object *obj)
  */
 void nl_cache_remove(struct nl_object *obj)
 {
+	int ret;
 	struct nl_cache *cache = obj->ce_cache;
 
 	if (cache == NULL)
 		return;
+
+	if (cache->hashtable) {
+		ret = nl_hash_table_del(cache->hashtable, obj);
+		if (ret < 0)
+			NL_DBG(3, "Failed to delete %p from cache %p <%s>.\n",
+			       obj, cache, nl_cache_name(cache));
+	}
 
 	nl_list_del(&obj->ce_list);
 	obj->ce_cache = NULL;
@@ -480,6 +591,16 @@ void nl_cache_set_arg1(struct nl_cache *cache, int arg)
 void nl_cache_set_arg2(struct nl_cache *cache, int arg)
 {
         cache->c_iarg2 = arg;
+}
+
+/**
+ * Set cache flags
+ * @arg cache		Cache
+ * @arg flags		Flags
+ */
+void nl_cache_set_flags(struct nl_cache *cache, unsigned int flags)
+{
+	cache->c_flags |= flags;
 }
 
 /**
@@ -527,8 +648,13 @@ struct update_xdata {
 static int update_msg_parser(struct nl_msg *msg, void *arg)
 {
 	struct update_xdata *x = arg;
-	
-	return nl_cache_parse(x->ops, &msg->nm_src, msg->nm_nlh, x->params);
+	int ret = 0;
+
+	ret = nl_cache_parse(x->ops, &msg->nm_src, msg->nm_nlh, x->params);
+	if (ret == -NLE_EXIST)
+		return NL_SKIP;
+	else
+		return ret;
 }
 /** @endcond */
 
@@ -570,7 +696,21 @@ static int __cache_pickup(struct nl_sock *sk, struct nl_cache *cache,
 
 static int pickup_cb(struct nl_object *c, struct nl_parser_param *p)
 {
-	return nl_cache_add((struct nl_cache *) p->pp_arg, c);
+	struct nl_cache *cache = (struct nl_cache *)p->pp_arg;
+	struct nl_object *old;
+
+	old = nl_cache_search(cache, c);
+	if (old) {
+		if (nl_object_update(old, c) == 0) {
+			nl_object_put(old);
+			return 0;
+		}
+
+		nl_cache_remove(old);
+		nl_object_put(old);
+	}
+
+	return nl_cache_add(cache, c);
 }
 
 /**
@@ -579,7 +719,10 @@ static int pickup_cb(struct nl_object *c, struct nl_parser_param *p)
  * @arg cache		Cache to put items into.
  *
  * Waits for netlink messages to arrive, parses them and puts them into
- * the specified cache.
+ * the specified cache. If an old object with same key attributes is
+ * present in the cache, it is replaced with the new object.
+ * If the old object type supports an update operation, an update is
+ * attempted before a replace.
  *
  * @return 0 on success or a negative error code.
  */
@@ -603,6 +746,18 @@ static int cache_include(struct nl_cache *cache, struct nl_object *obj,
 	case NL_ACT_DEL:
 		old = nl_cache_search(cache, obj);
 		if (old) {
+			/*
+			 * Some objects types might support merging the new
+			 * object with the old existing cache object.
+			 * Handle them first.
+			 */
+			if (nl_object_update(old, obj) == 0) {
+				if (cb)
+					cb(cache, old, NL_ACT_CHANGE, data);
+				nl_object_put(old);
+				return 0;
+			}
+
 			nl_cache_remove(old);
 			if (type->mt_act == NL_ACT_DEL) {
 				if (cb)
@@ -659,6 +814,7 @@ int nl_cache_resync(struct nl_sock *sk, struct nl_cache *cache,
 		    change_func_t change_cb, void *data)
 {
 	struct nl_object *obj, *next;
+	struct nl_af_group *grp;
 	struct nl_cache_assoc ca = {
 		.ca_cache = cache,
 		.ca_change = change_cb,
@@ -672,19 +828,30 @@ int nl_cache_resync(struct nl_sock *sk, struct nl_cache *cache,
 
 	NL_DBG(1, "Resyncing cache %p <%s>...\n", cache, nl_cache_name(cache));
 
-restart:
 	/* Mark all objects so we can see if some of them are obsolete */
 	nl_cache_mark_all(cache);
 
-	err = nl_cache_request_full_dump(sk, cache);
-	if (err < 0)
-		goto errout;
+	grp = cache->c_ops->co_groups;
+	do {
+		if (grp && grp->ag_group &&
+			(cache->c_flags & NL_CACHE_AF_ITER))
+			nl_cache_set_arg1(cache, grp->ag_family);
 
-	err = __cache_pickup(sk, cache, &p);
-	if (err == -NLE_DUMP_INTR)
-		goto restart;
-	else if (err < 0)
-		goto errout;
+restart:
+		err = nl_cache_request_full_dump(sk, cache);
+		if (err < 0)
+			goto errout;
+
+		err = __cache_pickup(sk, cache, &p);
+		if (err == -NLE_DUMP_INTR)
+			goto restart;
+		else if (err < 0)
+			goto errout;
+
+		if (grp)
+			grp++;
+	} while (grp && grp->ag_group &&
+		(cache->c_flags & NL_CACHE_AF_ITER));
 
 	nl_list_for_each_entry_safe(obj, next, &cache->c_items, ce_list) {
 		if (nl_object_is_marked(obj)) {
@@ -740,7 +907,10 @@ errout:
  * @arg msg		netlink message
  *
  * Parses a netlink message by calling the cache specific message parser
- * and adds the new element to the cache.
+ * and adds the new element to the cache. If an old object with same key
+ * attributes is present in the cache, it is replaced with the new object.
+ * If the old object type supports an update operation, an update is
+ * attempted before a replace.
  *
  * @return 0 or a negative error code.
  */
@@ -766,23 +936,36 @@ int nl_cache_parse_and_add(struct nl_cache *cache, struct nl_msg *msg)
  */
 int nl_cache_refill(struct nl_sock *sk, struct nl_cache *cache)
 {
+	struct nl_af_group *grp;
 	int err;
 
+	nl_cache_clear(cache);
+	grp = cache->c_ops->co_groups;
+	do {
+		if (grp && grp->ag_group &&
+			(cache->c_flags & NL_CACHE_AF_ITER))
+			nl_cache_set_arg1(cache, grp->ag_family);
+
 restart:
-	err = nl_cache_request_full_dump(sk, cache);
-	if (err < 0)
-		return err;
+		err = nl_cache_request_full_dump(sk, cache);
+		if (err < 0)
+			return err;
+
+		err = nl_cache_pickup(sk, cache);
+		if (err == -NLE_DUMP_INTR) {
+			NL_DBG(1, "dump interrupted, restarting!\n");
+			goto restart;
+		} else if (err < 0)
+			break;
+
+		if (grp)
+			grp++;
+	} while (grp && grp->ag_group &&
+			(cache->c_flags & NL_CACHE_AF_ITER));
 
 	NL_DBG(2, "Upading cache %p <%s>, request sent, waiting for dump...\n",
 	       cache, nl_cache_name(cache));
-	nl_cache_clear(cache);
 
-	err = nl_cache_pickup(sk, cache);
-	if (err == -NLE_DUMP_INTR) {
-		fprintf(stderr, "dump interrupted, restarting!\n");
-		goto restart;
-	}
-	
 	return err;
 }
 
@@ -792,6 +975,19 @@ restart:
  * @name Utillities
  * @{
  */
+static struct nl_object *__cache_fast_lookup(struct nl_cache *cache,
+					     struct nl_object *needle)
+{
+	struct nl_object *obj;
+
+	obj = nl_hash_table_lookup(cache->hashtable, needle);
+	if (obj) {
+	    nl_object_get(obj);
+	    return obj;
+	}
+
+	return NULL;
+}
 
 /**
  * Search object in cache
@@ -813,8 +1009,50 @@ struct nl_object *nl_cache_search(struct nl_cache *cache,
 {
 	struct nl_object *obj;
 
+	if (cache->hashtable)
+		return __cache_fast_lookup(cache, needle);
+
 	nl_list_for_each_entry(obj, &cache->c_items, ce_list) {
 		if (nl_object_identical(obj, needle)) {
+			nl_object_get(obj);
+			return obj;
+		}
+	}
+
+	return NULL;
+}
+
+/**
+ * Find object in cache
+ * @arg cache		Cache
+ * @arg filter		object acting as a filter
+ *
+ * Searches the cache for an object which matches the object filter.
+ * If the filter attributes matches the object type id attributes,
+ * and the cache supports hash lookups, a faster hashtable lookup
+ * is used to return the object. Else, function nl_object_match_filter() is
+ * used to determine if the objects match. If a matching object is
+ * found, the reference counter is incremented and the object is returned.
+ *
+ * Therefore, if an object is returned, the reference to the object
+ * must be returned by calling nl_object_put() after usage.
+ *
+ * @return Reference to object or NULL if not found.
+ */
+struct nl_object *nl_cache_find(struct nl_cache *cache,
+				struct nl_object *filter)
+{
+	struct nl_object *obj;
+
+	if (cache->c_ops == NULL)
+		BUG();
+
+	if ((nl_object_get_id_attrs(filter) == filter->ce_mask)
+		&& cache->hashtable)
+		return __cache_fast_lookup(cache, filter);
+
+	nl_list_for_each_entry(obj, &cache->c_items, ce_list) {
+		if (nl_object_match_filter(obj, filter)) {
 			nl_object_get(obj);
 			return obj;
 		}
@@ -889,6 +1127,9 @@ void nl_cache_dump_filter(struct nl_cache *cache,
 	ops = cache->c_ops->co_obj_ops;
 	if (!ops->oo_dump[type])
 		return;
+
+	if (params->dp_buf)
+		memset(params->dp_buf, 0, params->dp_buflen);
 
 	nl_list_for_each_entry(obj, &cache->c_items, ce_list) {
 		if (filter && !nl_object_match_filter(obj, filter))

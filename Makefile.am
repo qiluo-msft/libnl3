@@ -2,7 +2,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = include lib doc man python
+SUBDIRS = include lib man python tests
 
 pkgconfig_DATA = libnl-3.0.pc \
 		 libnl-route-3.0.pc \
@@ -20,7 +20,3 @@ pkgsysconf_DATA = etc/pktloc etc/classid
 
 EXTRA_DIST = \
 	$(pkgsysconf_DATA)
-
-.PHONY: cscope
-cscope:
-	cscope -b -q -R -Iinclude -slib -ssrc;

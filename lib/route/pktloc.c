@@ -6,7 +6,7 @@
  *	License as published by the Free Software Foundation version 2.1
  *	of the License.
  *
- * Copyright (c) 2008-2011 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2008-2013 Thomas Graf <tgraf@suug.ch>
  */
 
 /**
@@ -31,8 +31,8 @@
  * @{
  */
 
-#include <netlink-local.h>
-#include <netlink-tc.h>
+#include <netlink-private/netlink.h>
+#include <netlink-private/tc.h>
 #include <netlink/netlink.h>
 #include <netlink/utils.h>
 #include <netlink/route/pktloc.h>
@@ -90,7 +90,7 @@ static int read_pktlocs(void)
 	YY_BUFFER_STATE buf = NULL;
 	yyscan_t scanner = NULL;
 	static time_t last_read;
-	struct stat st = {0};
+	struct stat st;
 	char *path;
 	int i, err;
 	FILE *fd;
