@@ -5,7 +5,7 @@ Maintainer: Heiko Stuebner <mmind@debian.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 9), dh-exec (>= 0.3), cdbs (>= 0.4.93~), bison, flex,
  automake, autoconf, dh-autoreconf
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Homepage: http://people.suug.ch/~tgr/libnl/
 
 Package: libnl-3-200
