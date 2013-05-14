@@ -3,9 +3,8 @@ Section: net
 Priority: optional
 Maintainer: Heiko Stuebner <mmind@debian.org>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 9), dh-exec (>= 0.3), cdbs (>= 0.4.93~), doxygen, bison, flex, mscgen, graphviz,
- python-pygments, xmlstarlet, texlive-latex-base, asciidoc, automake,
- source-highlight, autoconf, ghostscript, dh-autoreconf
+Build-Depends: debhelper (>= 9), dh-exec (>= 0.3), cdbs (>= 0.4.93~), bison, flex,
+ automake, autoconf, dh-autoreconf
 Standards-Version: 3.9.3
 Homepage: http://people.suug.ch/~tgr/libnl/
 

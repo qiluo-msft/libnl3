@@ -34,9 +34,6 @@ DEB_DH_INSTALL_ARGS_$(udeb) += --sourcedir=debian/tmp/udeb
 
 DEB_CONFIGURE_EXTRA_FLAGS += --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
 
-build/libnl-3-doc::
-	cd $(DEB_BUILDDIR)/main/doc && $(MAKE) gendoc
-
 clean::
 	# from some unknown reason CDBS does not remove the builddir
 	rm -rf $(DEB_BUILDDIR)
