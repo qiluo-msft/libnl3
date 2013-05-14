@@ -1,3 +1,8 @@
+basic.so libnl-cli-3-200 #MINVER#
+bfifo.so libnl-cli-3-200 #MINVER#
+blackhole.so libnl-cli-3-200 #MINVER#
+cgroup.so libnl-cli-3-200 #MINVER#
+htb.so libnl-cli-3-200 #MINVER#
 libnl-cli-3.so.200 libnl-cli-3-200 #MINVER#
  nl_cli_addr_alloc@Base 3.2.7
  nl_cli_addr_parse@Base 3.2.7
@@ -34,6 +39,25 @@ libnl-cli-3.so.200 libnl-cli-3-200 #MINVER#
  nl_cli_ct_parse_tcp_state@Base 3.2.7
  nl_cli_ct_parse_timeout@Base 3.2.7
  nl_cli_ct_parse_use@Base 3.2.7
+ nl_cli_exp_alloc@Base 3.2.21
+ nl_cli_exp_alloc_cache@Base 3.2.21
+ nl_cli_exp_parse_class@Base 3.2.21
+ nl_cli_exp_parse_dst@Base 3.2.21
+ nl_cli_exp_parse_dst_port@Base 3.2.21
+ nl_cli_exp_parse_family@Base 3.2.21
+ nl_cli_exp_parse_flags@Base 3.2.21
+ nl_cli_exp_parse_fn@Base 3.2.21
+ nl_cli_exp_parse_helper_name@Base 3.2.21
+ nl_cli_exp_parse_icmp_code@Base 3.2.21
+ nl_cli_exp_parse_icmp_id@Base 3.2.21
+ nl_cli_exp_parse_icmp_type@Base 3.2.21
+ nl_cli_exp_parse_id@Base 3.2.21
+ nl_cli_exp_parse_l4protonum@Base 3.2.21
+ nl_cli_exp_parse_nat_dir@Base 3.2.21
+ nl_cli_exp_parse_src@Base 3.2.21
+ nl_cli_exp_parse_src_port@Base 3.2.21
+ nl_cli_exp_parse_timeout@Base 3.2.21
+ nl_cli_exp_parse_zone@Base 3.2.21
  nl_cli_fatal@Base 3.2.7
  nl_cli_link_alloc@Base 3.2.7
  nl_cli_link_alloc_cache@Base 3.2.7
@@ -84,3 +108,5 @@ libnl-cli-3.so.200 libnl-cli-3-200 #MINVER#
  nl_cli_tc_parse_parent@Base 3.2.7
  nl_cli_tc_register@Base 3.2.7
  nl_cli_tc_unregister@Base 3.2.7
+pfifo.so libnl-cli-3-200 #MINVER#
+plug.so libnl-cli-3-200 #MINVER#

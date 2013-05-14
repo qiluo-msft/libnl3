@@ -1,5 +1,6 @@
 libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  ct_obj_ops@Base 3.2.7
+ exp_obj_ops@Base 3.2.21
  log_msg_obj_ops@Base 3.2.7
  log_obj_ops@Base 3.2.7
  nfnl_connect@Base 3.2.7
@@ -66,6 +67,64 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnl_ct_test_timeout@Base 3.2.7
  nfnl_ct_test_use@Base 3.2.7
  nfnl_ct_unset_status@Base 3.2.7
+ nfnl_exp_add@Base 3.2.21
+ nfnl_exp_alloc@Base 3.2.21
+ nfnl_exp_alloc_cache@Base 3.2.21
+ nfnl_exp_build_add_request@Base 3.2.21
+ nfnl_exp_build_delete_request@Base 3.2.21
+ nfnl_exp_build_query_request@Base 3.2.21
+ nfnl_exp_del@Base 3.2.21
+ nfnl_exp_dump_request@Base 3.2.21
+ nfnl_exp_flags2str@Base 3.2.21
+ nfnl_exp_get@Base 3.2.21
+ nfnl_exp_get_class@Base 3.2.21
+ nfnl_exp_get_dst@Base 3.2.21
+ nfnl_exp_get_dst_port@Base 3.2.21
+ nfnl_exp_get_family@Base 3.2.21
+ nfnl_exp_get_flags@Base 3.2.21
+ nfnl_exp_get_fn@Base 3.2.21
+ nfnl_exp_get_helper_name@Base 3.2.21
+ nfnl_exp_get_icmp_code@Base 3.2.21
+ nfnl_exp_get_icmp_id@Base 3.2.21
+ nfnl_exp_get_icmp_type@Base 3.2.21
+ nfnl_exp_get_id@Base 3.2.21
+ nfnl_exp_get_l4protonum@Base 3.2.21
+ nfnl_exp_get_nat_dir@Base 3.2.21
+ nfnl_exp_get_src@Base 3.2.21
+ nfnl_exp_get_src_port@Base 3.2.21
+ nfnl_exp_get_timeout@Base 3.2.21
+ nfnl_exp_get_zone@Base 3.2.21
+ nfnl_exp_put@Base 3.2.21
+ nfnl_exp_query@Base 3.2.21
+ nfnl_exp_set_class@Base 3.2.21
+ nfnl_exp_set_dst@Base 3.2.21
+ nfnl_exp_set_family@Base 3.2.21
+ nfnl_exp_set_flags@Base 3.2.21
+ nfnl_exp_set_fn@Base 3.2.21
+ nfnl_exp_set_helper_name@Base 3.2.21
+ nfnl_exp_set_icmp@Base 3.2.21
+ nfnl_exp_set_id@Base 3.2.21
+ nfnl_exp_set_l4protonum@Base 3.2.21
+ nfnl_exp_set_nat_dir@Base 3.2.21
+ nfnl_exp_set_ports@Base 3.2.21
+ nfnl_exp_set_src@Base 3.2.21
+ nfnl_exp_set_timeout@Base 3.2.21
+ nfnl_exp_set_zone@Base 3.2.21
+ nfnl_exp_str2flags@Base 3.2.21
+ nfnl_exp_test_class@Base 3.2.21
+ nfnl_exp_test_dst@Base 3.2.21
+ nfnl_exp_test_flags@Base 3.2.21
+ nfnl_exp_test_fn@Base 3.2.21
+ nfnl_exp_test_helper_name@Base 3.2.21
+ nfnl_exp_test_icmp@Base 3.2.21
+ nfnl_exp_test_id@Base 3.2.21
+ nfnl_exp_test_l4protonum@Base 3.2.21
+ nfnl_exp_test_nat_dir@Base 3.2.21
+ nfnl_exp_test_ports@Base 3.2.21
+ nfnl_exp_test_src@Base 3.2.21
+ nfnl_exp_test_timeout@Base 3.2.21
+ nfnl_exp_test_zone@Base 3.2.21
+ nfnl_exp_unset_flags@Base 3.2.21
  nfnl_inet_hook2str@Base 3.2.7
  nfnl_log_alloc@Base 3.2.7
  nfnl_log_build_change_request@Base 3.2.7
@@ -229,6 +288,8 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnlmsg_alloc_simple@Base 3.2.7
  nfnlmsg_ct_group@Base 3.2.7
  nfnlmsg_ct_parse@Base 3.2.7
+ nfnlmsg_exp_group@Base 3.2.21
+ nfnlmsg_exp_parse@Base 3.2.21
  nfnlmsg_family@Base 3.2.7
  nfnlmsg_log_msg_parse@Base 3.2.7
  nfnlmsg_put@Base 3.2.7
