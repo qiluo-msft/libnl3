@@ -5,8 +5,10 @@ libnl3 (3.2.21-1) unstable; urgency=low
   * Add symbols files (Closes: #654758)
   * Provide static libraries (Closes: #693939, #693940)
   * Update standards to 3.9.4
+  * Removed doc package. Libnl3 documentation is released
+    separately now.
 
- -- Heiko Stuebner <mmind@debian.org>  Tue, 14 May 2013 11:39:13 +0200
+ -- Heiko Stuebner <mmind@debian.org>  Tue, 21 May 2013 11:39:13 +0200
 
 libnl3 (3.2.7-4) unstable; urgency=low
 

@@ -88,7 +88,6 @@ Architecture: linux-any
 Section: libdevel
 Depends: libnl-3-200 (= ${binary:Version}), ${misc:Depends}
 Conflicts: libnl-dev, libnl2-dev
-Suggests: libnl3-doc
 Breaks: libnl3-dev
 Replaces: libnl3-dev
 Description: development library and headers for libnl-3
@@ -161,18 +160,6 @@ Description: debug symbols for libnl3
  to provide a backtrace with names in a debugger, this makes it somewhat easier
  to interpret core dumps. The libraries are installed in /usr/lib/debug and
  are automatically used by gdb.
-
-Package: libnl-3-doc
-Architecture: all
-Section: doc
-Depends: ${misc:Depends}
-Suggests: doc-base
-Description: API documentation for libnl3
- This is a library for applications dealing with netlink sockets.
- The library provides an interface for raw netlink messaging and various
- netlink family specific interfaces.
- .
- This package contains the API reference documentation for libnl3.
 
 Package: libnl-3-200-udeb
 Architecture: linux-any
