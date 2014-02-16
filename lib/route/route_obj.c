@@ -208,7 +208,7 @@ static void route_dump_details(struct nl_object *a, struct nl_dump_params *p)
 {
 	struct rtnl_route *r = (struct rtnl_route *) a;
 	struct nl_cache *link_cache;
-	char buf[128];
+	char buf[256];
 	int i;
 
 	link_cache = nl_cache_mngt_require_safe("route/link");
@@ -259,7 +259,7 @@ static void route_dump_details(struct nl_object *a, struct nl_dump_params *p)
 	if ((r->ce_mask & ROUTE_ATTR_CACHEINFO) && r->rt_cacheinfo.rtci_error) {
 		nl_dump_line(p, "    cacheinfo error %d (%s)\n",
 			r->rt_cacheinfo.rtci_error,
-			strerror(-r->rt_cacheinfo.rtci_error));
+			strerror_r(-r->rt_cacheinfo.rtci_error, buf, sizeof(buf)));
 	}
 
 	if (r->ce_mask & ROUTE_ATTR_METRICS) {
@@ -307,7 +307,9 @@ static void route_keygen(struct nl_object *obj, uint32_t *hashkey,
 		uint32_t	rt_prio;
 		char 		rt_addr[0];
 	} __attribute__((packed)) *rkey;
+#ifdef NL_DEBUG
 	char buf[INET6_ADDRSTRLEN+5];
+#endif
 
 	if (route->rt_dst)
 		addr = route->rt_dst;
@@ -449,8 +451,10 @@ static int route_update(struct nl_object *old_obj, struct nl_object *new_obj)
 	struct rtnl_route *new_route = (struct rtnl_route *) new_obj;
 	struct rtnl_route *old_route = (struct rtnl_route *) old_obj;
 	struct rtnl_nexthop *new_nh;
-	char buf[INET6_ADDRSTRLEN+5];
 	int action = new_obj->ce_msgtype;
+#ifdef NL_DEBUG
+	char buf[INET6_ADDRSTRLEN+5];
+#endif
 
 	/*
 	 * ipv6 ECMP route notifications from the kernel come as

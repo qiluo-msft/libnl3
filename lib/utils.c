@@ -49,6 +49,7 @@
 int nl_debug = 0;
 
 /** @cond SKIP */
+#ifdef NL_DEBUG
 struct nl_dump_params nl_debug_dp = {
 	.dp_type = NL_DUMP_DETAILS,
 };
@@ -65,6 +66,7 @@ static void __init nl_debug_init(void)
 
 	nl_debug_dp.dp_fd = stderr;
 }
+#endif
 
 int __nl_read_num_str_file(const char *path, int (*cb)(long, const char *))
 {
@@ -326,6 +328,11 @@ char *nl_size2str(const size_t size, char *buf, const size_t len)
 {
 	size_t i;
 
+	if (size == 0) {
+		snprintf(buf, len, "0B");
+		return buf;
+	}
+
 	for (i = 0; i < ARRAY_SIZE(size_units); i++) {
 		if (size >= size_units[i].limit) {
 			snprintf(buf, len, "%.2g%s",
@@ -552,6 +559,11 @@ char * nl_msec2str(uint64_t msec, char *buf, size_t len)
 #undef  _SPLIT
 	split[4] = msec;
 
+	if (msec == 0) {
+		snprintf(buf, len, "0msec");
+		return buf_orig;
+	}
+
 	for (i = 0; i < ARRAY_SIZE(split) && len; i++) {
 		int l;
 		if (split[i] == 0)
@@ -683,7 +695,9 @@ static const struct trans_tbl llprotos[] = {
 	__ADD(ARPHRD_IEEE802_TR,tr)
 	__ADD(ARPHRD_IEEE80211,ieee802.11)
 	__ADD(ARPHRD_PHONET,phonet)
+#ifdef ARPHRD_CAIF
 	__ADD(ARPHRD_CAIF, caif)
+#endif
 #ifdef ARPHRD_IEEE80211_PRISM
 	__ADD(ARPHRD_IEEE80211_PRISM, ieee802.11_prism)
 #endif
@@ -989,7 +1003,7 @@ char *__flags2str(int flags, char *buf, size_t len,
 	int tmp = flags;
 
 	memset(buf, 0, len);
-	
+
 	for (i = 0; i < tbl_len; i++) {
 		if (tbl[i].i & tmp) {
 			tmp &= ~tbl[i].i;

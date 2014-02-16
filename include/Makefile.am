@@ -31,6 +31,8 @@ nobase_libnlinclude_HEADERS = \
 	netlink/netlink-kernel.h \
 	netlink/netlink.h \
 	netlink/object.h \
+	netlink/route/action.h \
+	netlink/route/act/mirred.h \
 	netlink/route/cls/ematch/cmp.h \
 	netlink/route/cls/ematch/meta.h \
 	netlink/route/cls/ematch/nbyte.h \
@@ -41,10 +43,16 @@ nobase_libnlinclude_HEADERS = \
 	netlink/route/cls/fw.h \
 	netlink/route/cls/police.h \
 	netlink/route/cls/u32.h \
+	netlink/route/link/api.h \
 	netlink/route/link/bonding.h \
+	netlink/route/link/bridge.h \
 	netlink/route/link/can.h \
 	netlink/route/link/inet.h \
+	netlink/route/link/info-api.h \
+	netlink/route/link/macvlan.h \
 	netlink/route/link/vlan.h \
+	netlink/route/link/vxlan.h \
+	netlink/route/link/veth.h \
 	netlink/route/qdisc/cbq.h \
 	netlink/route/qdisc/dsmark.h \
 	netlink/route/qdisc/fifo.h \
@@ -55,6 +63,7 @@ nobase_libnlinclude_HEADERS = \
 	netlink/route/qdisc/sfq.h \
 	netlink/route/qdisc/tbf.h \
 	netlink/route/qdisc/plug.h \
+	netlink/route/qdisc/fq_codel.h \
 	netlink/route/addr.h \
 	netlink/route/class.h \
 	netlink/route/classifier.h \
@@ -74,10 +83,12 @@ nobase_libnlinclude_HEADERS = \
 	netlink/version.h \
 	netlink/cache-api.h \
 	netlink/object-api.h \
-	netlink/route/link/api.h \
-	netlink/route/link/info-api.h \
-	netlink/route/tc-api.h
-
+	netlink/route/tc-api.h \
+	netlink/idiag/idiagnl.h \
+	netlink/idiag/meminfo.h \
+	netlink/idiag/msg.h \
+	netlink/idiag/req.h \
+	netlink/idiag/vegasinfo.h
 
 if ENABLE_CLI
 nobase_libnlinclude_HEADERS += \
@@ -103,11 +114,13 @@ noinst_HEADERS = \
 	linux/if_arp.h \
 	linux/if_ether.h \
 	linux/if.h \
+	linux/if_bridge.h \
 	linux/if_link.h \
 	linux/if_vlan.h \
 	linux/inetdevice.h \
 	linux/ip_mp_alg.h \
 	linux/ipv6.h \
+	linux/can/netlink.h \
 	linux/neighbour.h \
 	linux/netfilter.h \
 	linux/netfilter/nf_conntrack_common.h \
@@ -118,6 +131,7 @@ noinst_HEADERS = \
 	linux/netfilter/nfnetlink_queue.h \
 	linux/netlink.h \
 	linux/pkt_cls.h \
+	linux/tc_act/tc_mirred.h \
 	linux/pkt_sched.h \
 	linux/rtnetlink.h \
 	linux/snmp.h \

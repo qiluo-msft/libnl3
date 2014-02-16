@@ -6,7 +6,7 @@
  *	License as published by the Free Software Foundation version 2.1
  *	of the License.
  *
- * Copyright (c) 2003-2008 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2003-2013 Thomas Graf <tgraf@suug.ch>
  */
 
 #ifndef NETLINK_ATTR_H_
@@ -124,8 +124,10 @@ extern int		nla_put_msecs(struct nl_msg *, int, unsigned long);
 extern int		nla_put_nested(struct nl_msg *, int, struct nl_msg *);
 extern struct nlattr *	nla_nest_start(struct nl_msg *, int);
 extern int		nla_nest_end(struct nl_msg *, struct nlattr *);
+extern void		nla_nest_cancel(struct nl_msg *, struct nlattr *);
 extern int		nla_parse_nested(struct nlattr **, int, struct nlattr *,
 					 struct nla_policy *);
+extern int		nla_is_nested(struct nlattr *);
 
 /**
  * @name Attribute Construction (Exception Based)

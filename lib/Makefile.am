@@ -10,15 +10,21 @@ AM_CPPFLAGS  =			 	\
 	-DSYSCONFDIR=\"$(sysconfdir)/libnl\"
 
 AM_LDFLAGS = \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_builddir)/libnl.sym
 
 lib_LTLIBRARIES = \
-	libnl-3.la libnl-genl-3.la libnl-route-3.la libnl-nf-3.la
+	libnl-3.la libnl-genl-3.la libnl-route-3.la libnl-nf-3.la libnl-idiag-3.la
 
 libnl_3_la_SOURCES = \
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c \
 	error.c handlers.c msg.c nl.c object.c socket.c utils.c \
 	version.c hash.c hashtable.c
+
+libnl_idiag_3_la_LIBADD = libnl-3.la
+libnl_idiag_3_la_SOURCES = \
+	idiag/idiag_meminfo_obj.c idiag/idiag_vegasinfo_obj.c \
+	idiag/idiag_msg_obj.c idiag/idiag_req_obj.c idiag/idiag.c
 
 libnl_genl_3_la_LIBADD  = libnl-3.la
 libnl_genl_3_la_SOURCES = \
@@ -54,13 +60,15 @@ route/cls/ematch_syntax.c: route/cls/ematch_syntax.y
 
 libnl_route_3_la_LIBADD  = libnl-3.la
 libnl_route_3_la_SOURCES = \
-	route/addr.c route/class.c route/cls.c route/link.c \
+	route/addr.c route/class.c route/cls.c route/act.c route/link.c \
 	route/neigh.c route/neightbl.c route/nexthop.c route/qdisc.c \
 	route/route.c route/route_obj.c route/route_utils.c route/rtnl.c \
 	route/rule.c route/tc.c route/classid.c \
 	\
 	route/cls/fw.c route/cls/police.c route/cls/u32.c route/cls/basic.c \
 	route/cls/cgroup.c \
+	\
+	route/act/mirred.c \
 	\
 	route/cls/ematch.c \
 	route/cls/ematch/container.c route/cls/ematch/cmp.c \
@@ -69,12 +77,14 @@ libnl_route_3_la_SOURCES = \
 	\
 	route/link/api.c route/link/vlan.c route/link/dummy.c \
 	route/link/bridge.c route/link/inet6.c route/link/inet.c \
-	route/link/bonding.c route/link/can.c \
+	route/link/bonding.c route/link/can.c route/link/macvlan.c \
+	route/link/vxlan.c route/link/veth.c \
 	\
 	route/qdisc/blackhole.c route/qdisc/cbq.c route/qdisc/dsmark.c \
 	route/qdisc/fifo.c route/qdisc/htb.c route/qdisc/netem.c \
 	route/qdisc/prio.c route/qdisc/red.c route/qdisc/sfq.c \
-	route/qdisc/tbf.c route/qdisc/plug.c \
+	route/qdisc/tbf.c route/qdisc/plug.c route/qdisc/ingress.c \
+	route/qdisc/fq_codel.c \
 	\
 	fib_lookup/lookup.c fib_lookup/request.c \
 	\
@@ -105,6 +115,8 @@ nobase_pkglib_LTLIBRARIES = \
 	cli/qdisc/pfifo.la \
 	cli/qdisc/plug.la \
 	cli/qdisc/bfifo.la \
+	cli/qdisc/ingress.la \
+	cli/qdisc/fq_codel.la \
 	cli/cls/basic.la \
 	cli/cls/cgroup.la
 
@@ -113,6 +125,8 @@ cli_qdisc_blackhole_la_LDFLAGS = -module -avoid-version
 cli_qdisc_pfifo_la_LDFLAGS = -module -avoid-version
 cli_qdisc_plug_la_LDFLAGS = -module -avoid-version
 cli_qdisc_bfifo_la_LDFLAGS = -module -avoid-version
+cli_qdisc_ingress_la_LDFLAGS = -module -avoid-version
+cli_qdisc_fq_codel_la_LDFLAGS = -module -avoid-version
 cli_cls_basic_la_LDFLAGS = -module -avoid-version
 cli_cls_cgroup_la_LDFLAGS = -module -avoid-version
 endif

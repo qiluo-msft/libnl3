@@ -26,6 +26,7 @@
 #include <netlink-private/route/tc-api.h>
 #include <netlink/route/classifier.h>
 #include <netlink/route/cls/u32.h>
+#include <netlink/route/action.h>
 
 /** @cond SKIP */
 #define U32_ATTR_DIVISOR      0x001
@@ -101,10 +102,10 @@ static int u32_msg_parser(struct rtnl_tc *tc, void *data)
 	}
 
 	if (tb[TCA_U32_ACT]) {
-		u->cu_act = nl_data_alloc_attr(tb[TCA_U32_ACT]);
-		if (!u->cu_act)
-			goto errout_nomem;
 		u->cu_mask |= U32_ATTR_ACTION;
+		err = rtnl_act_parse(&u->cu_act, tb[TCA_U32_ACT]);
+		if (err)
+			return err;
 	}
 
 	if (tb[TCA_U32_POLICE]) {
@@ -154,8 +155,9 @@ static void u32_free_data(struct rtnl_tc *tc, void *data)
 {
 	struct rtnl_u32 *u = data;
 
+	if (u->cu_act)
+		rtnl_act_put_all(&u->cu_act);
 	nl_data_free(u->cu_selector);
-	nl_data_free(u->cu_act);
 	nl_data_free(u->cu_police);
 	nl_data_free(u->cu_pcnt);
 }
@@ -168,8 +170,9 @@ static int u32_clone(void *_dst, void *_src)
 	    !(dst->cu_selector = nl_data_clone(src->cu_selector)))
 		return -NLE_NOMEM;
 
-	if (src->cu_act && !(dst->cu_act = nl_data_clone(src->cu_act)))
+	if (src->cu_act && !(dst->cu_act = rtnl_act_alloc()))
 		return -NLE_NOMEM;
+	memcpy(dst->cu_act, src->cu_act, sizeof(struct rtnl_act));
 
 	if (src->cu_police && !(dst->cu_police = nl_data_clone(src->cu_police)))
 		return -NLE_NOMEM;
@@ -333,8 +336,13 @@ static int u32_msg_fill(struct rtnl_tc *tc, void *data, struct nl_msg *msg)
 	if (u->cu_mask & U32_ATTR_SELECTOR)
 		NLA_PUT_DATA(msg, TCA_U32_SEL, u->cu_selector);
 
-	if (u->cu_mask & U32_ATTR_ACTION)
-		NLA_PUT_DATA(msg, TCA_U32_ACT, u->cu_act);
+	if (u->cu_mask & U32_ATTR_ACTION) {
+		int err;
+
+		err = rtnl_act_fill(msg, TCA_U32_ACT, u->cu_act);
+		if (err)
+			return err;
+	}
 
 	if (u->cu_mask & U32_ATTR_POLICE)
 		NLA_PUT_DATA(msg, TCA_U32_POLICE, u->cu_police);
@@ -459,6 +467,39 @@ int rtnl_u32_set_cls_terminal(struct rtnl_cls *cls)
 	return 0;
 }
 
+int rtnl_u32_add_action(struct rtnl_cls *cls, struct rtnl_act *act)
+{
+	struct rtnl_u32 *u;
+
+	if (!act)
+		return 0;
+
+	if (!(u = rtnl_tc_data(TC_CAST(cls))))
+		return -NLE_NOMEM;
+
+	u->cu_mask |= U32_ATTR_ACTION;
+	return rtnl_act_append(&u->cu_act, act);
+}
+
+int rtnl_u32_del_action(struct rtnl_cls *cls, struct rtnl_act *act)
+{
+	struct rtnl_u32 *u;
+	int ret;
+
+	if (!act)
+		return 0;
+
+	if (!(u = rtnl_tc_data(TC_CAST(cls))))
+		return -NLE_NOMEM;
+
+	if (!(u->cu_mask & U32_ATTR_ACTION))
+		return -NLE_INVAL;
+
+	ret = rtnl_act_remove(&u->cu_act, act);
+	if (!u->cu_act)
+		u->cu_mask &= ~U32_ATTR_ACTION;
+	return ret;
+}
 /** @} */
 
 /**
@@ -528,6 +569,42 @@ int rtnl_u32_add_key(struct rtnl_cls *cls, uint32_t val, uint32_t mask,
 
 	return 0;
 }
+
+/**
+ * Get the 32-bit key from the selector
+ *
+ * @arg cls	classifier to be retrieve
+ * @arg index	the index of the array of keys, start with 0
+ * @arg val	pointer to store value after masked (network byte-order)
+ * @arg mask	pointer to store the mask (network byte-order)
+ * @arg off	pointer to store the offset
+ * @arg offmask	pointer to store offset mask
+ *
+*/
+int rtnl_u32_get_key(struct rtnl_cls *cls, uint8_t index,
+		     uint32_t *val, uint32_t *mask, int *off, int *offmask)
+{
+	struct tc_u32_sel *sel;
+	struct rtnl_u32 *u;
+
+	if (!(u = rtnl_tc_data(TC_CAST(cls))))
+		return -NLE_NOMEM;
+
+	if (!(u->cu_mask & U32_ATTR_SELECTOR))
+		return -NLE_INVAL;
+
+	/* the selector might have been moved by realloc */
+	sel = u32_selector(u);
+	if (index >= sel->nkeys)
+		return -NLE_RANGE;
+
+	*mask = sel->keys[index].mask;
+	*val = sel->keys[index].val;
+	*off = sel->keys[index].off;
+	*offmask = sel->keys[index].offmask;
+	return 0;
+}
+
 
 int rtnl_u32_add_key_uint8(struct rtnl_cls *cls, uint8_t val, uint8_t mask,
 			   int off, int offmask)
