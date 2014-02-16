@@ -321,6 +321,8 @@ static int can_put_attrs(struct nl_msg *msg, struct rtnl_link *link)
 		NLA_PUT(msg, CAN_HAS_CLOCK, sizeof(ci->ci_clock),
 			&ci->ci_clock);
 
+	nla_nest_end(msg, data);
+
 nla_put_failure:
 
 	return 0;
@@ -400,6 +402,25 @@ int rtnl_link_can_freq(struct rtnl_link *link, uint32_t *freq)
 		*freq = ci->ci_clock.freq;
 	else
 		return -NLE_AGAIN;
+
+	return 0;
+}
+
+/**
+ * Get CAN state
+ * @arg link            Link object
+ * @arg state		CAN bus state
+ * @return 0 on success or a negative error code
+ */
+int rtnl_link_can_state(struct rtnl_link *link, uint32_t *state)
+{
+	struct can_info *ci = link->l_info;
+
+	IS_CAN_LINK_ASSERT(link);
+	if (!state)
+		return -NLE_INVAL;
+
+	*state = ci->ci_state;
 
 	return 0;
 }

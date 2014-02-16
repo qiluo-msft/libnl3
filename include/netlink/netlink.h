@@ -6,7 +6,7 @@
  *	License as published by the Free Software Foundation version 2.1
  *	of the License.
  *
- * Copyright (c) 2003-2006 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2003-2013 Thomas Graf <tgraf@suug.ch>
  */
 
 #ifndef NETLINK_NETLINK_H_
@@ -26,6 +26,7 @@
 #include <linux/rtnetlink.h>
 #include <linux/genetlink.h>
 #include <linux/netfilter/nfnetlink.h>
+#include <netinet/tcp.h>
 #include <netlink/version.h>
 #include <netlink/errno.h>
 #include <netlink/types.h>
@@ -40,6 +41,8 @@ extern "C" {
 struct ucred;
 struct nl_cache_ops;
 struct nl_parser_param;
+struct nl_object;
+struct nl_sock;
 
 extern int nl_debug;
 extern struct nl_dump_params nl_debug_dp;

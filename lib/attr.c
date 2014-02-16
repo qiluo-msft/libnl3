@@ -6,7 +6,7 @@
  *	License as published by the Free Software Foundation version 2.1
  *	of the License.
  *
- * Copyright (c) 2003-2008 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2003-2013 Thomas Graf <tgraf@suug.ch>
  */
 
 #include <netlink-private/netlink.h>
@@ -182,6 +182,7 @@ static uint16_t nla_attr_minlen[NLA_TYPE_MAX+1] = {
 	[NLA_U32]	= sizeof(uint32_t),
 	[NLA_U64]	= sizeof(uint64_t),
 	[NLA_STRING]	= 1,
+	[NLA_FLAG]	= 0,
 };
 
 static int validate_nla(struct nlattr *nla, int maxtype,
@@ -191,7 +192,7 @@ static int validate_nla(struct nlattr *nla, int maxtype,
 	unsigned int minlen = 0;
 	int type = nla_type(nla);
 
-	if (type <= 0 || type > maxtype)
+	if (type < 0 || type > maxtype)
 		return 0;
 
 	pt = &policy[type];
@@ -203,9 +204,6 @@ static int validate_nla(struct nlattr *nla, int maxtype,
 		minlen = pt->minlen;
 	else if (pt->type != NLA_UNSPEC)
 		minlen = nla_attr_minlen[pt->type];
-
-	if (pt->type == NLA_FLAG && nla_len(nla) > 0)
-		return -NLE_RANGE;
 
 	if (nla_len(nla) < minlen)
 		return -NLE_RANGE;
@@ -252,20 +250,20 @@ int nla_parse(struct nlattr *tb[], int maxtype, struct nlattr *head, int len,
 	nla_for_each_attr(nla, head, len, rem) {
 		int type = nla_type(nla);
 
-		if (type == 0) {
-			NL_DBG(1, "Illegal nla->nla_type == 0\n");
+		if (type > maxtype)
 			continue;
+
+		if (policy) {
+			err = validate_nla(nla, maxtype, policy);
+			if (err < 0)
+				goto errout;
 		}
 
-		if (type <= maxtype) {
-			if (policy) {
-				err = validate_nla(nla, maxtype, policy);
-				if (err < 0)
-					goto errout;
-			}
+		if (tb[type])
+			NL_DBG(1, "Attribute of type %#x found multiple times in message, "
+				  "previous attribute is being ignored.\n", type);
 
-			tb[type] = nla;
-		}
+		tb[type] = nla;
 	}
 
 	if (rem > 0)
@@ -462,7 +460,7 @@ struct nlattr *nla_reserve(struct nl_msg *msg, int attrtype, int attrlen)
 	
 	tlen = NLMSG_ALIGN(msg->nm_nlh->nlmsg_len) + nla_total_size(attrlen);
 
-	if ((tlen + msg->nm_nlh->nlmsg_len) > msg->nm_size)
+	if (tlen > msg->nm_size)
 		return NULL;
 
 	nla = (struct nlattr *) nlmsg_tail(msg->nm_nlh);
@@ -820,8 +818,7 @@ int nla_nest_end(struct nl_msg *msg, struct nlattr *start)
 		 * Kernel can't handle empty nested attributes, trim the
 		 * attribute header again
 		 */
-		msg->nm_nlh->nlmsg_len -= NLA_HDRLEN;
-		memset(nlmsg_tail(msg->nm_nlh), 0, NLA_HDRLEN);
+		nla_nest_cancel(msg, start);
 
 		return 0;
 	}
@@ -850,6 +847,28 @@ int nla_nest_end(struct nl_msg *msg, struct nlattr *start)
 }
 
 /**
+ * Cancel the addition of a nested attribute
+ * @arg msg		Netlink message
+ * @arg attr		Nested netlink attribute
+ *
+ * Removes any partially added nested Netlink attribute from the message
+ * by resetting the message to the size before the call to nla_nest_start()
+ * and by overwriting any potentially touched message segments with 0.
+ */
+void nla_nest_cancel(struct nl_msg *msg, struct nlattr *attr)
+{
+	ssize_t len;
+
+	len = (void *) nlmsg_tail(msg->nm_nlh) - (void *) attr;
+	if (len < 0)
+		BUG();
+	else if (len > 0) {
+		msg->nm_nlh->nlmsg_len -= len;
+		memset(nlmsg_tail(msg->nm_nlh), 0, len);
+	}
+}
+
+/**
  * Create attribute index based on nested attribute
  * @arg tb		Index array to be filled (maxtype+1 elements).
  * @arg maxtype		Maximum attribute type expected and accepted.
@@ -866,6 +885,17 @@ int nla_parse_nested(struct nlattr *tb[], int maxtype, struct nlattr *nla,
 		     struct nla_policy *policy)
 {
 	return nla_parse(tb, maxtype, nla_data(nla), nla_len(nla), policy);
+}
+
+/**
+ * Return true if attribute has NLA_F_NESTED flag set
+ * @arg attr		Netlink attribute
+ *
+ * @return True if attribute has NLA_F_NESTED flag set, oterhwise False.
+ */
+int nla_is_nested(struct nlattr *attr)
+{
+	return !!(attr->nla_type & NLA_F_NESTED);
 }
 
 /** @} */

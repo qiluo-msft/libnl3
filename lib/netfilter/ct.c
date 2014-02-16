@@ -55,6 +55,7 @@ static struct nla_policy ct_policy[CTA_MAX+1] = {
 	[CTA_COUNTERS_REPLY]	= { .type = NLA_NESTED },
 	[CTA_USE]		= { .type = NLA_U32 },
 	[CTA_ID]		= { .type = NLA_U32 },
+	[CTA_ZONE]		= { .type = NLA_U16 },
 	//[CTA_NAT_DST]
 };
 
@@ -100,6 +101,11 @@ static struct nla_policy ct_counters_policy[CTA_COUNTERS_MAX+1] = {
 	[CTA_COUNTERS_BYTES]	= { .type = NLA_U64 },
 	[CTA_COUNTERS32_PACKETS]= { .type = NLA_U32 },
 	[CTA_COUNTERS32_BYTES]	= { .type = NLA_U32 },
+};
+
+static struct nla_policy ct_timestamp_policy[CTA_TIMESTAMP_MAX + 1] = {
+	[CTA_TIMESTAMP_START]	= { .type = NLA_U64 },
+	[CTA_TIMESTAMP_STOP]	= { .type = NLA_U64 },
 };
 
 static int ct_parse_ip(struct nfnl_ct *ct, int repl, struct nlattr *attr)
@@ -174,15 +180,28 @@ static int ct_parse_proto(struct nfnl_ct *ct, int repl, struct nlattr *attr)
 	if (tb[CTA_PROTO_DST_PORT])
 		nfnl_ct_set_dst_port(ct, repl,
 			ntohs(nla_get_u16(tb[CTA_PROTO_DST_PORT])));
-	if (tb[CTA_PROTO_ICMP_ID])
-		nfnl_ct_set_icmp_id(ct, repl,
-			ntohs(nla_get_u16(tb[CTA_PROTO_ICMP_ID])));
-	if (tb[CTA_PROTO_ICMP_TYPE])
-		nfnl_ct_set_icmp_type(ct, repl,
+
+	if (ct->ct_family == AF_INET) {
+		if (tb[CTA_PROTO_ICMP_ID])
+			nfnl_ct_set_icmp_id(ct, repl,
+				ntohs(nla_get_u16(tb[CTA_PROTO_ICMP_ID])));
+		if (tb[CTA_PROTO_ICMP_TYPE])
+			nfnl_ct_set_icmp_type(ct, repl,
 				nla_get_u8(tb[CTA_PROTO_ICMP_TYPE]));
-	if (tb[CTA_PROTO_ICMP_CODE])
-		nfnl_ct_set_icmp_code(ct, repl,
+		if (tb[CTA_PROTO_ICMP_CODE])
+			nfnl_ct_set_icmp_code(ct, repl,
 				nla_get_u8(tb[CTA_PROTO_ICMP_CODE]));
+	} else if (ct->ct_family == AF_INET6) {
+		if (tb[CTA_PROTO_ICMPV6_ID])
+			nfnl_ct_set_icmp_id(ct, repl,
+			    ntohs(nla_get_u16(tb[CTA_PROTO_ICMPV6_ID])));
+		if (tb[CTA_PROTO_ICMPV6_TYPE])
+			nfnl_ct_set_icmp_type(ct, repl,
+				nla_get_u8(tb[CTA_PROTO_ICMPV6_TYPE]));
+		if (tb[CTA_PROTO_ICMPV6_CODE])
+			nfnl_ct_set_icmp_code(ct, repl,
+				nla_get_u8(tb[CTA_PROTO_ICMPV6_CODE]));
+	}
 
 	return 0;
 }
@@ -287,6 +306,24 @@ int nfnlmsg_ct_group(struct nlmsghdr *nlh)
 	}
 }
 
+static int ct_parse_timestamp(struct nfnl_ct *ct, struct nlattr *attr)
+{
+	struct nlattr *tb[CTA_TIMESTAMP_MAX + 1];
+	int err;
+
+	err = nla_parse_nested(tb, CTA_TIMESTAMP_MAX, attr,
+			       ct_timestamp_policy);
+	if (err < 0)
+		return err;
+
+	if (tb[CTA_TIMESTAMP_START] && tb[CTA_TIMESTAMP_STOP])
+		nfnl_ct_set_timestamp(ct,
+			      ntohll(nla_get_u64(tb[CTA_TIMESTAMP_START])),
+			      ntohll(nla_get_u64(tb[CTA_TIMESTAMP_STOP])));
+
+	return 0;
+}
+
 int nfnlmsg_ct_parse(struct nlmsghdr *nlh, struct nfnl_ct **result)
 {
 	struct nfnl_ct *ct;
@@ -333,6 +370,8 @@ int nfnlmsg_ct_parse(struct nlmsghdr *nlh, struct nfnl_ct **result)
 		nfnl_ct_set_use(ct, ntohl(nla_get_u32(tb[CTA_USE])));
 	if (tb[CTA_ID])
 		nfnl_ct_set_id(ct, ntohl(nla_get_u32(tb[CTA_ID])));
+	if (tb[CTA_ZONE])
+		nfnl_ct_set_zone(ct, ntohs(nla_get_u16(tb[CTA_ZONE])));
 
 	if (tb[CTA_COUNTERS_ORIG]) {
 		err = ct_parse_counters(ct, 0, tb[CTA_COUNTERS_ORIG]);
@@ -342,6 +381,12 @@ int nfnlmsg_ct_parse(struct nlmsghdr *nlh, struct nfnl_ct **result)
 
 	if (tb[CTA_COUNTERS_REPLY]) {
 		err = ct_parse_counters(ct, 1, tb[CTA_COUNTERS_REPLY]);
+		if (err < 0)
+			goto errout;
+	}
+
+	if (tb[CTA_TIMESTAMP]) {
+		err = ct_parse_timestamp(ct, tb[CTA_TIMESTAMP]);
 		if (err < 0)
 			goto errout;
 	}
@@ -426,17 +471,31 @@ static int nfnl_ct_build_tuple(struct nl_msg *msg, const struct nfnl_ct *ct,
 		NLA_PUT_U16(msg, CTA_PROTO_DST_PORT,
 			htons(nfnl_ct_get_dst_port(ct, repl)));
 
-	if (nfnl_ct_test_icmp_id(ct, repl))
-		NLA_PUT_U16(msg, CTA_PROTO_ICMP_ID,
-			htons(nfnl_ct_get_icmp_id(ct, repl)));
+	if (family == AF_INET) {
+		if (nfnl_ct_test_icmp_id(ct, repl))
+			NLA_PUT_U16(msg, CTA_PROTO_ICMP_ID,
+						htons(nfnl_ct_get_icmp_id(ct, repl)));
 
-	if (nfnl_ct_test_icmp_type(ct, repl))
-		NLA_PUT_U8(msg, CTA_PROTO_ICMP_TYPE,
-			    nfnl_ct_get_icmp_type(ct, repl));
+		if (nfnl_ct_test_icmp_type(ct, repl))
+			NLA_PUT_U8(msg, CTA_PROTO_ICMP_TYPE,
+					   nfnl_ct_get_icmp_type(ct, repl));
 
-	if (nfnl_ct_test_icmp_code(ct, repl))
-		NLA_PUT_U8(msg, CTA_PROTO_ICMP_CODE,
-			    nfnl_ct_get_icmp_code(ct, repl));
+		if (nfnl_ct_test_icmp_code(ct, repl))
+			NLA_PUT_U8(msg, CTA_PROTO_ICMP_CODE,
+					   nfnl_ct_get_icmp_code(ct, repl));
+	} else if (family == AF_INET6) {
+		if (nfnl_ct_test_icmp_id(ct, repl))
+			NLA_PUT_U16(msg, CTA_PROTO_ICMPV6_ID,
+						htons(nfnl_ct_get_icmp_id(ct, repl)));
+
+		if (nfnl_ct_test_icmp_type(ct, repl))
+			NLA_PUT_U8(msg, CTA_PROTO_ICMPV6_TYPE,
+					   nfnl_ct_get_icmp_type(ct, repl));
+
+		if (nfnl_ct_test_icmp_code(ct, repl))
+			NLA_PUT_U8(msg, CTA_PROTO_ICMPV6_CODE,
+					   nfnl_ct_get_icmp_code(ct, repl));
+	}
 
 	nla_nest_end(msg, proto);
 

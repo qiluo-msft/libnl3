@@ -199,8 +199,9 @@ static int addr_msg_parser(struct nl_cache_ops *ops, struct sockaddr_nl *who,
 	struct rtnl_addr *addr;
 	struct ifaddrmsg *ifa;
 	struct nlattr *tb[IFA_MAX+1];
-	int err, peer_prefix = 0, family;
+	int err, family;
 	struct nl_cache *link_cache;
+	struct nl_addr *plen_addr = NULL;
 
 	addr = rtnl_addr_alloc();
 	if (!addr)
@@ -215,8 +216,9 @@ static int addr_msg_parser(struct nl_cache_ops *ops, struct sockaddr_nl *who,
 	ifa = nlmsg_data(nlh);
 	addr->a_family = family = ifa->ifa_family;
 	addr->a_prefixlen = ifa->ifa_prefixlen;
-	addr->a_flags = ifa->ifa_flags;
 	addr->a_scope = ifa->ifa_scope;
+	addr->a_flags = tb[IFA_FLAGS] ? nla_get_u32(tb[IFA_FLAGS]) :
+					ifa->ifa_flags;
 	addr->a_ifindex = ifa->ifa_index;
 
 	addr->ce_mask = (ADDR_ATTR_FAMILY | ADDR_ATTR_PREFIXLEN |
@@ -244,6 +246,7 @@ static int addr_msg_parser(struct nl_cache_ops *ops, struct sockaddr_nl *who,
 		if (!addr->a_local)
 			goto errout_nomem;
 		addr->ce_mask |= ADDR_ATTR_LOCAL;
+		plen_addr = addr->a_local;
 	}
 
 	if (tb[IFA_ADDRESS]) {
@@ -263,12 +266,13 @@ static int addr_msg_parser(struct nl_cache_ops *ops, struct sockaddr_nl *who,
 		} else {
 			addr->a_peer = a;
 			addr->ce_mask |= ADDR_ATTR_PEER;
-			peer_prefix = 1;
 		}
+
+		plen_addr = a;
 	}
 
-	nl_addr_set_prefixlen(peer_prefix ? addr->a_peer : addr->a_local,
-			      addr->a_prefixlen);
+	if (plen_addr)
+		nl_addr_set_prefixlen(plen_addr, addr->a_prefixlen);
 
 	/* IPv4 only */
 	if (tb[IFA_BROADCAST]) {
@@ -549,6 +553,7 @@ static int build_addr_msg(struct rtnl_addr *tmpl, int cmd, int flags,
 		.ifa_family = tmpl->a_family,
 		.ifa_index = tmpl->a_ifindex,
 		.ifa_prefixlen = tmpl->a_prefixlen,
+		.ifa_flags = tmpl->a_flags,
 	};
 
 	if (tmpl->ce_mask & ADDR_ATTR_SCOPE)
@@ -593,6 +598,7 @@ static int build_addr_msg(struct rtnl_addr *tmpl, int cmd, int flags,
 		NLA_PUT(msg, IFA_CACHEINFO, sizeof(ca), &ca);
 	}
 
+	NLA_PUT_U32(msg, IFA_FLAGS, tmpl->a_flags);
 
 	*result = msg;
 	return 0;
@@ -814,10 +820,39 @@ int rtnl_addr_get_family(struct rtnl_addr *addr)
 	return addr->a_family;
 }
 
-void rtnl_addr_set_prefixlen(struct rtnl_addr *addr, int prefix)
+/**
+ * Set the prefix length / netmask
+ * @arg addr		Address
+ * @arg prefixlen	Length of prefix (netmask)
+ *
+ * Modifies the length of the prefix. If the address object contains a peer
+ * address the prefix length will apply to it, otherwise the prefix length
+ * will apply to the local address of the address.
+ *
+ * If the address object contains a peer or local address the corresponding
+ * `struct nl_addr` will be updated with the new prefix length.
+ *
+ * @note Specifying a length of 0 will remove the prefix length alltogether.
+ *
+ * @see rtnl_addr_get_prefixlen()
+ */
+void rtnl_addr_set_prefixlen(struct rtnl_addr *addr, int prefixlen)
 {
-	addr->a_prefixlen = prefix;
-	addr->ce_mask |= ADDR_ATTR_PREFIXLEN;
+	addr->a_prefixlen = prefixlen;
+
+	if (prefixlen)
+		addr->ce_mask |= ADDR_ATTR_PREFIXLEN;
+	else
+		addr->ce_mask &= ~ADDR_ATTR_PREFIXLEN;
+
+	/*
+	 * The prefix length always applies to the peer address if
+	 * a peer address is present.
+	 */
+	if (addr->a_peer)
+		nl_addr_set_prefixlen(addr->a_peer, prefixlen);
+	else if (addr->a_local)
+		nl_addr_set_prefixlen(addr->a_local, prefixlen);
 }
 
 int rtnl_addr_get_prefixlen(struct rtnl_addr *addr)
@@ -1021,6 +1056,8 @@ static const struct trans_tbl addr_flags[] = {
 	__ADD(IFA_F_DEPRECATED, deprecated)
 	__ADD(IFA_F_TENTATIVE, tentative)
 	__ADD(IFA_F_PERMANENT, permanent)
+	__ADD(IFA_F_MANAGETEMPADDR, mngtmpaddr)
+	__ADD(IFA_F_NOPREFIXROUTE, noprefixroute)
 };
 
 char *rtnl_addr_flags2str(int flags, char *buf, size_t size)

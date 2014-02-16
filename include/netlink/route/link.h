@@ -16,6 +16,7 @@
 #include <netlink/cache.h>
 #include <netlink/addr.h>
 #include <linux/if.h>
+#include <sys/types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -97,9 +98,10 @@ typedef enum {
 
 #define RTNL_LINK_STATS_MAX (__RTNL_LINK_STATS_MAX - 1)
 
+extern struct nla_policy rtln_link_policy[];
+
 extern struct rtnl_link *rtnl_link_alloc(void);
 extern void	rtnl_link_put(struct rtnl_link *);
-extern void	rtnl_link_free(struct rtnl_link *);
 
 extern int	rtnl_link_alloc_cache(struct nl_sock *, int, struct nl_cache **);
 extern struct rtnl_link *rtnl_link_get(struct nl_cache *, int);
@@ -216,11 +218,21 @@ extern uint32_t	rtnl_link_get_num_tx_queues(struct rtnl_link *);
 extern void	rtnl_link_set_num_rx_queues(struct rtnl_link *, uint32_t);
 extern uint32_t	rtnl_link_get_num_rx_queues(struct rtnl_link *);
 
+extern struct nl_data *	rtnl_link_get_phys_port_id(struct rtnl_link *);
+
+extern void	rtnl_link_set_ns_fd(struct rtnl_link *, int);
+extern int	rtnl_link_get_ns_fd(struct rtnl_link *);
+extern void	rtnl_link_set_ns_pid(struct rtnl_link *, pid_t);
+extern pid_t	rtnl_link_get_ns_pid(struct rtnl_link *);
+
 extern int	rtnl_link_enslave_ifindex(struct nl_sock *, int, int);
 extern int	rtnl_link_enslave(struct nl_sock *, struct rtnl_link *,
 				  struct rtnl_link *);
 extern int	rtnl_link_release_ifindex(struct nl_sock *, int);
 extern int	rtnl_link_release(struct nl_sock *, struct rtnl_link *);
+extern int	rtnl_link_fill_info(struct nl_msg *, struct rtnl_link *);
+extern int	rtnl_link_info_parse(struct rtnl_link *, struct nlattr **);
+
 
 /* deprecated */
 extern int	rtnl_link_set_info_type(struct rtnl_link *, const char *) __attribute__((deprecated));

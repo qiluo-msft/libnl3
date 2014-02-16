@@ -7,6 +7,7 @@
  *	of the License.
  *
  * Copyright (c) 2003-2013 Thomas Graf <tgraf@suug.ch>
+ * Copyright (c) 2013 Sassano Systems LLC <joe@sassanosystems.com>
  */
 
 #ifndef NETLINK_LOCAL_TYPES_H_
@@ -17,7 +18,10 @@
 #include <netlink/route/qdisc.h>
 #include <netlink/route/rtnl.h>
 #include <netlink/route/route.h>
+#include <netlink/idiag/idiagnl.h>
+#include <netlink/netfilter/ct.h>
 #include <netlink-private/route/tc-api.h>
+#include <linux/tc_act/tc_mirred.h>
 
 #define NL_SOCK_BUFSIZE_SET	(1<<0)
 #define NL_SOCK_PASSCRED	(1<<1)
@@ -36,7 +40,7 @@ struct nl_cb
 {
 	nl_recvmsg_msg_cb_t	cb_set[NL_CB_TYPE_MAX+1];
 	void *			cb_args[NL_CB_TYPE_MAX+1];
-	
+
 	nl_recvmsg_err_cb_t	cb_err;
 	void *			cb_err_arg;
 
@@ -58,6 +62,8 @@ struct nl_cb
 					      struct nl_msg *);
 
 	int			cb_refcnt;
+	/** indicates the callback that is currently active */
+	enum nl_cb_type		cb_active;
 };
 
 struct nl_sock
@@ -163,7 +169,7 @@ struct rtnl_link
 	uint32_t			l_txqlen;
 	uint32_t			l_weight;
 	uint32_t			l_master;
-	struct nl_addr *		l_addr;	
+	struct nl_addr *		l_addr;
 	struct nl_addr *		l_bcast;
 	char				l_qdisc[IFQDISCSIZ];
 	struct rtnl_link_map		l_map;
@@ -183,6 +189,11 @@ struct rtnl_link
 	uint32_t			l_num_rx_queues;
 	uint32_t			l_group;
 	uint8_t				l_carrier;
+	/* 3 byte hole */
+	struct rtnl_link_af_ops *	l_af_ops;
+	struct nl_data *		l_phys_port_id;
+	int				l_ns_fd;
+	pid_t				l_ns_pid;
 };
 
 struct rtnl_ncacheinfo
@@ -201,9 +212,9 @@ struct rtnl_neigh
 	uint32_t	n_ifindex;
 	uint16_t	n_state;
 	uint8_t		n_flags;
-	uint8_t		n_type;	
+	uint8_t		n_type;
 	struct nl_addr *n_lladdr;
-	struct nl_addr *n_dst;	
+	struct nl_addr *n_dst;
 	uint32_t	n_probes;
 	struct rtnl_ncacheinfo n_cacheinfo;
 	uint32_t                n_state_mask;
@@ -220,7 +231,7 @@ struct rtnl_addr_cacheinfo
 	/* Valid lifetime in seconds */
 	uint32_t aci_valid;
 
-	/* Timestamp of creation in 1/100s seince boottime */
+	/* Timestamp of creation in 1/100s since boottime */
 	uint32_t aci_cstamp;
 
 	/* Timestamp of last update in 1/100s since boottime */
@@ -233,18 +244,18 @@ struct rtnl_addr
 
 	uint8_t		a_family;
 	uint8_t		a_prefixlen;
-	uint8_t		a_flags;
 	uint8_t		a_scope;
+	uint32_t	a_flags;
 	uint32_t	a_ifindex;
 
-	struct nl_addr *a_peer;	
+	struct nl_addr *a_peer;
 	struct nl_addr *a_local;
 	struct nl_addr *a_bcast;
 	struct nl_addr *a_anycast;
 	struct nl_addr *a_multicast;
 
 	struct rtnl_addr_cacheinfo a_cacheinfo;
-	
+
 	char a_label[IFNAMSIZ];
 	uint32_t a_flag_mask;
 	struct rtnl_link *a_link;
@@ -396,7 +407,7 @@ struct rtnl_neightbl_parms
 	 * Queue length for the delayed proxy arp requests.
 	 */
 	uint32_t		ntp_proxy_qlen;
-	
+
 	/**
 	 * Mask of available parameter attributes
 	 */
@@ -498,6 +509,17 @@ struct rtnl_cls
 	uint16_t		c_protocol;
 };
 
+struct rtnl_act
+{
+	NL_TC_GENERIC(c);
+	struct rtnl_act *	a_next;
+};
+
+struct rtnl_mirred
+{
+	struct tc_mirred m_parm;
+};
+
 struct rtnl_u32
 {
 	uint32_t		cu_divisor;
@@ -506,7 +528,7 @@ struct rtnl_u32
 	uint32_t		cu_link;
 	struct nl_data *	cu_pcnt;
 	struct nl_data *	cu_selector;
-	struct nl_data *	cu_act;
+	struct rtnl_act*	cu_act;
 	struct nl_data *	cu_police;
 	char			cu_indev[IFNAMSIZ];
 	int			cu_mask;
@@ -688,6 +710,17 @@ struct rtnl_plug
 	uint32_t        limit;
 };
 
+struct rtnl_fq_codel
+{
+	int		fq_limit;
+	uint32_t	fq_target;
+	uint32_t	fq_interval;
+	int		fq_flows;
+	uint32_t	fq_quantum;
+	int		fq_ecn;
+	uint32_t	fq_mask;
+};
+
 struct flnl_request
 {
 	NLHDR_COMMON
@@ -786,9 +819,12 @@ struct nfnl_ct {
 	uint32_t		ct_mark;
 	uint32_t		ct_use;
 	uint32_t		ct_id;
+	uint16_t		ct_zone;
 
 	struct nfnl_ct_dir	ct_orig;
 	struct nfnl_ct_dir	ct_repl;
+
+	struct nfnl_ct_timestamp ct_tstamp;
 };
 
 union nfnl_exp_protodata {
@@ -907,4 +943,61 @@ struct ematch_quoted {
 	int	index;
 };
 
+struct idiagnl_meminfo {
+	NLHDR_COMMON
+
+	uint32_t idiag_rmem;
+	uint32_t idiag_wmem;
+	uint32_t idiag_fmem;
+	uint32_t idiag_tmem;
+};
+
+struct idiagnl_vegasinfo {
+	NLHDR_COMMON
+
+	uint32_t tcpv_enabled;
+	uint32_t tcpv_rttcnt;
+	uint32_t tcpv_rtt;
+	uint32_t tcpv_minrtt;
+};
+
+struct idiagnl_msg {
+	NLHDR_COMMON
+
+	uint8_t			    idiag_family;
+	uint8_t			    idiag_state;
+	uint8_t			    idiag_timer;
+	uint8_t			    idiag_retrans;
+	uint16_t		    idiag_sport;
+	uint16_t		    idiag_dport;
+	struct nl_addr *	    idiag_src;
+	struct nl_addr *	    idiag_dst;
+	uint32_t		    idiag_ifindex;
+	uint32_t		    idiag_expires;
+	uint32_t		    idiag_rqueue;
+	uint32_t		    idiag_wqueue;
+	uint32_t		    idiag_uid;
+	uint32_t		    idiag_inode;
+
+	uint8_t			    idiag_tos;
+	uint8_t			    idiag_tclass;
+	uint8_t			    idiag_shutdown;
+	char *			    idiag_cong;
+	struct idiagnl_meminfo *    idiag_meminfo;
+	struct idiagnl_vegasinfo *  idiag_vegasinfo;
+	struct tcp_info		    idiag_tcpinfo;
+	uint32_t		    idiag_skmeminfo[IDIAG_SK_MEMINFO_VARS];
+};
+
+struct idiagnl_req {
+	NLHDR_COMMON
+
+	uint8_t			idiag_family;
+	uint8_t			idiag_ext;
+	struct nl_addr *	idiag_src;
+	struct nl_addr *	idiag_dst;
+	uint32_t		idiag_ifindex;
+	uint32_t		idiag_states;
+	uint32_t		idiag_dbs;
+};
 #endif

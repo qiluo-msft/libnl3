@@ -211,7 +211,9 @@ static void neigh_keygen(struct nl_object *obj, uint32_t *hashkey,
 		uint32_t	n_ifindex;
 		char		n_addr[0];
 	} __attribute__((packed)) *nkey;
+#ifdef NL_DEBUG
 	char buf[INET6_ADDRSTRLEN+5];
+#endif
 
 	if (neigh->n_family == AF_BRIDGE) {
 		if (neigh->n_lladdr)
@@ -532,6 +534,7 @@ int rtnl_neigh_alloc_cache(struct nl_sock *sock, struct nl_cache **result)
  * @arg cache		neighbour cache
  * @arg ifindex		interface index the neighbour is on
  * @arg dst		destination address of the neighbour
+ *
  * @return neighbour handle or NULL if no match was found.
  */
 struct rtnl_neigh * rtnl_neigh_get(struct nl_cache *cache, int ifindex,
@@ -540,8 +543,7 @@ struct rtnl_neigh * rtnl_neigh_get(struct nl_cache *cache, int ifindex,
 	struct rtnl_neigh *neigh;
 
 	nl_list_for_each_entry(neigh, &cache->c_items, ce_list) {
-		if (neigh->n_family == AF_UNSPEC &&
-		    neigh->n_ifindex == ifindex &&
+		if (neigh->n_ifindex == ifindex &&
 		    !nl_addr_cmp(neigh->n_dst, dst)) {
 			nl_object_get((struct nl_object *) neigh);
 			return neigh;

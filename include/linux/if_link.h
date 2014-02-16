@@ -1,5 +1,5 @@
-#ifndef _LINUX_IF_LINK_H
-#define _LINUX_IF_LINK_H
+#ifndef _UAPI_LINUX_IF_LINK_H
+#define _UAPI_LINUX_IF_LINK_H
 
 #include <linux/types.h>
 #include <linux/netlink.h>
@@ -143,6 +143,7 @@ enum {
 	IFLA_NUM_TX_QUEUES,
 	IFLA_NUM_RX_QUEUES,
 	IFLA_CARRIER,
+	IFLA_PHYS_PORT_ID,
 	__IFLA_MAX
 };
 
@@ -199,6 +200,24 @@ enum {
 };
 
 #define IFLA_INET6_MAX	(__IFLA_INET6_MAX - 1)
+
+enum {
+	BRIDGE_MODE_UNSPEC,
+	BRIDGE_MODE_HAIRPIN,
+};
+
+enum {
+	IFLA_BRPORT_UNSPEC,
+	IFLA_BRPORT_STATE,	/* Spanning tree state     */
+	IFLA_BRPORT_PRIORITY,	/* "             priority  */
+	IFLA_BRPORT_COST,	/* "             cost      */
+	IFLA_BRPORT_MODE,	/* mode (hairpin)          */
+	IFLA_BRPORT_GUARD,	/* bpdu guard              */
+	IFLA_BRPORT_PROTECT,	/* root port protection    */
+	IFLA_BRPORT_FAST_LEAVE,	/* multicast fast leave    */
+	__IFLA_BRPORT_MAX
+};
+#define IFLA_BRPORT_MAX (__IFLA_BRPORT_MAX - 1)
 
 struct ifla_cacheinfo {
 	__u32	max_reasm_len;
@@ -267,6 +286,40 @@ enum macvlan_mode {
 
 #define MACVLAN_FLAG_NOPROMISC	1
 
+/* VXLAN section */
+enum {
+	IFLA_VXLAN_UNSPEC,
+	IFLA_VXLAN_ID,
+	IFLA_VXLAN_GROUP,
+	IFLA_VXLAN_LINK,
+	IFLA_VXLAN_LOCAL,
+	IFLA_VXLAN_TTL,
+	IFLA_VXLAN_TOS,
+	IFLA_VXLAN_LEARNING,
+	IFLA_VXLAN_AGEING,
+	IFLA_VXLAN_LIMIT,
+	IFLA_VXLAN_PORT_RANGE,
+	IFLA_VXLAN_PROXY,
+	IFLA_VXLAN_RSC,
+	IFLA_VXLAN_L2MISS,
+	IFLA_VXLAN_L3MISS,
+	__IFLA_VXLAN_MAX
+};
+#define IFLA_VXLAN_MAX	(__IFLA_VXLAN_MAX - 1)
+
+struct ifla_vxlan_port_range {
+	__be16	low;
+	__be16	high;
+};
+
+enum {
+	VETH_INFO_UNSPEC,
+	VETH_INFO_PEER,
+
+	__VETH_INFO_MAX
+#define VETH_INFO_MAX   (__VETH_INFO_MAX - 1)
+};
+
 /* SR-IOV virtual function management section */
 
 enum {
@@ -308,18 +361,6 @@ struct ifla_vf_spoofchk {
 	__u32 vf;
 	__u32 setting;
 };
-#ifdef __KERNEL__
-
-/* We don't want this structure exposed to user space */
-struct ifla_vf_info {
-	__u32 vf;
-	__u8 mac[32];
-	__u32 vlan;
-	__u32 qos;
-	__u32 tx_rate;
-	__u32 spoofchk;
-};
-#endif
 
 /* VF ports management section
  *
@@ -393,4 +434,22 @@ struct ifla_port_vsi {
 	__u8 pad[3];
 };
 
-#endif /* _LINUX_IF_LINK_H */
+
+/* IPoIB section */
+
+enum {
+	IFLA_IPOIB_UNSPEC,
+	IFLA_IPOIB_PKEY,
+	IFLA_IPOIB_MODE,
+	IFLA_IPOIB_UMCAST,
+	__IFLA_IPOIB_MAX
+};
+
+enum {
+	IPOIB_MODE_DATAGRAM  = 0, /* using unreliable datagram QPs */
+	IPOIB_MODE_CONNECTED = 1, /* using connected QPs */
+};
+
+#define IFLA_IPOIB_MAX (__IFLA_IPOIB_MAX - 1)
+
+#endif /* _UAPI_LINUX_IF_LINK_H */
