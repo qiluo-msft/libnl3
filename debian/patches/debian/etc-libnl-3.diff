@@ -6,10 +6,10 @@ Prevent naming conflicts with libnl2 or later conffiles.
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 
 ---
- Makefile.am         |    2 +-
- lib/Makefile.am     |    2 +-
- src/Makefile.am     |    2 +-
- src/lib/Makefile.am |    2 +-
+ Makefile.am         | 2 +-
+ lib/Makefile.am     | 2 +-
+ src/Makefile.am     | 2 +-
+ src/lib/Makefile.am | 2 +-
  4 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
@@ -26,7 +26,7 @@ index bc4266d..4175929 100644
  
  EXTRA_DIST = \
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index 677a89c..6b40bbb 100644
+index 4a1e8d9..a287909 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -7,7 +7,7 @@ AM_CPPFLAGS  =			 	\
@@ -37,31 +37,31 @@ index 677a89c..6b40bbb 100644
 +	-DSYSCONFDIR=\"$(sysconfdir)/libnl-3\"
  
  AM_LDFLAGS = \
- 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+ 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 diff --git a/src/Makefile.am b/src/Makefile.am
-index c318dcc..ea3820d 100644
+index b2b7fc7..e3bda72 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -2,7 +2,7 @@
  
  SUBDIRS = lib
  
--AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
-+AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl-3\"
+-AM_CPPFLAGS  = -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
++AM_CPPFLAGS  = -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl-3\"
+ AM_CFLAGS = -Wall
  
  LDADD = \
- 	${top_builddir}/src/lib/libnl-cli-3.la \
 diff --git a/src/lib/Makefile.am b/src/lib/Makefile.am
-index 6688e7c..7faaef8 100644
+index 5161115..b9547ca 100644
 --- a/src/lib/Makefile.am
 +++ b/src/lib/Makefile.am
 @@ -1,6 +1,6 @@
  # -*- Makefile -*-
  
--AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DPKGLIBDIR=\"$(pkglibdir)\" -DSYSCONFDIR=\"$(sysconfdir)\" -rdynamic
-+AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DPKGLIBDIR=\"$(pkglibdir)-3\" -DSYSCONFDIR=\"$(sysconfdir)\" -rdynamic
+-AM_CPPFLAGS  = -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DPKGLIBDIR=\"$(pkglibdir)\" -DSYSCONFDIR=\"$(sysconfdir)\" -rdynamic
++AM_CPPFLAGS  = -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DPKGLIBDIR=\"$(pkglibdir)-3\" -DSYSCONFDIR=\"$(sysconfdir)\" -rdynamic
+ AM_CFLAGS = -Wall
  AM_LDFLAGS = \
- 	-L${top_builddir}/lib \
- 	-ldl \
+ 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 -- 
-tg: (8965d74..) debian/etc-libnl-3 (depends on: upstream-dist)
+tg: (78abb19..) debian/etc-libnl-3 (depends on: upstream-dist)
