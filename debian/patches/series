@@ -1,3 +1,4 @@
 debian/etc-libnl-3.diff -p1
 debian/out-of-tree.diff -p1
 debian/no-symvers.diff -p1
+fixes/idiag-pkgconfig.diff -p1
