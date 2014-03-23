@@ -2,7 +2,6 @@ Source: libnl3
 Section: net
 Priority: optional
 Maintainer: Heiko Stuebner <mmind@debian.org>
-DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 9), dh-exec (>= 0.3), cdbs (>= 0.4.93~), bison, flex,
  automake, autoconf, dh-autoreconf, linux-libc-dev (>= 3.2.41)
 Standards-Version: 3.9.4
