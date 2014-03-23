@@ -29,9 +29,9 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnl_ct_get_status@Base 3.2.7
  nfnl_ct_get_tcp_state@Base 3.2.7
  nfnl_ct_get_timeout@Base 3.2.7
- nfnl_ct_get_timestamp@Base 3.2.24-1
+ nfnl_ct_get_timestamp@Base 3.2.24
  nfnl_ct_get_use@Base 3.2.7
- nfnl_ct_get_zone@Base 3.2.24-1
+ nfnl_ct_get_zone@Base 3.2.24
  nfnl_ct_put@Base 3.2.7
  nfnl_ct_query@Base 3.2.7
  nfnl_ct_set_bytes@Base 3.2.7
@@ -50,9 +50,9 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnl_ct_set_status@Base 3.2.7
  nfnl_ct_set_tcp_state@Base 3.2.7
  nfnl_ct_set_timeout@Base 3.2.7
- nfnl_ct_set_timestamp@Base 3.2.24-1
+ nfnl_ct_set_timestamp@Base 3.2.24
  nfnl_ct_set_use@Base 3.2.7
- nfnl_ct_set_zone@Base 3.2.24-1
+ nfnl_ct_set_zone@Base 3.2.24
  nfnl_ct_status2str@Base 3.2.7
  nfnl_ct_str2status@Base 3.2.7
  nfnl_ct_str2tcp_state@Base 3.2.7
@@ -69,9 +69,9 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnl_ct_test_src_port@Base 3.2.7
  nfnl_ct_test_tcp_state@Base 3.2.7
  nfnl_ct_test_timeout@Base 3.2.7
- nfnl_ct_test_timestamp@Base 3.2.24-1
+ nfnl_ct_test_timestamp@Base 3.2.24
  nfnl_ct_test_use@Base 3.2.7
- nfnl_ct_test_zone@Base 3.2.24-1
+ nfnl_ct_test_zone@Base 3.2.24
  nfnl_ct_unset_status@Base 3.2.7
  nfnl_exp_add@Base 3.2.21
  nfnl_exp_alloc@Base 3.2.21
@@ -228,7 +228,7 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnl_queue_get_maxlen@Base 3.2.7
  nfnl_queue_msg_alloc@Base 3.2.7
  nfnl_queue_msg_build_verdict@Base 3.2.7
- nfnl_queue_msg_build_verdict_batch@Base 3.2.24-1
+ nfnl_queue_msg_build_verdict_batch@Base 3.2.24
  nfnl_queue_msg_get@Base 3.2.7
  nfnl_queue_msg_get_family@Base 3.2.7
  nfnl_queue_msg_get_group@Base 3.2.7
@@ -246,7 +246,7 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnl_queue_msg_get_verdict@Base 3.2.7
  nfnl_queue_msg_put@Base 3.2.7
  nfnl_queue_msg_send_verdict@Base 3.2.7
- nfnl_queue_msg_send_verdict_batch@Base 3.2.24-1
+ nfnl_queue_msg_send_verdict_batch@Base 3.2.24
  nfnl_queue_msg_send_verdict_payload@Base 3.2.7
  nfnl_queue_msg_set_family@Base 3.2.7
  nfnl_queue_msg_set_group@Base 3.2.7

@@ -98,7 +98,7 @@ libnl-3.so.200 libnl-3-200 #MINVER#
  nl_cancel_down_bits@Base 3.2.7
  nl_cancel_down_bytes@Base 3.2.7
  nl_cancel_down_us@Base 3.2.7
- nl_cb_active_type@Base 3.2.24-1
+ nl_cb_active_type@Base 3.2.24
  nl_cb_alloc@Base 3.2.7
  nl_cb_clone@Base 3.2.7
  nl_cb_err@Base 3.2.7
@@ -244,11 +244,11 @@ libnl-3.so.200 libnl-3-200 #MINVER#
  nla_get_u32@Base 3.2.7
  nla_get_u64@Base 3.2.7
  nla_get_u8@Base 3.2.7
- nla_is_nested@Base 3.2.24-1
+ nla_is_nested@Base 3.2.24
  nla_len@Base 3.2.7
  nla_memcmp@Base 3.2.7
  nla_memcpy@Base 3.2.7
- nla_nest_cancel@Base 3.2.24-1
+ nla_nest_cancel@Base 3.2.24
  nla_nest_end@Base 3.2.7
  nla_nest_start@Base 3.2.7
  nla_next@Base 3.2.7
