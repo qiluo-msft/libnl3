@@ -6,7 +6,7 @@ DEB_MAKE_FLAVORS = main udeb
 udeb_libnl=libnl-3-200-udeb
 udeb_libnl_genl=libnl-genl-3-200-udeb
 
-TG_BRANCHES := debian/etc-libnl-3,debian/out-of-tree
+TG_BRANCHES := debian/etc-libnl-3,debian/out-of-tree,debian/no-symvers
 
 -include /usr/share/topgit/tg2quilt.mk
 
