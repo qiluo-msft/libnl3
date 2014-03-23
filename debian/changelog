@@ -1,6 +1,7 @@
 libnl3 (3.2.24-1) unstable; urgency=low
 
   * New upstream release
+  * Add new libnl-idiag library handling inetdiag requests
 
  -- Heiko Stuebner <mmind@debian.org>  Sun, 16 Feb 2014 14:23:26 +0100
 

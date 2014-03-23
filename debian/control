@@ -35,7 +35,7 @@ Description: library for dealing with netlink sockets - cli helpers
 Package: libnl-utils
 Architecture: linux-any
 Section: libs
-Depends: libnl-cli-3-200 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: libnl-cli-3-200 (= ${binary:Version}), libnl-idiag-3-200 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: Utilities for dealing with netlink sockets
  This is a library for applications dealing with netlink sockets.
  The library provides an interface for raw netlink messaging and various
@@ -56,6 +56,19 @@ Description: library for dealing with netlink sockets - generic netlink
  .
  API to the generic netlink protocol, an extended version of the netlink
  protocol.
+
+Package: libnl-idiag-3-200
+Architecture: linux-any
+Section: libs
+Pre-Depends: ${misc:Pre-Depends}
+Depends: libnl-3-200 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Multi-Arch: same
+Description: library for dealing with netlink sockets - inetdiag interface
+ This is a library for applications dealing with netlink sockets.
+ The library provides an interface for raw netlink messaging and various
+ netlink family specific interfaces.
+ .
+ API to the inetdiag netlink protocol, handling inetdiag requests
 
 Package: libnl-nf-3-200
 Architecture: linux-any
@@ -121,6 +134,18 @@ Description: development library and headers for libnl-genl-3
  .
  This package contains the files that are needed to build applications using
  libnl-genl-3.
+
+Package: libnl-idiag-3-dev
+Architecture: linux-any
+Section: libdevel
+Depends: libnl-3-dev (= ${binary:Version}), libnl-idiag-3-200 (= ${binary:Version}), ${misc:Depends}
+Description: development library and headers for libnl-genl-3
+ This is a library for applications dealing with netlink sockets.
+ The library provides an interface for raw netlink messaging and various
+ netlink family specific interfaces.
+ .
+ This package contains the files that are needed to build applications using
+ libnl-idiag-3.
 
 Package: libnl-nf-3-dev
 Architecture: linux-any
