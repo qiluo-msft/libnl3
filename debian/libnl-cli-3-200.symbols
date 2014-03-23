@@ -2,7 +2,9 @@ basic.so libnl-cli-3-200 #MINVER#
 bfifo.so libnl-cli-3-200 #MINVER#
 blackhole.so libnl-cli-3-200 #MINVER#
 cgroup.so libnl-cli-3-200 #MINVER#
+fq_codel.so libnl-cli-3-200 #MINVER#
 htb.so libnl-cli-3-200 #MINVER#
+ingress.so libnl-cli-3-200 #MINVER#
 libnl-cli-3.so.200 libnl-cli-3-200 #MINVER#
  nl_cli_addr_alloc@Base 3.2.7
  nl_cli_addr_parse@Base 3.2.7

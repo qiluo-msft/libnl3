@@ -26,6 +26,7 @@ libnl-genl-3.so.200 libnl-genl-3-200 #MINVER#
  genl_ops_resolve@Base 3.2.7
  genl_register@Base 3.2.7
  genl_register_family@Base 3.2.21
+ genl_resolve_id@Base 3.2.24-1
  genl_send_simple@Base 3.2.7
  genl_unregister@Base 3.2.7
  genl_unregister_family@Base 3.2.21
