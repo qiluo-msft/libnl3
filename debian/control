@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Heiko Stuebner <mmind@debian.org>
 Build-Depends: debhelper (>= 9), dh-exec (>= 0.3), cdbs (>= 0.4.93~), bison, flex,
- automake, autoconf, dh-autoreconf, linux-libc-dev (>= 3.2.41)
+ automake, autoconf, dh-autoreconf, linux-libc-dev (>= 3.2.41), pkg-config
 Standards-Version: 3.9.5
 Homepage: http://people.suug.ch/~tgr/libnl/
 
