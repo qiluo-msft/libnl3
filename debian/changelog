@@ -1,3 +1,13 @@
+libnl3 (3.2.24-2) unstable; urgency=low
+
+  * Backport two upstream fixes to prevent issues with older kernels:
+    - dfd0a80ec845 (route: don't enforce minlen in inet6_parse_protinfo()
+      (IFLA_PROTINFO) and inet_parse_af() (IFLA_AF_SPEC)
+    - 5206c050504f (route/addr: only sent IFA_FLAGS when needed to workaround
+      picky older kernels)
+
+ -- Heiko Stuebner <mmind@debian.org>  Fri, 18 Apr 2014 17:19:37 +0200
+
 libnl3 (3.2.24-1) unstable; urgency=low
 
   * New upstream release
