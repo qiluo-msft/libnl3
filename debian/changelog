@@ -1,3 +1,9 @@
+libnl3 (3.2.26-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Heiko Stuebner <mmind@debian.org>  Sun, 28 Jun 2015 15:44:22 +0200
+
 libnl3 (3.2.24-2) unstable; urgency=low
 
   * Backport two upstream fixes to prevent issues with older kernels:
