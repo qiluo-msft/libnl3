@@ -51,9 +51,10 @@
 #include <linux/gen_stats.h>
 #include <linux/ip_mp_alg.h>
 #include <linux/atm.h>
-#include <linux/inetdevice.h>
+#include <linux/ip.h>
 #include <linux/ipv6.h>
 #include <linux/snmp.h>
+#include <linux/xfrm.h>
 
 #ifndef DISABLE_PTHREADS
 #include <pthread.h>
@@ -74,7 +75,7 @@ struct trans_tbl {
 	const char *a;
 };
 
-#define __ADD(id, name) { .i = id, .a = #name },
+#define __ADD(id, name) { .i = id, .a = #name }
 
 struct trans_list {
 	int i;
@@ -85,11 +86,14 @@ struct trans_list {
 #ifdef NL_DEBUG
 #define NL_DBG(LVL,FMT,ARG...)						\
 	do {								\
-		if (LVL <= nl_debug)					\
+		if (LVL <= nl_debug) {					\
+			int _errsv = errno;				\
 			fprintf(stderr,					\
 				"DBG<" #LVL ">%20s:%-4u %s: " FMT,	\
 				__FILE__, __LINE__,			\
 				__PRETTY_FUNCTION__, ##ARG);		\
+			errno = _errsv;					\
+		}							\
 	} while (0)
 #else /* NL_DEBUG */
 #define NL_DBG(LVL,FMT,ARG...) do { } while(0)
@@ -101,6 +105,13 @@ struct trans_list {
 			__FILE__, __LINE__, __PRETTY_FUNCTION__); 	\
 		assert(0);						\
 	} while (0)
+
+#define BUG_ON(condition)						\
+	do {								\
+		if (condition)						\
+			BUG();						\
+	} while (0)
+
 
 #define APPBUG(msg)							\
 	do {								\

@@ -84,6 +84,13 @@ host_triplet = @host@
 @ENABLE_UNIT_TESTS_TRUE@	test-create-vxlan$(EXEEXT) \
 @ENABLE_UNIT_TESTS_TRUE@	test-create-veth$(EXEEXT) \
 @ENABLE_UNIT_TESTS_TRUE@	test-create-bridge$(EXEEXT) \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-ip6tnl$(EXEEXT) \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-ipgre$(EXEEXT) \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-ipip$(EXEEXT) \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-ipvti$(EXEEXT) \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-macvlan$(EXEEXT) \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-sit$(EXEEXT) \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-ifb$(EXEEXT) \
 @ENABLE_UNIT_TESTS_TRUE@	test-delete-link$(EXEEXT) \
 @ENABLE_UNIT_TESTS_TRUE@	test-socket-creation$(EXEEXT) \
 @ENABLE_UNIT_TESTS_TRUE@	test-complex-HTB-with-hash-filters$(EXEEXT) \
@@ -171,6 +178,71 @@ am__test_create_bridge_SOURCES_DIST = test-create-bridge.c
 test_create_bridge_OBJECTS = $(am_test_create_bridge_OBJECTS)
 test_create_bridge_LDADD = $(LDADD)
 @ENABLE_UNIT_TESTS_TRUE@test_create_bridge_DEPENDENCIES =  \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-route-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	$(am__append_1)
+am__test_create_ifb_SOURCES_DIST = test-create-ifb.c
+@ENABLE_UNIT_TESTS_TRUE@am_test_create_ifb_OBJECTS =  \
+@ENABLE_UNIT_TESTS_TRUE@	test-create-ifb.$(OBJEXT)
+test_create_ifb_OBJECTS = $(am_test_create_ifb_OBJECTS)
+test_create_ifb_LDADD = $(LDADD)
+@ENABLE_UNIT_TESTS_TRUE@test_create_ifb_DEPENDENCIES =  \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-route-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	$(am__append_1)
+test_create_ip6tnl_SOURCES = test-create-ip6tnl.c
+test_create_ip6tnl_OBJECTS = test-create-ip6tnl.$(OBJEXT)
+test_create_ip6tnl_LDADD = $(LDADD)
+@ENABLE_UNIT_TESTS_TRUE@test_create_ip6tnl_DEPENDENCIES =  \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-route-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	$(am__append_1)
+test_create_ipgre_SOURCES = test-create-ipgre.c
+test_create_ipgre_OBJECTS = test-create-ipgre.$(OBJEXT)
+test_create_ipgre_LDADD = $(LDADD)
+@ENABLE_UNIT_TESTS_TRUE@test_create_ipgre_DEPENDENCIES =  \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-route-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	$(am__append_1)
+test_create_ipip_SOURCES = test-create-ipip.c
+test_create_ipip_OBJECTS = test-create-ipip.$(OBJEXT)
+test_create_ipip_LDADD = $(LDADD)
+@ENABLE_UNIT_TESTS_TRUE@test_create_ipip_DEPENDENCIES =  \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-route-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	$(am__append_1)
+test_create_ipvti_SOURCES = test-create-ipvti.c
+test_create_ipvti_OBJECTS = test-create-ipvti.$(OBJEXT)
+test_create_ipvti_LDADD = $(LDADD)
+@ENABLE_UNIT_TESTS_TRUE@test_create_ipvti_DEPENDENCIES =  \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-route-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	$(am__append_1)
+test_create_macvlan_SOURCES = test-create-macvlan.c
+test_create_macvlan_OBJECTS = test-create-macvlan.$(OBJEXT)
+test_create_macvlan_LDADD = $(LDADD)
+@ENABLE_UNIT_TESTS_TRUE@test_create_macvlan_DEPENDENCIES =  \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-route-3.la \
+@ENABLE_UNIT_TESTS_TRUE@	$(am__append_1)
+test_create_sit_SOURCES = test-create-sit.c
+test_create_sit_OBJECTS = test-create-sit.$(OBJEXT)
+test_create_sit_LDADD = $(LDADD)
+@ENABLE_UNIT_TESTS_TRUE@test_create_sit_DEPENDENCIES =  \
 @ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-3.la \
 @ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
 @ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
@@ -301,6 +373,9 @@ am__v_CCLD_1 =
 SOURCES = $(check_all_SOURCES) $(test_cache_mngr_SOURCES) \
 	$(test_complex_HTB_with_hash_filters_SOURCES) \
 	$(test_create_bond_SOURCES) $(test_create_bridge_SOURCES) \
+	$(test_create_ifb_SOURCES) test-create-ip6tnl.c \
+	test-create-ipgre.c test-create-ipip.c test-create-ipvti.c \
+	test-create-macvlan.c test-create-sit.c \
 	$(test_create_veth_SOURCES) $(test_create_vlan_SOURCES) \
 	$(test_create_vxlan_SOURCES) $(test_delete_link_SOURCES) \
 	$(test_genl_SOURCES) $(test_nf_cache_mngr_SOURCES) \
@@ -311,6 +386,9 @@ DIST_SOURCES = $(am__check_all_SOURCES_DIST) \
 	$(am__test_complex_HTB_with_hash_filters_SOURCES_DIST) \
 	$(am__test_create_bond_SOURCES_DIST) \
 	$(am__test_create_bridge_SOURCES_DIST) \
+	$(am__test_create_ifb_SOURCES_DIST) test-create-ip6tnl.c \
+	test-create-ipgre.c test-create-ipip.c test-create-ipvti.c \
+	test-create-macvlan.c test-create-sit.c \
 	$(am__test_create_veth_SOURCES_DIST) \
 	$(am__test_create_vlan_SOURCES_DIST) \
 	$(am__test_create_vxlan_SOURCES_DIST) \
@@ -681,7 +759,14 @@ top_srcdir = @top_srcdir@
 EXTRA_DIST = \
 	util.h
 
-@ENABLE_UNIT_TESTS_TRUE@AM_CPPFLAGS = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
+@ENABLE_UNIT_TESTS_TRUE@AM_CPPFLAGS = \
+@ENABLE_UNIT_TESTS_TRUE@	-Wall \
+@ENABLE_UNIT_TESTS_TRUE@	-I${top_srcdir}/include/linux-private \
+@ENABLE_UNIT_TESTS_TRUE@	-I${top_srcdir}/include \
+@ENABLE_UNIT_TESTS_TRUE@	-I${top_builddir}/include \
+@ENABLE_UNIT_TESTS_TRUE@	-D_GNU_SOURCE \
+@ENABLE_UNIT_TESTS_TRUE@	-DSYSCONFDIR=\"$(sysconfdir)/libnl\"
+
 @ENABLE_UNIT_TESTS_TRUE@LDADD = ${top_builddir}/lib/libnl-3.la \
 @ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-nf-3.la \
 @ENABLE_UNIT_TESTS_TRUE@	${top_builddir}/lib/libnl-genl-3.la \
@@ -695,6 +780,7 @@ EXTRA_DIST = \
 @ENABLE_UNIT_TESTS_TRUE@test_create_vxlan_SOURCES = test-create-vxlan.c
 @ENABLE_UNIT_TESTS_TRUE@test_create_veth_SOURCES = test-create-veth.c
 @ENABLE_UNIT_TESTS_TRUE@test_create_bridge_SOURCES = test-create-bridge.c
+@ENABLE_UNIT_TESTS_TRUE@test_create_ifb_SOURCES = test-create-ifb.c
 @ENABLE_UNIT_TESTS_TRUE@test_delete_link_SOURCES = test-delete-link.c
 @ENABLE_UNIT_TESTS_TRUE@test_genl_SOURCES = test-genl.c
 @ENABLE_UNIT_TESTS_TRUE@test_nf_cache_mngr_SOURCES = test-nf-cache-mngr.c
@@ -772,6 +858,34 @@ test-create-bridge$(EXEEXT): $(test_create_bridge_OBJECTS) $(test_create_bridge_
 	@rm -f test-create-bridge$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_create_bridge_OBJECTS) $(test_create_bridge_LDADD) $(LIBS)
 
+test-create-ifb$(EXEEXT): $(test_create_ifb_OBJECTS) $(test_create_ifb_DEPENDENCIES) $(EXTRA_test_create_ifb_DEPENDENCIES) 
+	@rm -f test-create-ifb$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_create_ifb_OBJECTS) $(test_create_ifb_LDADD) $(LIBS)
+
+test-create-ip6tnl$(EXEEXT): $(test_create_ip6tnl_OBJECTS) $(test_create_ip6tnl_DEPENDENCIES) $(EXTRA_test_create_ip6tnl_DEPENDENCIES) 
+	@rm -f test-create-ip6tnl$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_create_ip6tnl_OBJECTS) $(test_create_ip6tnl_LDADD) $(LIBS)
+
+test-create-ipgre$(EXEEXT): $(test_create_ipgre_OBJECTS) $(test_create_ipgre_DEPENDENCIES) $(EXTRA_test_create_ipgre_DEPENDENCIES) 
+	@rm -f test-create-ipgre$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_create_ipgre_OBJECTS) $(test_create_ipgre_LDADD) $(LIBS)
+
+test-create-ipip$(EXEEXT): $(test_create_ipip_OBJECTS) $(test_create_ipip_DEPENDENCIES) $(EXTRA_test_create_ipip_DEPENDENCIES) 
+	@rm -f test-create-ipip$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_create_ipip_OBJECTS) $(test_create_ipip_LDADD) $(LIBS)
+
+test-create-ipvti$(EXEEXT): $(test_create_ipvti_OBJECTS) $(test_create_ipvti_DEPENDENCIES) $(EXTRA_test_create_ipvti_DEPENDENCIES) 
+	@rm -f test-create-ipvti$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_create_ipvti_OBJECTS) $(test_create_ipvti_LDADD) $(LIBS)
+
+test-create-macvlan$(EXEEXT): $(test_create_macvlan_OBJECTS) $(test_create_macvlan_DEPENDENCIES) $(EXTRA_test_create_macvlan_DEPENDENCIES) 
+	@rm -f test-create-macvlan$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_create_macvlan_OBJECTS) $(test_create_macvlan_LDADD) $(LIBS)
+
+test-create-sit$(EXEEXT): $(test_create_sit_OBJECTS) $(test_create_sit_DEPENDENCIES) $(EXTRA_test_create_sit_DEPENDENCIES) 
+	@rm -f test-create-sit$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_create_sit_OBJECTS) $(test_create_sit_LDADD) $(LIBS)
+
 test-create-veth$(EXEEXT): $(test_create_veth_OBJECTS) $(test_create_veth_DEPENDENCIES) $(EXTRA_test_create_veth_DEPENDENCIES) 
 	@rm -f test-create-veth$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_create_veth_OBJECTS) $(test_create_veth_LDADD) $(LIBS)
@@ -817,6 +931,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-complex-HTB-with-hash-filters.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-bond.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-bridge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-ifb.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-ip6tnl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-ipgre.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-ipip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-ipvti.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-macvlan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-sit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-veth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-vlan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-create-vxlan.Po@am__quote@

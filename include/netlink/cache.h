@@ -71,10 +71,14 @@ extern int			nl_cache_add(struct nl_cache *,
 					     struct nl_object *);
 extern int			nl_cache_parse_and_add(struct nl_cache *,
 						       struct nl_msg *);
+extern int			nl_cache_move(struct nl_cache *,
+					      struct nl_object *);
 extern void			nl_cache_remove(struct nl_object *);
 extern int			nl_cache_refill(struct nl_sock *,
 						struct nl_cache *);
 extern int			nl_cache_pickup(struct nl_sock *,
+						struct nl_cache *);
+extern int			nl_cache_pickup_checkdup(struct nl_sock *,
 						struct nl_cache *);
 extern int			nl_cache_resync(struct nl_sock *,
 						struct nl_cache *,
@@ -94,8 +98,6 @@ extern struct nl_object *	nl_cache_search(struct nl_cache *,
 						struct nl_object *);
 extern struct nl_object *nl_cache_find(struct nl_cache *,
 				       struct nl_object *);
-extern struct nl_object *	nl_cache_lookup(struct nl_cache *,
-						struct nl_object *);
 extern void			nl_cache_mark_all(struct nl_cache *);
 
 /* Dumping */
@@ -162,6 +164,8 @@ extern void			nl_cache_mngr_free(struct nl_cache_mngr *);
 
 extern void			nl_cache_ops_get(struct nl_cache_ops *);
 extern void			nl_cache_ops_put(struct nl_cache_ops *);
+extern void			nl_cache_ops_set_flags(struct nl_cache_ops *,
+						       unsigned int);
 
 #ifdef __cplusplus
 }

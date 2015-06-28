@@ -406,10 +406,9 @@ static int ct_msg_parser(struct nl_cache_ops *ops, struct sockaddr_nl *who,
 	int err;
 
 	if ((err = nfnlmsg_ct_parse(nlh, &ct)) < 0)
-		goto errout;
+		return err;
 
 	err = pp->pp_cb((struct nl_object *) ct, pp);
-errout:
 	nfnl_ct_put(ct);
 	return err;
 }
@@ -520,9 +519,31 @@ static int nfnl_ct_build_message(const struct nfnl_ct *ct, int cmd, int flags,
 	if ((err = nfnl_ct_build_tuple(msg, ct, 0)) < 0)
 		goto err_out;
 
+	/* REPLY tuple is optional, dont add unless at least src/dst specified */
+
+	if ( nfnl_ct_get_src(ct, 1) && nfnl_ct_get_dst(ct, 1) )
+		if ((err = nfnl_ct_build_tuple(msg, ct, 1)) < 0)
+			goto err_out;
+
+	if (nfnl_ct_test_status(ct))
+		NLA_PUT_U32(msg, CTA_STATUS, htonl(nfnl_ct_get_status(ct)));
+
+	if (nfnl_ct_test_timeout(ct))
+		NLA_PUT_U32(msg, CTA_TIMEOUT, htonl(nfnl_ct_get_timeout(ct)));
+
+	if (nfnl_ct_test_mark(ct))
+		NLA_PUT_U32(msg, CTA_MARK, htonl(nfnl_ct_get_mark(ct)));
+
+	if (nfnl_ct_test_id(ct))
+		NLA_PUT_U32(msg, CTA_ID, htonl(nfnl_ct_get_id(ct)));
+
+	if (nfnl_ct_test_zone(ct))
+		NLA_PUT_U16(msg, CTA_ZONE, htons(nfnl_ct_get_zone(ct)));
+
 	*result = msg;
 	return 0;
 
+nla_put_failure:
 err_out:
 	nlmsg_free(msg);
 	return err;

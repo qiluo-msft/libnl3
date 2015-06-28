@@ -79,6 +79,74 @@ extern void	nl_new_line(struct nl_dump_params *);
 extern void	nl_dump(struct nl_dump_params *, const char *, ...);
 extern void	nl_dump_line(struct nl_dump_params *, const char *, ...);
 
+enum {
+	NL_CAPABILITY_NONE,
+
+	/**
+	 * rtnl_route_build_msg() no longer guesses the route scope
+	 * if explicitly set to RT_SCOPE_NOWHERE.
+	 * @ingroup utils
+	 */
+	NL_CAPABILITY_ROUTE_BUILD_MSG_SET_SCOPE         = 1,
+#define NL_CAPABILITY_ROUTE_BUILD_MSG_SET_SCOPE NL_CAPABILITY_ROUTE_BUILD_MSG_SET_SCOPE
+
+	/**
+	 * rtnl_link_veth_get_peer() now returns a reference that is owned by the
+	 * caller and must be released by the caller with rtnl_link_put().
+	 */
+	NL_CAPABILITY_ROUTE_LINK_VETH_GET_PEER_OWN_REFERENCE = 2,
+#define NL_CAPABILITY_ROUTE_LINK_VETH_GET_PEER_OWN_REFERENCE NL_CAPABILITY_ROUTE_LINK_VETH_GET_PEER_OWN_REFERENCE
+
+	/**
+	 * rtnl_u32_add_action() and rtnl_basic_add_action() now grab a reference to act
+	 * caller are free to release its own
+	 */
+	NL_CAPABILITY_ROUTE_LINK_CLS_ADD_ACT_OWN_REFERENCE = 3,
+#define NL_CAPABILITY_ROUTE_LINK_CLS_ADD_ACT_OWN_REFERENCE NL_CAPABILITY_ROUTE_LINK_CLS_ADD_ACT_OWN_REFERENCE
+
+	/**
+	 * Indicate that the local port is unspecified until the user accesses
+	 * it (via nl_socket_get_local_port()) or until nl_connect(). More importantly,
+	 * if the port is left unspecified, nl_connect() will retry generating another
+	 * port when bind() fails with ADDRINUSE.
+	 */
+	NL_CAPABILITY_NL_CONNECT_RETRY_GENERATE_PORT_ON_ADDRINUSE = 4,
+#define NL_CAPABILITY_NL_CONNECT_RETRY_GENERATE_PORT_ON_ADDRINUSE NL_CAPABILITY_NL_CONNECT_RETRY_GENERATE_PORT_ON_ADDRINUSE
+
+	/**
+	 * Indicate that rtnl_link_get_kernel() fails with -NLE_OPNOTSUPP in case
+	 * of older kernals not supporting lookup by ifname. This changes behavior
+	 * from returning -NLE_INVAL to return -NLE_OPNOTSUPP.
+	 */
+	NL_CAPABILITY_ROUTE_LINK_GET_KERNEL_FAIL_OPNOTSUPP = 5,
+#define NL_CAPABILITY_ROUTE_LINK_GET_KERNEL_FAIL_OPNOTSUPP NL_CAPABILITY_ROUTE_LINK_GET_KERNEL_FAIL_OPNOTSUPP
+
+	/**
+	 * Also consider the a_cacheinfo field (ADDR_ATTR_CACHEINFO) that contains the
+	 * address timestamps and expiry when comparing struct rtnl_addr objects with
+	 * nl_object_diff().
+	 */
+	NL_CAPABILITY_ROUTE_ADDR_COMPARE_CACHEINFO = 6,
+#define NL_CAPABILITY_ROUTE_ADDR_COMPARE_CACHEINFO NL_CAPABILITY_ROUTE_ADDR_COMPARE_CACHEINFO
+
+	/**
+	 * The library version is libnl3 3.2.26 or newer. This capability should never be backported.
+	 */
+	NL_CAPABILITY_VERSION_3_2_26 = 7,
+#define NL_CAPABILITY_VERSION_3_2_26 NL_CAPABILITY_VERSION_3_2_26
+
+	__NL_CAPABILITY_MAX,
+	NL_CAPABILITY_MAX = (__NL_CAPABILITY_MAX - 1),
+#define NL_CAPABILITY_MAX NL_CAPABILITY_MAX
+
+	/**
+	 * The range 0x7000 to 0x7FFF is reserved for private capabilities. Upstream libnl3 will
+	 * not register capabilities in this range. However, instead of adding private capabilities,
+	 * better register their number with upstream libnl3. */
+#define NL_CAPABILITY_IS_USER_RESERVED(cap)    ( ((cap) & ~0x0FFF) == 0x7000 )
+};
+int nl_has_capability (int capability);
+
 #ifdef __cplusplus
 }
 #endif

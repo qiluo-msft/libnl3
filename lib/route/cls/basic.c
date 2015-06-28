@@ -142,10 +142,8 @@ static int basic_msg_fill(struct rtnl_tc *tc, void *data,
 	if (!b)
 		return 0;
 
-	if (!(b->b_mask & BASIC_ATTR_TARGET))
-		return -NLE_MISSING_ATTR;
-
-	NLA_PUT_U32(msg, TCA_BASIC_CLASSID, b->b_target);
+	if (b->b_mask & BASIC_ATTR_TARGET)
+		NLA_PUT_U32(msg, TCA_BASIC_CLASSID, b->b_target);
 
 	if (b->b_mask & BASIC_ATTR_EMATCH &&
 	    rtnl_ematch_fill_attr(msg, TCA_BASIC_EMATCHES, b->b_ematch) < 0)
@@ -230,6 +228,8 @@ int rtnl_basic_add_action(struct rtnl_cls *cls, struct rtnl_act *act)
 		return -NLE_NOMEM;
 
 	b->b_mask |= BASIC_ATTR_ACTION;
+	/* In case user frees it */
+	rtnl_act_get(act);
 	return rtnl_act_append(&b->b_act, act);
 }
 
@@ -247,9 +247,13 @@ int rtnl_basic_del_action(struct rtnl_cls *cls, struct rtnl_act *act)
 	if (!(b->b_mask & BASIC_ATTR_ACTION))
 		return -NLE_INVAL;
 	ret = rtnl_act_remove(&b->b_act, act);
+	if (ret)
+		return ret;
+
 	if (!b->b_act)
 		b->b_mask &= ~BASIC_ATTR_ACTION;
-	return ret;
+	rtnl_act_put(act);
+	return 0;
 }
 /** @} */
 

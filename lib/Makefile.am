@@ -2,6 +2,7 @@
 
 AM_CPPFLAGS  =			 	\
 	-Wall \
+	-I${top_srcdir}/include/linux-private \
 	-I${top_srcdir}/include \
 	-I${top_builddir}/include \
 	-I${builddir}/route \
@@ -10,27 +11,49 @@ AM_CPPFLAGS  =			 	\
 	-DSYSCONFDIR=\"$(sysconfdir)/libnl\"
 
 AM_LDFLAGS = \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
-	-Wl,--version-script=$(top_builddir)/libnl.sym
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 lib_LTLIBRARIES = \
-	libnl-3.la libnl-genl-3.la libnl-route-3.la libnl-nf-3.la libnl-idiag-3.la
+	libnl-3.la libnl-genl-3.la libnl-route-3.la libnl-nf-3.la libnl-idiag-3.la libnl-xfrm-3.la
 
+libnl_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-3.sym
+libnl_3_la_DEPENDENCIES = \
+	$(top_srcdir)/libnl-3.sym
 libnl_3_la_SOURCES = \
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c \
 	error.c handlers.c msg.c nl.c object.c socket.c utils.c \
 	version.c hash.c hashtable.c
 
 libnl_idiag_3_la_LIBADD = libnl-3.la
+libnl_idiag_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-idiag-3.sym
+libnl_idiag_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-idiag-3.sym
 libnl_idiag_3_la_SOURCES = \
 	idiag/idiag_meminfo_obj.c idiag/idiag_vegasinfo_obj.c \
 	idiag/idiag_msg_obj.c idiag/idiag_req_obj.c idiag/idiag.c
 
 libnl_genl_3_la_LIBADD  = libnl-3.la
+libnl_genl_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-genl-3.sym
+libnl_genl_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-genl-3.sym
 libnl_genl_3_la_SOURCES = \
 	genl/ctrl.c genl/family.c genl/genl.c genl/mngt.c
 
 libnl_nf_3_la_LIBADD  = libnl-route-3.la
+libnl_nf_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-nf-3.sym
+libnl_nf_3_la_DEPENDENCIES = \
+	libnl-route-3.la \
+	$(top_srcdir)/libnl-nf-3.sym
 libnl_nf_3_la_SOURCES = \
 	netfilter/ct.c netfilter/ct_obj.c netfilter/log.c \
 	netfilter/log_msg.c netfilter/log_msg_obj.c netfilter/log_obj.c \
@@ -47,18 +70,24 @@ CLEANFILES = \
 # Hack to avoid using ylwrap. It does not function correctly in combination
 # with --header-file=
 route/pktloc_grammar.c: route/pktloc_grammar.l
-	$(AM_V_GEN) $(FLEX) --header-file=route/pktloc_grammar.h $(LFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route; $(FLEX) --header-file=route/pktloc_grammar.h $(LFLAGS) -o $@ $^
 
 route/pktloc_syntax.c: route/pktloc_syntax.y
-	$(AM_V_GEN) $(YACC) -d $(YFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route; $(YACC) -d $(YFLAGS) -o $@ $^
 
 route/cls/ematch_grammar.c: route/cls/ematch_grammar.l
-	$(AM_V_GEN) $(FLEX) --header-file=route/cls/ematch_grammar.h $(LFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route/cls; $(FLEX) --header-file=route/cls/ematch_grammar.h $(LFLAGS) -o $@ $^
 
 route/cls/ematch_syntax.c: route/cls/ematch_syntax.y
-	$(AM_V_GEN) $(YACC) -d $(YFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route/cls; $(YACC) -d $(YFLAGS) -o $@ $^
 
 libnl_route_3_la_LIBADD  = libnl-3.la
+libnl_route_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-route-3.sym
+libnl_route_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-route-3.sym
 libnl_route_3_la_SOURCES = \
 	route/addr.c route/class.c route/cls.c route/act.c route/link.c \
 	route/neigh.c route/neightbl.c route/nexthop.c route/qdisc.c \
@@ -69,6 +98,7 @@ libnl_route_3_la_SOURCES = \
 	route/cls/cgroup.c \
 	\
 	route/act/mirred.c \
+	route/act/skbedit.c \
 	\
 	route/cls/ematch.c \
 	route/cls/ematch/container.c route/cls/ematch/cmp.c \
@@ -78,13 +108,15 @@ libnl_route_3_la_SOURCES = \
 	route/link/api.c route/link/vlan.c route/link/dummy.c \
 	route/link/bridge.c route/link/inet6.c route/link/inet.c \
 	route/link/bonding.c route/link/can.c route/link/macvlan.c \
-	route/link/vxlan.c route/link/veth.c \
+	route/link/vxlan.c route/link/veth.c route/link/ipip.c \
+	route/link/ipgre.c route/link/sit.c route/link/ipvti.c \
+	route/link/ip6tnl.c route/link/ifb.c \
 	\
 	route/qdisc/blackhole.c route/qdisc/cbq.c route/qdisc/dsmark.c \
 	route/qdisc/fifo.c route/qdisc/htb.c route/qdisc/netem.c \
 	route/qdisc/prio.c route/qdisc/red.c route/qdisc/sfq.c \
 	route/qdisc/tbf.c route/qdisc/plug.c route/qdisc/ingress.c \
-	route/qdisc/fq_codel.c \
+	route/qdisc/fq_codel.c route/qdisc/hfsc.c \
 	\
 	fib_lookup/lookup.c fib_lookup/request.c \
 	\
@@ -108,6 +140,21 @@ EXTRA_DIST = \
 	route/cls/ematch_grammar.l \
 	route/cls/ematch_syntax.y
 
+libnl_xfrm_3_la_LIBADD  = libnl-3.la
+libnl_xfrm_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-xfrm-3.sym
+libnl_xfrm_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-xfrm-3.sym
+libnl_xfrm_3_la_SOURCES = \
+	xfrm/ae.c \
+	xfrm/lifetime.c \
+	xfrm/sa.c \
+	xfrm/selector.c \
+	xfrm/sp.c \
+	xfrm/template.c
+
 if ENABLE_CLI
 nobase_pkglib_LTLIBRARIES = \
 	cli/qdisc/htb.la \
@@ -117,6 +164,7 @@ nobase_pkglib_LTLIBRARIES = \
 	cli/qdisc/bfifo.la \
 	cli/qdisc/ingress.la \
 	cli/qdisc/fq_codel.la \
+	cli/qdisc/hfsc.la \
 	cli/cls/basic.la \
 	cli/cls/cgroup.la
 
@@ -127,6 +175,7 @@ cli_qdisc_plug_la_LDFLAGS = -module -avoid-version
 cli_qdisc_bfifo_la_LDFLAGS = -module -avoid-version
 cli_qdisc_ingress_la_LDFLAGS = -module -avoid-version
 cli_qdisc_fq_codel_la_LDFLAGS = -module -avoid-version
+cli_qdisc_hfsc_la_LDFLAGS = -module -avoid-version
 cli_cls_basic_la_LDFLAGS = -module -avoid-version
 cli_cls_cgroup_la_LDFLAGS = -module -avoid-version
 endif

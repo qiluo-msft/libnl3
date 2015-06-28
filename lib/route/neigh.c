@@ -168,6 +168,7 @@
 #define NEIGH_ATTR_TYPE         0x80
 #define NEIGH_ATTR_PROBES       0x100
 #define NEIGH_ATTR_MASTER       0x200
+#define NEIGH_ATTR_VLAN         0x400
 
 static struct nl_cache_ops rtnl_neigh_ops;
 static struct nl_object_ops neigh_obj_ops;
@@ -268,6 +269,7 @@ static int neigh_compare(struct nl_object *_a, struct nl_object *_b,
 	diff |= NEIGH_DIFF(LLADDR,	nl_addr_cmp(a->n_lladdr, b->n_lladdr));
 	diff |= NEIGH_DIFF(DST,		nl_addr_cmp(a->n_dst, b->n_dst));
 	diff |= NEIGH_DIFF(MASTER,	a->n_master != b->n_master);
+	diff |= NEIGH_DIFF(VLAN,	a->n_vlan != b->n_vlan);
 
 	if (flags & LOOSE_COMPARISON) {
 		diff |= NEIGH_DIFF(STATE,
@@ -285,15 +287,17 @@ static int neigh_compare(struct nl_object *_a, struct nl_object *_b,
 }
 
 static const struct trans_tbl neigh_attrs[] = {
-	__ADD(NEIGH_ATTR_FLAGS, flags)
-	__ADD(NEIGH_ATTR_STATE, state)
-	__ADD(NEIGH_ATTR_LLADDR, lladdr)
-	__ADD(NEIGH_ATTR_DST, dst)
-	__ADD(NEIGH_ATTR_CACHEINFO, cacheinfo)
-	__ADD(NEIGH_ATTR_IFINDEX, ifindex)
-	__ADD(NEIGH_ATTR_FAMILY, family)
-	__ADD(NEIGH_ATTR_TYPE, type)
-	__ADD(NEIGH_ATTR_PROBES, probes)
+	__ADD(NEIGH_ATTR_FLAGS, flags),
+	__ADD(NEIGH_ATTR_STATE, state),
+	__ADD(NEIGH_ATTR_LLADDR, lladdr),
+	__ADD(NEIGH_ATTR_DST, dst),
+	__ADD(NEIGH_ATTR_CACHEINFO, cacheinfo),
+	__ADD(NEIGH_ATTR_IFINDEX, ifindex),
+	__ADD(NEIGH_ATTR_FAMILY, family),
+	__ADD(NEIGH_ATTR_TYPE, type),
+	__ADD(NEIGH_ATTR_PROBES, probes),
+	__ADD(NEIGH_ATTR_MASTER, master),
+	__ADD(NEIGH_ATTR_VLAN, vlan),
 };
 
 static char *neigh_attrs2str(int attrs, char *buf, size_t len)
@@ -397,6 +401,11 @@ int rtnl_neigh_parse(struct nlmsghdr *n, struct rtnl_neigh **result)
 	if (tb[NDA_PROBES]) {
 		neigh->n_probes = nla_get_u32(tb[NDA_PROBES]);
 		neigh->ce_mask |= NEIGH_ATTR_PROBES;
+	}
+
+	if (tb[NDA_VLAN]) {
+		neigh->n_vlan = nla_get_u16(tb[NDA_VLAN]);
+		neigh->ce_mask |= NEIGH_ATTR_VLAN;
 	}
 
 	/*
@@ -596,6 +605,9 @@ static int build_neigh_msg(struct rtnl_neigh *tmpl, int cmd, int flags,
 	if (tmpl->ce_mask & NEIGH_ATTR_LLADDR)
 		NLA_PUT_ADDR(msg, NDA_LLADDR, tmpl->n_lladdr);
 
+	if (tmpl->ce_mask & NEIGH_ATTR_VLAN)
+		NLA_PUT_U16(msg, NDA_VLAN, tmpl->n_vlan);
+
 	*result = msg;
 	return 0;
 
@@ -728,14 +740,14 @@ int rtnl_neigh_delete(struct nl_sock *sk, struct rtnl_neigh *neigh,
  */
 
 static const struct trans_tbl neigh_states[] = {
-	__ADD(NUD_INCOMPLETE, incomplete)
-	__ADD(NUD_REACHABLE, reachable)
-	__ADD(NUD_STALE, stale)
-	__ADD(NUD_DELAY, delay)
-	__ADD(NUD_PROBE, probe)
-	__ADD(NUD_FAILED, failed)
-	__ADD(NUD_NOARP, norarp)
-	__ADD(NUD_PERMANENT, permanent)
+	__ADD(NUD_INCOMPLETE, incomplete),
+	__ADD(NUD_REACHABLE, reachable),
+	__ADD(NUD_STALE, stale),
+	__ADD(NUD_DELAY, delay),
+	__ADD(NUD_PROBE, probe),
+	__ADD(NUD_FAILED, failed),
+	__ADD(NUD_NOARP, norarp),
+	__ADD(NUD_PERMANENT, permanent),
 };
 
 char * rtnl_neigh_state2str(int state, char *buf, size_t len)
@@ -757,9 +769,9 @@ int rtnl_neigh_str2state(const char *name)
  */
 
 static const struct trans_tbl neigh_flags[] = {
-	__ADD(NTF_USE, use)
-	__ADD(NTF_PROXY, proxy)
-	__ADD(NTF_ROUTER, router)
+	__ADD(NTF_USE, use),
+	__ADD(NTF_PROXY, proxy),
+	__ADD(NTF_ROUTER, router),
 };
 
 char * rtnl_neigh_flags2str(int flags, char *buf, size_t len)
@@ -904,6 +916,20 @@ int rtnl_neigh_get_type(struct rtnl_neigh *neigh)
 {
 	if (neigh->ce_mask & NEIGH_ATTR_TYPE)
 		return neigh->n_type;
+	else
+		return -1;
+}
+
+void rtnl_neigh_set_vlan(struct rtnl_neigh *neigh, int vlan)
+{
+	neigh->n_vlan = vlan;
+	neigh->ce_mask |= NEIGH_ATTR_VLAN;
+}
+
+int rtnl_neigh_get_vlan(struct rtnl_neigh *neigh)
+{
+	if (neigh->ce_mask & NEIGH_ATTR_VLAN)
+		return neigh->n_vlan;
 	else
 		return -1;
 }

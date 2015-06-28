@@ -206,7 +206,7 @@ struct rtnl_link *rtnl_link_bridge_alloc(void)
 		
 /** 
  * Create a new kernel bridge device
- * @arg sock            netlink socket
+ * @arg sk              netlink socket
  * @arg name            name of the bridge device or NULL
  *
  * Creates a new bridge device in the kernel. If no name is
@@ -480,10 +480,10 @@ int rtnl_link_bridge_get_flags(struct rtnl_link *link)
 }
 
 static const struct trans_tbl bridge_flags[] = {
-	__ADD(RTNL_BRIDGE_HAIRPIN_MODE, hairpin_mode)
-	__ADD(RTNL_BRIDGE_BPDU_GUARD, 	bpdu_guard)
-	__ADD(RTNL_BRIDGE_ROOT_BLOCK,	root_block)
-	__ADD(RTNL_BRIDGE_FAST_LEAVE,	fast_leave)
+	__ADD(RTNL_BRIDGE_HAIRPIN_MODE, hairpin_mode),
+	__ADD(RTNL_BRIDGE_BPDU_GUARD, 	bpdu_guard),
+	__ADD(RTNL_BRIDGE_ROOT_BLOCK,	root_block),
+	__ADD(RTNL_BRIDGE_FAST_LEAVE,	fast_leave),
 };
 
 /**

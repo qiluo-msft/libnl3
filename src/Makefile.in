@@ -80,29 +80,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-sbin_PROGRAMS = genl-ctrl-list$(EXEEXT) nl-qdisc-add$(EXEEXT) \
-	nl-qdisc-list$(EXEEXT) nl-qdisc-delete$(EXEEXT) \
-	nl-class-add$(EXEEXT) nl-class-list$(EXEEXT) \
-	nl-class-delete$(EXEEXT) nl-cls-add$(EXEEXT) \
-	nl-cls-list$(EXEEXT) nl-cls-delete$(EXEEXT) \
-	nl-classid-lookup$(EXEEXT) nl-pktloc-lookup$(EXEEXT) \
-	nl-link-list$(EXEEXT)
-noinst_PROGRAMS = nf-ct-list$(EXEEXT) nf-log$(EXEEXT) \
-	nf-queue$(EXEEXT) nf-monitor$(EXEEXT) nf-exp-list$(EXEEXT) \
-	nf-exp-add$(EXEEXT) nf-exp-delete$(EXEEXT) \
-	nl-addr-add$(EXEEXT) nl-addr-delete$(EXEEXT) \
-	nl-addr-list$(EXEEXT) nl-link-set$(EXEEXT) \
-	nl-link-stats$(EXEEXT) nl-link-ifindex2name$(EXEEXT) \
-	nl-link-name2ifindex$(EXEEXT) nl-neigh-add$(EXEEXT) \
-	nl-neigh-delete$(EXEEXT) nl-neigh-list$(EXEEXT) \
-	nl-rule-list$(EXEEXT) nl-neightbl-list$(EXEEXT) \
-	nl-monitor$(EXEEXT) nl-tctree-list$(EXEEXT) \
-	nl-route-add$(EXEEXT) nl-route-delete$(EXEEXT) \
-	nl-route-get$(EXEEXT) nl-route-list$(EXEEXT) \
-	nl-fib-lookup$(EXEEXT) nl-list-caches$(EXEEXT) \
-	nl-list-sockets$(EXEEXT) nl-util-addr$(EXEEXT) \
-	nl-link-enslave$(EXEEXT) nl-link-release$(EXEEXT) \
-	idiag-socket-details$(EXEEXT)
+@ENABLE_CLI_INSTALL_BIN_TRUE@bin_PROGRAMS = $(am__EXEEXT_1)
+@ENABLE_CLI_INSTALL_BIN_FALSE@@ENABLE_CLI_INSTALL_SBIN_TRUE@sbin_PROGRAMS = $(am__EXEEXT_1)
+@ENABLE_CLI_INSTALL_BIN_FALSE@@ENABLE_CLI_INSTALL_SBIN_FALSE@noinst_PROGRAMS = $(am__EXEEXT_1)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp
@@ -117,8 +97,30 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/lib/defs.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(sbindir)"
-PROGRAMS = $(noinst_PROGRAMS) $(sbin_PROGRAMS)
+am__EXEEXT_1 = genl-ctrl-list$(EXEEXT) idiag-socket-details$(EXEEXT) \
+	nf-ct-add$(EXEEXT) nf-ct-list$(EXEEXT) nf-exp-add$(EXEEXT) \
+	nf-exp-delete$(EXEEXT) nf-exp-list$(EXEEXT) nf-log$(EXEEXT) \
+	nf-monitor$(EXEEXT) nf-queue$(EXEEXT) nl-addr-add$(EXEEXT) \
+	nl-addr-delete$(EXEEXT) nl-addr-list$(EXEEXT) \
+	nl-class-add$(EXEEXT) nl-class-delete$(EXEEXT) \
+	nl-classid-lookup$(EXEEXT) nl-class-list$(EXEEXT) \
+	nl-cls-add$(EXEEXT) nl-cls-delete$(EXEEXT) \
+	nl-cls-list$(EXEEXT) nl-fib-lookup$(EXEEXT) \
+	nl-link-enslave$(EXEEXT) nl-link-ifindex2name$(EXEEXT) \
+	nl-link-list$(EXEEXT) nl-link-name2ifindex$(EXEEXT) \
+	nl-link-release$(EXEEXT) nl-link-set$(EXEEXT) \
+	nl-link-stats$(EXEEXT) nl-list-caches$(EXEEXT) \
+	nl-list-sockets$(EXEEXT) nl-monitor$(EXEEXT) \
+	nl-neigh-add$(EXEEXT) nl-neigh-delete$(EXEEXT) \
+	nl-neigh-list$(EXEEXT) nl-neightbl-list$(EXEEXT) \
+	nl-pktloc-lookup$(EXEEXT) nl-qdisc-add$(EXEEXT) \
+	nl-qdisc-delete$(EXEEXT) nl-qdisc-list$(EXEEXT) \
+	nl-route-add$(EXEEXT) nl-route-delete$(EXEEXT) \
+	nl-route-get$(EXEEXT) nl-route-list$(EXEEXT) \
+	nl-rule-list$(EXEEXT) nl-tctree-list$(EXEEXT) \
+	nl-util-addr$(EXEEXT)
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)"
+PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS) $(sbin_PROGRAMS)
 am_genl_ctrl_list_OBJECTS = genl-ctrl-list.$(OBJEXT)
 genl_ctrl_list_OBJECTS = $(am_genl_ctrl_list_OBJECTS)
 genl_ctrl_list_LDADD = $(LDADD)
@@ -137,6 +139,15 @@ idiag_socket_details_OBJECTS = $(am_idiag_socket_details_OBJECTS)
 idiag_socket_details_LDADD = $(LDADD)
 idiag_socket_details_DEPENDENCIES =  \
 	${top_builddir}/src/lib/libnl-cli-3.la \
+	${top_builddir}/lib/libnl-3.la \
+	${top_builddir}/lib/libnl-nf-3.la \
+	${top_builddir}/lib/libnl-genl-3.la \
+	${top_builddir}/lib/libnl-route-3.la \
+	${top_builddir}/lib/libnl-idiag-3.la
+am_nf_ct_add_OBJECTS = nf-ct-add.$(OBJEXT)
+nf_ct_add_OBJECTS = $(am_nf_ct_add_OBJECTS)
+nf_ct_add_LDADD = $(LDADD)
+nf_ct_add_DEPENDENCIES = ${top_builddir}/src/lib/libnl-cli-3.la \
 	${top_builddir}/lib/libnl-3.la \
 	${top_builddir}/lib/libnl-nf-3.la \
 	${top_builddir}/lib/libnl-genl-3.la \
@@ -569,29 +580,7 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(genl_ctrl_list_SOURCES) $(idiag_socket_details_SOURCES) \
-	$(nf_ct_list_SOURCES) $(nf_exp_add_SOURCES) \
-	$(nf_exp_delete_SOURCES) $(nf_exp_list_SOURCES) \
-	$(nf_log_SOURCES) $(nf_monitor_SOURCES) $(nf_queue_SOURCES) \
-	$(nl_addr_add_SOURCES) $(nl_addr_delete_SOURCES) \
-	$(nl_addr_list_SOURCES) $(nl_class_add_SOURCES) \
-	$(nl_class_delete_SOURCES) $(nl_class_list_SOURCES) \
-	$(nl_classid_lookup_SOURCES) $(nl_cls_add_SOURCES) \
-	$(nl_cls_delete_SOURCES) $(nl_cls_list_SOURCES) \
-	$(nl_fib_lookup_SOURCES) nl-link-enslave.c \
-	$(nl_link_ifindex2name_SOURCES) $(nl_link_list_SOURCES) \
-	$(nl_link_name2ifindex_SOURCES) nl-link-release.c \
-	$(nl_link_set_SOURCES) $(nl_link_stats_SOURCES) \
-	$(nl_list_caches_SOURCES) $(nl_list_sockets_SOURCES) \
-	$(nl_monitor_SOURCES) $(nl_neigh_add_SOURCES) \
-	$(nl_neigh_delete_SOURCES) $(nl_neigh_list_SOURCES) \
-	$(nl_neightbl_list_SOURCES) $(nl_pktloc_lookup_SOURCES) \
-	$(nl_qdisc_add_SOURCES) $(nl_qdisc_delete_SOURCES) \
-	$(nl_qdisc_list_SOURCES) $(nl_route_add_SOURCES) \
-	$(nl_route_delete_SOURCES) $(nl_route_get_SOURCES) \
-	$(nl_route_list_SOURCES) $(nl_rule_list_SOURCES) \
-	$(nl_tctree_list_SOURCES) $(nl_util_addr_SOURCES)
-DIST_SOURCES = $(genl_ctrl_list_SOURCES) \
-	$(idiag_socket_details_SOURCES) $(nf_ct_list_SOURCES) \
+	$(nf_ct_add_SOURCES) $(nf_ct_list_SOURCES) \
 	$(nf_exp_add_SOURCES) $(nf_exp_delete_SOURCES) \
 	$(nf_exp_list_SOURCES) $(nf_log_SOURCES) $(nf_monitor_SOURCES) \
 	$(nf_queue_SOURCES) $(nl_addr_add_SOURCES) \
@@ -613,6 +602,29 @@ DIST_SOURCES = $(genl_ctrl_list_SOURCES) \
 	$(nl_route_get_SOURCES) $(nl_route_list_SOURCES) \
 	$(nl_rule_list_SOURCES) $(nl_tctree_list_SOURCES) \
 	$(nl_util_addr_SOURCES)
+DIST_SOURCES = $(genl_ctrl_list_SOURCES) \
+	$(idiag_socket_details_SOURCES) $(nf_ct_add_SOURCES) \
+	$(nf_ct_list_SOURCES) $(nf_exp_add_SOURCES) \
+	$(nf_exp_delete_SOURCES) $(nf_exp_list_SOURCES) \
+	$(nf_log_SOURCES) $(nf_monitor_SOURCES) $(nf_queue_SOURCES) \
+	$(nl_addr_add_SOURCES) $(nl_addr_delete_SOURCES) \
+	$(nl_addr_list_SOURCES) $(nl_class_add_SOURCES) \
+	$(nl_class_delete_SOURCES) $(nl_class_list_SOURCES) \
+	$(nl_classid_lookup_SOURCES) $(nl_cls_add_SOURCES) \
+	$(nl_cls_delete_SOURCES) $(nl_cls_list_SOURCES) \
+	$(nl_fib_lookup_SOURCES) nl-link-enslave.c \
+	$(nl_link_ifindex2name_SOURCES) $(nl_link_list_SOURCES) \
+	$(nl_link_name2ifindex_SOURCES) nl-link-release.c \
+	$(nl_link_set_SOURCES) $(nl_link_stats_SOURCES) \
+	$(nl_list_caches_SOURCES) $(nl_list_sockets_SOURCES) \
+	$(nl_monitor_SOURCES) $(nl_neigh_add_SOURCES) \
+	$(nl_neigh_delete_SOURCES) $(nl_neigh_list_SOURCES) \
+	$(nl_neightbl_list_SOURCES) $(nl_pktloc_lookup_SOURCES) \
+	$(nl_qdisc_add_SOURCES) $(nl_qdisc_delete_SOURCES) \
+	$(nl_qdisc_list_SOURCES) $(nl_route_add_SOURCES) \
+	$(nl_route_delete_SOURCES) $(nl_route_get_SOURCES) \
+	$(nl_route_list_SOURCES) $(nl_rule_list_SOURCES) \
+	$(nl_tctree_list_SOURCES) $(nl_util_addr_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -811,7 +823,13 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = lib
-AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
+AM_CPPFLAGS = \
+	-I${top_srcdir}/include/linux-private \
+	-I${top_srcdir}/include \
+	-I${top_builddir}/include \
+	-D_GNU_SOURCE \
+	-DSYSCONFDIR=\"$(sysconfdir)/libnl\"
+
 AM_CFLAGS = -Wall
 LDADD = \
 	${top_builddir}/src/lib/libnl-cli-3.la \
@@ -821,8 +839,57 @@ LDADD = \
 	${top_builddir}/lib/libnl-route-3.la \
 	${top_builddir}/lib/libnl-idiag-3.la
 
+cli_programs = \
+	genl-ctrl-list \
+	idiag-socket-details \
+	nf-ct-add \
+	nf-ct-list \
+	nf-exp-add \
+	nf-exp-delete \
+	nf-exp-list \
+	nf-log \
+	nf-monitor \
+	nf-queue \
+	nl-addr-add \
+	nl-addr-delete \
+	nl-addr-list \
+	nl-class-add \
+	nl-class-delete \
+	nl-classid-lookup \
+	nl-class-list \
+	nl-cls-add \
+	nl-cls-delete \
+	nl-cls-list \
+	nl-fib-lookup \
+	nl-link-enslave \
+	nl-link-ifindex2name \
+	nl-link-list \
+	nl-link-name2ifindex \
+	nl-link-release \
+	nl-link-set \
+	nl-link-stats \
+	nl-list-caches \
+	nl-list-sockets \
+	nl-monitor \
+	nl-neigh-add \
+	nl-neigh-delete \
+	nl-neigh-list \
+	nl-neightbl-list \
+	nl-pktloc-lookup \
+	nl-qdisc-add \
+	nl-qdisc-delete \
+	nl-qdisc-list \
+	nl-route-add \
+	nl-route-delete \
+	nl-route-get \
+	nl-route-list \
+	nl-rule-list \
+	nl-tctree-list \
+	nl-util-addr
+
 genl_ctrl_list_SOURCES = genl-ctrl-list.c 
 nf_ct_list_SOURCES = nf-ct-list.c 
+nf_ct_add_SOURCES = nf-ct-add.c
 nf_log_SOURCES = nf-log.c
 nf_queue_SOURCES = nf-queue.c 
 nf_monitor_SOURCES = nf-monitor.c
@@ -898,6 +965,55 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
+	fi; \
+	for p in $$list; do echo "$$p $$p"; done | \
+	sed 's/$(EXEEXT)$$//' | \
+	while read p p1; do if test -f $$p \
+	 || test -f $$p1 \
+	  ; then echo "$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n;h' \
+	    -e 's|.*|.|' \
+	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
+	sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
+	    else { print "f", $$3 "/" $$4, $$1; } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	    test -z "$$files" || { \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
+	    } \
+	; done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
+	      -e 's/$$/$(EXEEXT)/' \
+	`; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(bindir)" && rm -f $$files
+
+clean-binPROGRAMS:
+	@list='$(bin_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -964,6 +1080,10 @@ genl-ctrl-list$(EXEEXT): $(genl_ctrl_list_OBJECTS) $(genl_ctrl_list_DEPENDENCIES
 idiag-socket-details$(EXEEXT): $(idiag_socket_details_OBJECTS) $(idiag_socket_details_DEPENDENCIES) $(EXTRA_idiag_socket_details_DEPENDENCIES) 
 	@rm -f idiag-socket-details$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(idiag_socket_details_OBJECTS) $(idiag_socket_details_LDADD) $(LIBS)
+
+nf-ct-add$(EXEEXT): $(nf_ct_add_OBJECTS) $(nf_ct_add_DEPENDENCIES) $(EXTRA_nf_ct_add_DEPENDENCIES) 
+	@rm -f nf-ct-add$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(nf_ct_add_OBJECTS) $(nf_ct_add_LDADD) $(LIBS)
 
 nf-ct-list$(EXEEXT): $(nf_ct_list_OBJECTS) $(nf_ct_list_DEPENDENCIES) $(EXTRA_nf_ct_list_DEPENDENCIES) 
 	@rm -f nf-ct-list$(EXEEXT)
@@ -1145,6 +1265,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genl-ctrl-list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/idiag-socket-details.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nf-ct-add.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nf-ct-list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nf-exp-add.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nf-exp-delete.Po@am__quote@
@@ -1378,7 +1499,7 @@ check: check-recursive
 all-am: Makefile $(PROGRAMS)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(sbindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -1413,8 +1534,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
-	clean-sbinPROGRAMS mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS clean-sbinPROGRAMS mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -1440,7 +1561,7 @@ install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-sbinPROGRAMS
+install-exec-am: install-binPROGRAMS install-sbinPROGRAMS
 
 install-html: install-html-recursive
 
@@ -1480,25 +1601,25 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-sbinPROGRAMS
+uninstall-am: uninstall-binPROGRAMS uninstall-sbinPROGRAMS
 
 .MAKE: $(am__recursive_targets) install-am install-strip
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
-	check-am clean clean-generic clean-libtool \
+	check-am clean clean-binPROGRAMS clean-generic clean-libtool \
 	clean-noinstPROGRAMS clean-sbinPROGRAMS cscopelist-am ctags \
 	ctags-am distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-sbinPROGRAMS install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-sbinPROGRAMS
+	html-am info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-sbinPROGRAMS \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-sbinPROGRAMS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
