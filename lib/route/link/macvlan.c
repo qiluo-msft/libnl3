@@ -55,10 +55,14 @@ static int macvlan_alloc(struct rtnl_link *link)
 {
 	struct macvlan_info *mvi;
 
-	if ((mvi = calloc(1, sizeof(*mvi))) == NULL)
-		return -NLE_NOMEM;
+	if (link->l_info)
+		memset(link->l_info, 0, sizeof(*mvi));
+	else {
+		if ((mvi = calloc(1, sizeof(*mvi))) == NULL)
+			return -NLE_NOMEM;
 
-	link->l_info = mvi;
+		link->l_info = mvi;
+	}
 
 	return 0;
 }
@@ -310,14 +314,14 @@ uint16_t rtnl_link_macvlan_get_flags(struct rtnl_link *link)
 /** @} */
 
 static const struct trans_tbl macvlan_flags[] = {
-	__ADD(MACVLAN_FLAG_NOPROMISC, nopromisc)
+	__ADD(MACVLAN_FLAG_NOPROMISC, nopromisc),
 };
 
 static const struct trans_tbl macvlan_modes[] = {
-	__ADD(MACVLAN_MODE_PRIVATE, private)
-	__ADD(MACVLAN_MODE_VEPA, vepa)
-	__ADD(MACVLAN_MODE_BRIDGE, bridge)
-	__ADD(MACVLAN_MODE_PASSTHRU, passthru)
+	__ADD(MACVLAN_MODE_PRIVATE, private),
+	__ADD(MACVLAN_MODE_VEPA, vepa),
+	__ADD(MACVLAN_MODE_BRIDGE, bridge),
+	__ADD(MACVLAN_MODE_PASSTHRU, passthru),
 };
 
 /**

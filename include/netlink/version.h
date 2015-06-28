@@ -14,18 +14,18 @@
 
 /* Compile Time Versioning Information */
 
-#define LIBNL_STRING "libnl 3.2.24"
-#define LIBNL_VERSION "3.2.24"
+#define LIBNL_STRING "libnl 3.2.26"
+#define LIBNL_VERSION "3.2.26"
 
 #define LIBNL_VER_MAJ		3
 #define LIBNL_VER_MIN		2
-#define LIBNL_VER_MIC		24
+#define LIBNL_VER_MIC		26
 #define LIBNL_VER(maj,min)	((maj) << 8 | (min))
 #define LIBNL_VER_NUM		LIBNL_VER(LIBNL_VER_MAJ, LIBNL_VER_MIN)
 
-#define LIBNL_CURRENT		219
+#define LIBNL_CURRENT		221
 #define LIBNL_REVISION		0
-#define LIBNL_AGE		19
+#define LIBNL_AGE		21
 
 /* Run-time version information */
 

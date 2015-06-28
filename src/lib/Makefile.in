@@ -124,10 +124,6 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libnl_cli_3_la_DEPENDENCIES = ${top_builddir}/lib/libnl-3.la \
-	${top_builddir}/lib/libnl-route-3.la \
-	${top_builddir}/lib/libnl-nf-3.la \
-	${top_builddir}/lib/libnl-genl-3.la $(am__DEPENDENCIES_1)
 am_libnl_cli_3_la_OBJECTS = utils.lo addr.lo ct.lo link.lo neigh.lo \
 	rule.lo route.lo tc.lo qdisc.lo class.lo cls.lo exp.lo
 libnl_cli_3_la_OBJECTS = $(am_libnl_cli_3_la_OBJECTS)
@@ -135,6 +131,10 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libnl_cli_3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libnl_cli_3_la_LDFLAGS) $(LDFLAGS) -o \
+	$@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -326,7 +326,15 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DPKGLIBDIR=\"$(pkglibdir)\" -DSYSCONFDIR=\"$(sysconfdir)\" -rdynamic
+AM_CPPFLAGS = \
+	-I${top_srcdir}/include/linux-private \
+	-I${top_srcdir}/include \
+	-I${top_builddir}/include \
+	-D_GNU_SOURCE \
+	-DPKGLIBDIR=\"$(pkglibdir)\" \
+	-DSYSCONFDIR=\"$(sysconfdir)\" \
+	-rdynamic
+
 AM_CFLAGS = -Wall
 AM_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
@@ -359,6 +367,13 @@ NL_LIBADD = \
 #	cls/pktloc_syntax.c cls/pktloc_syntax.h
 lib_LTLIBRARIES = \
 	libnl-cli-3.la
+
+libnl_cli_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_builddir)/libnl-cli-3.sym
+
+libnl_cli_3_la_DEPENDENCIES = \
+	$(top_builddir)/libnl-cli-3.sym
 
 libnl_cli_3_la_LIBADD = ${top_builddir}/lib/libnl-3.la \
 		       ${top_builddir}/lib/libnl-route-3.la \
@@ -440,7 +455,7 @@ clean-libLTLIBRARIES:
 	}
 
 libnl-cli-3.la: $(libnl_cli_3_la_OBJECTS) $(libnl_cli_3_la_DEPENDENCIES) $(EXTRA_libnl_cli_3_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_cli_3_la_OBJECTS) $(libnl_cli_3_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnl_cli_3_la_LINK) -rpath $(libdir) $(libnl_cli_3_la_OBJECTS) $(libnl_cli_3_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

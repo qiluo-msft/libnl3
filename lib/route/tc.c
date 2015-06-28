@@ -137,6 +137,7 @@ int rtnl_tc_msg_parse(struct nlmsghdr *n, struct rtnl_tc *tc)
 			tc->tc_xstats = nl_data_alloc_attr(tbs[TCA_STATS_APP]);
 			if (tc->tc_xstats == NULL)
 				return -NLE_NOMEM;
+			tc->ce_mask |= TCA_ATTR_XSTATS;
 		} else
 			goto compat_xstats;
 	} else {
@@ -550,7 +551,7 @@ char *rtnl_tc_get_kind(struct rtnl_tc *tc)
  */
 uint64_t rtnl_tc_get_stat(struct rtnl_tc *tc, enum rtnl_tc_stat id)
 {
-	if (id < 0 || id > RTNL_TC_STATS_MAX)
+	if ((unsigned int) id > RTNL_TC_STATS_MAX)
 		return 0;
 
 	return tc->tc_stats[id];
@@ -562,6 +563,28 @@ uint64_t rtnl_tc_get_stat(struct rtnl_tc *tc, enum rtnl_tc_stat id)
  * @name Utilities
  * @{
  */
+
+static const struct trans_tbl tc_stats[] = {
+	__ADD(RTNL_TC_PACKETS, packets),
+	__ADD(RTNL_TC_BYTES, bytes),
+	__ADD(RTNL_TC_RATE_BPS, rate_bps),
+	__ADD(RTNL_TC_RATE_PPS, rate_pps),
+	__ADD(RTNL_TC_QLEN, qlen),
+	__ADD(RTNL_TC_BACKLOG, backlog),
+	__ADD(RTNL_TC_DROPS, drops),
+	__ADD(RTNL_TC_REQUEUES, requeues),
+	__ADD(RTNL_TC_OVERLIMITS, overlimits),
+};
+
+char *rtnl_tc_stat2str(enum rtnl_tc_stat st, char *buf, size_t len)
+{
+	return __type2str(st, buf, len, tc_stats, ARRAY_SIZE(tc_stats));
+}
+
+int rtnl_tc_str2stat(const char *name)
+{
+	return __str2type(name, tc_stats, ARRAY_SIZE(tc_stats));
+}
 
 /**
  * Calculate time required to transmit buffer at a specific rate
@@ -759,16 +782,24 @@ int rtnl_tc_clone(struct nl_object *dstobj, struct nl_object *srcobj)
 		dst->tc_link = src->tc_link;
 	}
 
+	dst->tc_opts = NULL;
+	dst->tc_xstats = NULL;
+	dst->tc_subdata = NULL;
+	dst->ce_mask &= ~(TCA_ATTR_OPTS |
+	                  TCA_ATTR_XSTATS);
+
 	if (src->tc_opts) {
 		dst->tc_opts = nl_data_clone(src->tc_opts);
 		if (!dst->tc_opts)
 			return -NLE_NOMEM;
+		dst->ce_mask |= TCA_ATTR_OPTS;
 	}
-	
+
 	if (src->tc_xstats) {
 		dst->tc_xstats = nl_data_clone(src->tc_xstats);
 		if (!dst->tc_xstats)
 			return -NLE_NOMEM;
+		dst->ce_mask |= TCA_ATTR_XSTATS;
 	}
 
 	if (src->tc_subdata) {
@@ -995,6 +1026,19 @@ void rtnl_tc_unregister(struct rtnl_tc_ops *ops)
 }
 
 /**
+ * Returns the private data of the traffic control object.
+ * Contrary to rtnl_tc_data(), this returns NULL if the data is
+ * not yet allocated
+ * @arg tc		traffic control object
+ *
+ * @return pointer to the private data or NULL if not allocated.
+ */
+void *rtnl_tc_data_peek(struct rtnl_tc *tc)
+{
+	return tc->tc_subdata ? nl_data_get(tc->tc_subdata) : NULL;
+}
+
+/**
  * Return pointer to private data of traffic control object
  * @arg tc		traffic control object
  *
@@ -1030,6 +1074,7 @@ void *rtnl_tc_data(struct rtnl_tc *tc)
  * Check traffic control object type and return private data section 
  * @arg tc		traffic control object
  * @arg ops		expected traffic control object operations
+ * @arg err		the place where saves the error code if fails
  *
  * Checks whether the traffic control object matches the type
  * specified with the traffic control object operations. If the
@@ -1040,8 +1085,10 @@ void *rtnl_tc_data(struct rtnl_tc *tc)
  *
  * @return Pointer to private tc data or NULL if type mismatches.
  */
-void *rtnl_tc_data_check(struct rtnl_tc *tc, struct rtnl_tc_ops *ops)
+void *rtnl_tc_data_check(struct rtnl_tc *tc, struct rtnl_tc_ops *ops, int *err)
 {
+	void *ret;
+
 	if (tc->tc_ops != ops) {
 		char buf[64];
 
@@ -1050,11 +1097,25 @@ void *rtnl_tc_data_check(struct rtnl_tc *tc, struct rtnl_tc_ops *ops)
 			 tc, ops->to_kind, tc->tc_ops->to_kind);
 		APPBUG(buf);
 
+		if (err)
+			*err = -NLE_OPNOTSUPP;
 		return NULL;
 	}
 
-	return rtnl_tc_data(tc);
+	ret = rtnl_tc_data(tc);
+	if (ret == NULL) {
+		if (err)
+			*err = -NLE_NOMEM;
+	}
+
+	return ret;
 }
+
+struct nl_af_group tc_groups[] = {
+	{ AF_UNSPEC,	RTNLGRP_TC },
+	{ END_OF_GROUP_LIST },
+};
+
 
 void rtnl_tc_type_register(struct rtnl_tc_type_ops *ops)
 {

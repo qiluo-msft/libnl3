@@ -544,24 +544,24 @@ static int route_update(struct nl_object *old_obj, struct nl_object *new_obj)
 }
 
 static const struct trans_tbl route_attrs[] = {
-	__ADD(ROUTE_ATTR_FAMILY, family)
-	__ADD(ROUTE_ATTR_TOS, tos)
-	__ADD(ROUTE_ATTR_TABLE, table)
-	__ADD(ROUTE_ATTR_PROTOCOL, protocol)
-	__ADD(ROUTE_ATTR_SCOPE, scope)
-	__ADD(ROUTE_ATTR_TYPE, type)
-	__ADD(ROUTE_ATTR_FLAGS, flags)
-	__ADD(ROUTE_ATTR_DST, dst)
-	__ADD(ROUTE_ATTR_SRC, src)
-	__ADD(ROUTE_ATTR_IIF, iif)
-	__ADD(ROUTE_ATTR_OIF, oif)
-	__ADD(ROUTE_ATTR_GATEWAY, gateway)
-	__ADD(ROUTE_ATTR_PRIO, prio)
-	__ADD(ROUTE_ATTR_PREF_SRC, pref_src)
-	__ADD(ROUTE_ATTR_METRICS, metrics)
-	__ADD(ROUTE_ATTR_MULTIPATH, multipath)
-	__ADD(ROUTE_ATTR_REALMS, realms)
-	__ADD(ROUTE_ATTR_CACHEINFO, cacheinfo)
+	__ADD(ROUTE_ATTR_FAMILY, family),
+	__ADD(ROUTE_ATTR_TOS, tos),
+	__ADD(ROUTE_ATTR_TABLE, table),
+	__ADD(ROUTE_ATTR_PROTOCOL, protocol),
+	__ADD(ROUTE_ATTR_SCOPE, scope),
+	__ADD(ROUTE_ATTR_TYPE, type),
+	__ADD(ROUTE_ATTR_FLAGS, flags),
+	__ADD(ROUTE_ATTR_DST, dst),
+	__ADD(ROUTE_ATTR_SRC, src),
+	__ADD(ROUTE_ATTR_IIF, iif),
+	__ADD(ROUTE_ATTR_OIF, oif),
+	__ADD(ROUTE_ATTR_GATEWAY, gateway),
+	__ADD(ROUTE_ATTR_PRIO, prio),
+	__ADD(ROUTE_ATTR_PREF_SRC, pref_src),
+	__ADD(ROUTE_ATTR_METRICS, metrics),
+	__ADD(ROUTE_ATTR_MULTIPATH, multipath),
+	__ADD(ROUTE_ATTR_REALMS, realms),
+	__ADD(ROUTE_ATTR_CACHEINFO, cacheinfo),
 };
 
 static char *route_attrs2str(int attrs, char *buf, size_t len)
@@ -1198,7 +1198,7 @@ int rtnl_route_build_msg(struct nl_msg *msg, struct rtnl_route *route)
 	if (route->rt_src)
 		rtmsg.rtm_src_len = nl_addr_get_prefixlen(route->rt_src);
 
-	if (rtmsg.rtm_scope == RT_SCOPE_NOWHERE)
+	if (!(route->ce_mask & ROUTE_ATTR_SCOPE))
 		rtmsg.rtm_scope = rtnl_route_guess_scope(route);
 
 	if (rtnl_route_get_nnexthops(route) == 1) {

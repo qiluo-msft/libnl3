@@ -32,6 +32,7 @@
 #include <netlink/route/link/veth.h>
 
 #include <linux/if_link.h>
+#include <linux/veth.h>
 
 static struct nla_policy veth_policy[VETH_INFO_MAX+1] = {
 	[VETH_INFO_PEER]	= { .minlen = sizeof(struct ifinfomsg) },
@@ -98,19 +99,19 @@ static void veth_dump_details(struct rtnl_link *link, struct nl_dump_params *p)
 
 static int veth_clone(struct rtnl_link *dst, struct rtnl_link *src)
 {
-	struct rtnl_link *dst_peer , *src_peer = src->l_info;
-	int err;
+	struct rtnl_link *dst_peer = NULL, *src_peer = src->l_info;
 
-	dst_peer = dst->l_info = rtnl_link_alloc();
-	if (!dst_peer || !src_peer)
-		return -NLE_NOMEM;
-	if ((err = rtnl_link_set_type(dst, "veth")) < 0) {
-		rtnl_link_put(dst_peer);
-		return err;
+	/* we are calling nl_object_clone() recursively, this should
+	 * happen only once */
+	if (src_peer) {
+		src_peer->l_info = NULL;
+		dst_peer = (struct rtnl_link *)nl_object_clone(OBJ_CAST(src_peer));
+		if (!dst_peer)
+			return -NLE_NOMEM;
+		src_peer->l_info = src;
+		dst_peer->l_info = dst;
 	}
-
-	memcpy(dst_peer, src_peer, sizeof(struct rtnl_link));
-
+	dst->l_info = dst_peer;
 	return 0;
 }
 
@@ -140,6 +141,43 @@ static int veth_put_attrs(struct nl_msg *msg, struct rtnl_link *link)
 	return 0;
 }
 
+static int veth_alloc(struct rtnl_link *link)
+{
+	struct rtnl_link *peer;
+	int err;
+
+	/* return early if we are in recursion */
+	if (link->l_info)
+		return 0;
+
+	if (!(peer = rtnl_link_alloc()))
+		return -NLE_NOMEM;
+
+	/* We don't need to hold a reference here, as link and
+	 * its peer should always be freed together.
+	 */
+	peer->l_info = link;
+	if ((err = rtnl_link_set_type(peer, "veth")) < 0) {
+		rtnl_link_put(peer);
+		return err;
+	}
+
+	link->l_info = peer;
+	return 0;
+}
+
+static void veth_free(struct rtnl_link *link)
+{
+	struct rtnl_link *peer = link->l_info;
+	if (peer) {
+		link->l_info = NULL;
+		/* avoid calling this recursively */
+		peer->l_info = NULL;
+		rtnl_link_put(peer);
+	}
+	/* the caller should finally free link */
+}
+
 static struct rtnl_link_info_ops veth_info_ops = {
 	.io_name		= "veth",
 	.io_parse		= veth_parse,
@@ -147,8 +185,10 @@ static struct rtnl_link_info_ops veth_info_ops = {
 	    [NL_DUMP_LINE]	= veth_dump_line,
 	    [NL_DUMP_DETAILS]	= veth_dump_details,
 	},
+	.io_alloc		= veth_alloc,
 	.io_clone		= veth_clone,
 	.io_put_attrs		= veth_put_attrs,
+	.io_free		= veth_free,
 };
 
 /** @cond SKIP */
@@ -172,29 +212,16 @@ static struct rtnl_link_info_ops veth_info_ops = {
  */
 struct rtnl_link *rtnl_link_veth_alloc(void)
 {
-	struct rtnl_link *link, *peer;
+	struct rtnl_link *link;
 	int err;
 
 	if (!(link = rtnl_link_alloc()))
 		return NULL;
-	if (!(peer = rtnl_link_alloc())) {
-		rtnl_link_put(link);
-		return NULL;
-	}
-
 	if ((err = rtnl_link_set_type(link, "veth")) < 0) {
-		rtnl_link_put(peer);
-		rtnl_link_put(link);
-		return NULL;
-	}
-	if ((err = rtnl_link_set_type(peer, "veth")) < 0) {
-		rtnl_link_put(peer);
 		rtnl_link_put(link);
 		return NULL;
 	}
 
-	link->l_info = peer;
-	peer->l_info = link;
 	return link;
 }
 
@@ -206,6 +233,7 @@ struct rtnl_link *rtnl_link_veth_alloc(void)
 struct rtnl_link *rtnl_link_veth_get_peer(struct rtnl_link *link)
 {
 	IS_VETH_LINK_ASSERT(link);
+	nl_object_get(OBJ_CAST(link->l_info));
 	return link->l_info;
 }
 
@@ -215,8 +243,7 @@ struct rtnl_link *rtnl_link_veth_get_peer(struct rtnl_link *link)
  */
 void rtnl_link_veth_release(struct rtnl_link *link)
 {
-	struct rtnl_link *peer = rtnl_link_veth_get_peer(link);
-	rtnl_link_put(peer);
+	veth_free(link);
 	rtnl_link_put(link);
 }
 
@@ -253,7 +280,7 @@ int rtnl_link_veth_add(struct nl_sock *sock, const char *name,
 
 	if (!(link = rtnl_link_veth_alloc()))
 		return -NLE_NOMEM;
-	peer = rtnl_link_veth_get_peer(link);
+	peer = link->l_info;
 
 	if (name && peer_name) {
 		rtnl_link_set_name(link, name);
@@ -261,12 +288,10 @@ int rtnl_link_veth_add(struct nl_sock *sock, const char *name,
 	}
 
 	rtnl_link_set_ns_pid(peer, pid);
-	err = rtnl_link_add(sock, link, NLM_F_CREATE);
+	err = rtnl_link_add(sock, link, NLM_F_CREATE | NLM_F_EXCL);
 
-	rtnl_link_put(peer);
 	rtnl_link_put(link);
-
-        return err;
+	return err;
 }
 
 /** @} */

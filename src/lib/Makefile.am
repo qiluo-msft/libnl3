@@ -1,6 +1,14 @@
 # -*- Makefile -*-
 
-AM_CPPFLAGS  = -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DPKGLIBDIR=\"$(pkglibdir)\" -DSYSCONFDIR=\"$(sysconfdir)\" -rdynamic
+AM_CPPFLAGS  = \
+	-I${top_srcdir}/include/linux-private \
+	-I${top_srcdir}/include \
+	-I${top_builddir}/include \
+	-D_GNU_SOURCE \
+	-DPKGLIBDIR=\"$(pkglibdir)\" \
+	-DSYSCONFDIR=\"$(sysconfdir)\" \
+	-rdynamic
+
 AM_CFLAGS = -Wall
 AM_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
@@ -32,6 +40,12 @@ NL_LIBADD = \
 
 lib_LTLIBRARIES = \
 	libnl-cli-3.la
+
+libnl_cli_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_builddir)/libnl-cli-3.sym
+libnl_cli_3_la_DEPENDENCIES = \
+	$(top_builddir)/libnl-cli-3.sym
 
 libnl_cli_3_la_LIBADD  = ${top_builddir}/lib/libnl-3.la \
 		       ${top_builddir}/lib/libnl-route-3.la \

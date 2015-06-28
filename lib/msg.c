@@ -385,14 +385,11 @@ struct nl_msg *nlmsg_convert(struct nlmsghdr *hdr)
 
 	nm = __nlmsg_alloc(NLMSG_ALIGN(hdr->nlmsg_len));
 	if (!nm)
-		goto errout;
+		return NULL;
 
 	memcpy(nm->nm_nlh, hdr, hdr->nlmsg_len);
 
 	return nm;
-errout:
-	nlmsg_free(nm);
-	return NULL;
 }
 
 /**
@@ -572,8 +569,8 @@ void nlmsg_free(struct nl_msg *msg)
 
 	if (msg->nm_refcnt <= 0) {
 		free(msg->nm_nlh);
-		free(msg);
 		NL_DBG(2, "msg %p: Freed\n", msg);
+		free(msg);
 	}
 }
 
@@ -640,10 +637,10 @@ struct ucred *nlmsg_get_creds(struct nl_msg *msg)
  */
 
 static const struct trans_tbl nl_msgtypes[] = {
-	__ADD(NLMSG_NOOP,NOOP)
-	__ADD(NLMSG_ERROR,ERROR)
-	__ADD(NLMSG_DONE,DONE)
-	__ADD(NLMSG_OVERRUN,OVERRUN)
+	__ADD(NLMSG_NOOP,NOOP),
+	__ADD(NLMSG_ERROR,ERROR),
+	__ADD(NLMSG_DONE,DONE),
+	__ADD(NLMSG_OVERRUN,OVERRUN),
 };
 
 char *nl_nlmsgtype2str(int type, char *buf, size_t size)

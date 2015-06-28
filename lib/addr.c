@@ -65,7 +65,7 @@ static inline int do_digit(char *str, uint16_t *addr, uint16_t scale,
 	return 0;
 }
 
-static const char *dnet_ntop(char *addrbuf, size_t addrlen, char *str,
+static const char *dnet_ntop(const char *addrbuf, size_t addrlen, char *str,
 			     size_t len)
 {
 	uint16_t addr = dn_ntohs(*(uint16_t *)addrbuf);
@@ -213,7 +213,7 @@ struct nl_addr *nl_addr_alloc(size_t maxsize)
  *
  * @return Allocated address object or NULL upon failure.
  */
-struct nl_addr *nl_addr_build(int family, void *buf, size_t size)
+struct nl_addr *nl_addr_build(int family, const void *buf, size_t size)
 {
 	struct nl_addr *addr;
 
@@ -252,7 +252,7 @@ struct nl_addr *nl_addr_build(int family, void *buf, size_t size)
  *
  * @return Allocated address object or NULL upon failure.
  */
-struct nl_addr *nl_addr_alloc_attr(struct nlattr *nla, int family)
+struct nl_addr *nl_addr_alloc_attr(const struct nlattr *nla, int family)
 {
 	return nl_addr_build(family, nla_data(nla), nla_len(nla));
 }
@@ -468,7 +468,7 @@ errout:
  *
  * @return Allocated abstract address or NULL upon failure.
  */
-struct nl_addr *nl_addr_clone(struct nl_addr *addr)
+struct nl_addr *nl_addr_clone(const struct nl_addr *addr)
 {
 	struct nl_addr *new;
 
@@ -531,7 +531,7 @@ void nl_addr_put(struct nl_addr *addr)
  *
  * @return Non-zero if the abstract address is shared, otherwise 0.
  */
-int nl_addr_shared(struct nl_addr *addr)
+int nl_addr_shared(const struct nl_addr *addr)
 {
 	return addr->a_refcnt > 1;
 }
@@ -560,7 +560,7 @@ int nl_addr_shared(struct nl_addr *addr)
  * @return Integer less than, equal to or greather than zero if the two
  *         addresses match.
  */
-int nl_addr_cmp(struct nl_addr *a, struct nl_addr *b)
+int nl_addr_cmp(const struct nl_addr *a, const struct nl_addr *b)
 {
 	int d = a->a_family - b->a_family;
 
@@ -591,7 +591,7 @@ int nl_addr_cmp(struct nl_addr *a, struct nl_addr *b)
  * @return Integer less than, equal to or greather than zero if the two
  *         addresses match.
  */
-int nl_addr_cmp_prefix(struct nl_addr *a, struct nl_addr *b)
+int nl_addr_cmp_prefix(const struct nl_addr *a, const struct nl_addr *b)
 {
 	int d = a->a_family - b->a_family;
 
@@ -617,7 +617,7 @@ int nl_addr_cmp_prefix(struct nl_addr *a, struct nl_addr *b)
  *
  * @return 1 if the binary address consists of all zeros, 0 otherwise.
  */
-int nl_addr_iszero(struct nl_addr *addr)
+int nl_addr_iszero(const struct nl_addr *addr)
 {
 	unsigned int i;
 
@@ -636,7 +636,7 @@ int nl_addr_iszero(struct nl_addr *addr)
  * @return 1 if the address is parseable assuming the specified address family,
  *         otherwise 0 is returned.
  */
-int nl_addr_valid(char *addr, int family)
+int nl_addr_valid(const char *addr, int family)
 {
 	int ret;
 	char buf[32];
@@ -670,7 +670,7 @@ int nl_addr_valid(char *addr, int family)
  *
  * @return Numeric address family or AF_UNSPEC
  */
-int nl_addr_guess_family(struct nl_addr *addr)
+int nl_addr_guess_family(const struct nl_addr *addr)
 {
 	switch (addr->a_len) {
 		case 4:
@@ -697,7 +697,7 @@ int nl_addr_guess_family(struct nl_addr *addr)
  *
  * @return 0 on success or a negative error code
  */
-int nl_addr_fill_sockaddr(struct nl_addr *addr, struct sockaddr *sa,
+int nl_addr_fill_sockaddr(const struct nl_addr *addr, struct sockaddr *sa,
 			  socklen_t *salen)
 {
 	switch (addr->a_family) {
@@ -753,7 +753,7 @@ int nl_addr_fill_sockaddr(struct nl_addr *addr, struct sockaddr *sa,
  *
  * @return 0 on success or a negative error code.
  */
-int nl_addr_info(struct nl_addr *addr, struct addrinfo **result)
+int nl_addr_info(const struct nl_addr *addr, struct addrinfo **result)
 {
 	int err;
 	char buf[INET6_ADDRSTRLEN+5];
@@ -797,7 +797,7 @@ int nl_addr_info(struct nl_addr *addr, struct addrinfo **result)
  *
  * @return 0 on success or a negative error code.
  */
-int nl_addr_resolve(struct nl_addr *addr, char *host, size_t hostlen)
+int nl_addr_resolve(const struct nl_addr *addr, char *host, size_t hostlen)
 {
 	int err;
 	struct sockaddr_in6 buf;
@@ -842,7 +842,7 @@ void nl_addr_set_family(struct nl_addr *addr, int family)
  *
  * @return The numeric address family or `AF_UNSPEC`
  */
-int nl_addr_get_family(struct nl_addr *addr)
+int nl_addr_get_family(const struct nl_addr *addr)
 {
 	return addr->a_family;
 }
@@ -867,7 +867,7 @@ int nl_addr_get_family(struct nl_addr *addr)
  *
  * @return 0 on success or a negative error code.
  */
-int nl_addr_set_binary_addr(struct nl_addr *addr, void *buf, size_t len)
+int nl_addr_set_binary_addr(struct nl_addr *addr, const void *buf, size_t len)
 {
 	if (len > addr->a_maxsize)
 		return -NLE_RANGE;
@@ -890,9 +890,9 @@ int nl_addr_set_binary_addr(struct nl_addr *addr, void *buf, size_t len)
  *
  * @return Pointer to binary address of length nl_addr_get_len()
  */
-void *nl_addr_get_binary_addr(struct nl_addr *addr)
+void *nl_addr_get_binary_addr(const struct nl_addr *addr)
 {
-	return addr->a_addr;
+	return (void*)addr->a_addr;
 }
 
 /**
@@ -902,7 +902,7 @@ void *nl_addr_get_binary_addr(struct nl_addr *addr)
  * @see nl_addr_get_binary_addr()
  * @see nl_addr_set_binary_addr()
  */
-unsigned int nl_addr_get_len(struct nl_addr *addr)
+unsigned int nl_addr_get_len(const struct nl_addr *addr)
 {
 	return addr->a_len;
 }
@@ -925,7 +925,7 @@ void nl_addr_set_prefixlen(struct nl_addr *addr, int prefixlen)
  *
  * @see nl_addr_set_prefixlen()
  */
-unsigned int nl_addr_get_prefixlen(struct nl_addr *addr)
+unsigned int nl_addr_get_prefixlen(const struct nl_addr *addr)
 {
 	return addr->a_prefixlen;
 }
@@ -948,7 +948,7 @@ unsigned int nl_addr_get_prefixlen(struct nl_addr *addr)
  *
  * @return Address represented in ASCII stored in destination buffer.
  */
-char *nl_addr2str(struct nl_addr *addr, char *buf, size_t size)
+char *nl_addr2str(const struct nl_addr *addr, char *buf, size_t size)
 {
 	unsigned int i;
 	char tmp[16];
@@ -1003,65 +1003,65 @@ prefix:
  */
 
 static const struct trans_tbl afs[] = {
-	__ADD(AF_UNSPEC,unspec)
-	__ADD(AF_UNIX,unix)
-	__ADD(AF_INET,inet)
-	__ADD(AF_AX25,ax25)
-	__ADD(AF_IPX,ipx)
-	__ADD(AF_APPLETALK,appletalk)
-	__ADD(AF_NETROM,netrom)
-	__ADD(AF_BRIDGE,bridge)
-	__ADD(AF_ATMPVC,atmpvc)
-	__ADD(AF_X25,x25)
-	__ADD(AF_INET6,inet6)
-	__ADD(AF_ROSE,rose)
-	__ADD(AF_DECnet,decnet)
-	__ADD(AF_NETBEUI,netbeui)
-	__ADD(AF_SECURITY,security)
-	__ADD(AF_KEY,key)
-	__ADD(AF_NETLINK,netlink)
-	__ADD(AF_PACKET,packet)
-	__ADD(AF_ASH,ash)
-	__ADD(AF_ECONET,econet)
-	__ADD(AF_ATMSVC,atmsvc)
+	__ADD(AF_UNSPEC,unspec),
+	__ADD(AF_UNIX,unix),
+	__ADD(AF_INET,inet),
+	__ADD(AF_AX25,ax25),
+	__ADD(AF_IPX,ipx),
+	__ADD(AF_APPLETALK,appletalk),
+	__ADD(AF_NETROM,netrom),
+	__ADD(AF_BRIDGE,bridge),
+	__ADD(AF_ATMPVC,atmpvc),
+	__ADD(AF_X25,x25),
+	__ADD(AF_INET6,inet6),
+	__ADD(AF_ROSE,rose),
+	__ADD(AF_DECnet,decnet),
+	__ADD(AF_NETBEUI,netbeui),
+	__ADD(AF_SECURITY,security),
+	__ADD(AF_KEY,key),
+	__ADD(AF_NETLINK,netlink),
+	__ADD(AF_PACKET,packet),
+	__ADD(AF_ASH,ash),
+	__ADD(AF_ECONET,econet),
+	__ADD(AF_ATMSVC,atmsvc),
 #ifdef AF_RDS
-	__ADD(AF_RDS,rds)
+	__ADD(AF_RDS,rds),
 #endif
-	__ADD(AF_SNA,sna)
-	__ADD(AF_IRDA,irda)
-	__ADD(AF_PPPOX,pppox)
-	__ADD(AF_WANPIPE,wanpipe)
-	__ADD(AF_LLC,llc)
+	__ADD(AF_SNA,sna),
+	__ADD(AF_IRDA,irda),
+	__ADD(AF_PPPOX,pppox),
+	__ADD(AF_WANPIPE,wanpipe),
+	__ADD(AF_LLC,llc),
 #ifdef AF_CAN
-	__ADD(AF_CAN,can)
+	__ADD(AF_CAN,can),
 #endif
 #ifdef AF_TIPC
-	__ADD(AF_TIPC,tipc)
+	__ADD(AF_TIPC,tipc),
 #endif
-	__ADD(AF_BLUETOOTH,bluetooth)
+	__ADD(AF_BLUETOOTH,bluetooth),
 #ifdef AF_IUCV
-	__ADD(AF_IUCV,iucv)
+	__ADD(AF_IUCV,iucv),
 #endif
 #ifdef AF_RXRPC
-	__ADD(AF_RXRPC,rxrpc)
+	__ADD(AF_RXRPC,rxrpc),
 #endif
 #ifdef AF_ISDN
-	__ADD(AF_ISDN,isdn)
+	__ADD(AF_ISDN,isdn),
 #endif
 #ifdef AF_PHONET
-	__ADD(AF_PHONET,phonet)
+	__ADD(AF_PHONET,phonet),
 #endif
 #ifdef AF_IEEE802154
-	__ADD(AF_IEEE802154,ieee802154)
+	__ADD(AF_IEEE802154,ieee802154),
 #endif
 #ifdef AF_CAIF
-	__ADD(AF_CAIF,caif)
+	__ADD(AF_CAIF,caif),
 #endif
 #ifdef AF_ALG
-	__ADD(AF_ALG,alg)
+	__ADD(AF_ALG,alg),
 #endif
 #ifdef AF_NFC
-	__ADD(AF_NFC,nfc)
+	__ADD(AF_NFC,nfc),
 #endif
 };
 

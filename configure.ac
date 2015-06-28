@@ -13,7 +13,8 @@
 # copied from glib
 m4_define([libnl_major_version], [3])
 m4_define([libnl_minor_version], [2])
-m4_define([libnl_micro_version], [24])
+m4_define([libnl_micro_version], [26])
+m4_define([libnl_git_sha], [m4_esyscmd([ ( [ -d ./.git/ ] && [ "$(readlink -f ./.git/)" = "$(readlink -f "$(git rev-parse --git-dir 2>/dev/null)" 2>/dev/null)" ] && git rev-parse --verify -q HEAD 2>/dev/null ) || true ])])
 
 
 # The following explanation may help to understand the above rules a bit
@@ -34,9 +35,9 @@ m4_define([libnl_micro_version], [24])
 # 3. Programs may need to be changed, recompiled, relinked in order to use
 #    the new version. Bump current, set revision and age to 0.
 
-m4_define([libnl_lt_current],    [219])
+m4_define([libnl_lt_current],    [221])
 m4_define([libnl_lt_revision],	 [0])
-m4_define([libnl_lt_age],        [19])
+m4_define([libnl_lt_age],        [21])
 
 m4_define([libnl_version],
 	  [libnl_major_version.libnl_minor_version.libnl_micro_version])
@@ -55,6 +56,7 @@ MIN_VERSION=libnl_minor_version
 AC_SUBST(MIN_VERSION)
 MIC_VERSION=libnl_micro_version
 AC_SUBST(MIC_VERSION)
+LIBNL_GIT_SHA=libnl_git_sha
 LIBNL_VERSION=libnl_version
 AC_SUBST(LIBNL_VERSION)
 
@@ -69,6 +71,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
+AC_PROG_MKDIR_P
 AC_CHECK_PROGS(FLEX, 'flex')
 AC_CHECK_PROGS(YACC, 'bison -y')
 
@@ -88,9 +91,16 @@ AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=PATH],
 AC_SUBST([pkgconfigdir])
 
 AC_ARG_ENABLE([cli],
-	AS_HELP_STRING([--disable-cli], [Do not build command line interface utils]),
+	AS_HELP_STRING([--enable-cli=yes|no|no-inst|bin|sbin], [Whether to build command line interface utils. Defaults to 'yes' which is a synonym for 'bin'. 'no-inst' means only build, not installing. 'bin'/'sbin' means installing to bin/sbin directory]),
 	[enable_cli="$enableval"], [enable_cli="yes"])
-AM_CONDITIONAL([ENABLE_CLI], [test "$enable_cli" = "yes"])
+if test "$enable_cli" != "no" &&
+   test "$enable_cli" != "no-inst" &&
+   test "$enable_cli" != "sbin"; then
+	enable_cli="bin"
+fi
+AM_CONDITIONAL([ENABLE_CLI], [test "$enable_cli" != "no"])
+AM_CONDITIONAL([ENABLE_CLI_INSTALL_BIN], [test "$enable_cli" = "bin"])
+AM_CONDITIONAL([ENABLE_CLI_INSTALL_SBIN], [test "$enable_cli" = "sbin"])
 
 AC_ARG_ENABLE([pthreads],
 	AS_HELP_STRING([--disable-pthreads], [Disable pthreads support]),
@@ -118,12 +128,13 @@ AC_CONFIG_SUBDIRS([doc])
 
 AC_CONFIG_FILES([
 Makefile
-libnl.sym
 libnl-3.0.pc
 libnl-route-3.0.pc
 libnl-genl-3.0.pc
 libnl-nf-3.0.pc
 libnl-cli-3.0.pc
+libnl-xfrm-3.0.pc
+libnl-idiag-3.0.pc
 lib/Makefile
 include/Makefile
 src/Makefile

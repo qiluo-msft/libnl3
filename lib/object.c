@@ -110,13 +110,14 @@ struct nl_derived_object {
 struct nl_object *nl_object_clone(struct nl_object *obj)
 {
 	struct nl_object *new;
-	struct nl_object_ops *ops = obj_ops(obj);
+	struct nl_object_ops *ops;
 	int doff = offsetof(struct nl_derived_object, data);
 	int size;
 
 	if (!obj)
 		return NULL;
 
+	ops = obj_ops(obj);
 	new = nl_object_alloc(ops);
 	if (!new)
 		return NULL;
@@ -184,9 +185,9 @@ void nl_object_free(struct nl_object *obj)
 	if (ops->oo_free_data)
 		ops->oo_free_data(obj);
 
-	free(obj);
-
 	NL_DBG(4, "Freed object %p\n", obj);
+
+	free(obj);
 }
 
 /** @} */
@@ -362,7 +363,7 @@ uint32_t nl_object_diff(struct nl_object *a, struct nl_object *b)
 	struct nl_object_ops *ops = obj_ops(a);
 
 	if (ops != obj_ops(b) || ops->oo_compare == NULL)
-		return UINT_MAX;
+		return UINT32_MAX;
 
 	return ops->oo_compare(a, b, ~0, 0);
 }
@@ -382,7 +383,7 @@ int nl_object_match_filter(struct nl_object *obj, struct nl_object *filter)
 
 	if (ops != obj_ops(filter) || ops->oo_compare == NULL)
 		return 0;
-	
+
 	return !(ops->oo_compare(obj, filter, filter->ce_mask,
 				 LOOSE_COMPARISON));
 }

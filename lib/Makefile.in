@@ -173,6 +173,15 @@ cli_qdisc_fq_codel_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @ENABLE_CLI_TRUE@am_cli_qdisc_fq_codel_la_rpath = -rpath \
 @ENABLE_CLI_TRUE@	$(pkglibdir)/cli/qdisc
+cli_qdisc_hfsc_la_LIBADD =
+cli_qdisc_hfsc_la_SOURCES = cli/qdisc/hfsc.c
+cli_qdisc_hfsc_la_OBJECTS = cli/qdisc/hfsc.lo
+cli_qdisc_hfsc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(cli_qdisc_hfsc_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
+@ENABLE_CLI_TRUE@am_cli_qdisc_hfsc_la_rpath = -rpath \
+@ENABLE_CLI_TRUE@	$(pkglibdir)/cli/qdisc
 cli_qdisc_htb_la_LIBADD =
 cli_qdisc_htb_la_SOURCES = cli/qdisc/htb.c
 cli_qdisc_htb_la_OBJECTS = cli/qdisc/htb.lo
@@ -214,16 +223,24 @@ am_libnl_3_la_OBJECTS = addr.lo attr.lo cache.lo cache_mngr.lo \
 	cache_mngt.lo data.lo error.lo handlers.lo msg.lo nl.lo \
 	object.lo socket.lo utils.lo version.lo hash.lo hashtable.lo
 libnl_3_la_OBJECTS = $(am_libnl_3_la_OBJECTS)
-libnl_genl_3_la_DEPENDENCIES = libnl-3.la
+libnl_3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(libnl_3_la_LDFLAGS) $(LDFLAGS) -o $@
 am_libnl_genl_3_la_OBJECTS = genl/ctrl.lo genl/family.lo genl/genl.lo \
 	genl/mngt.lo
 libnl_genl_3_la_OBJECTS = $(am_libnl_genl_3_la_OBJECTS)
-libnl_idiag_3_la_DEPENDENCIES = libnl-3.la
+libnl_genl_3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libnl_genl_3_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am_libnl_idiag_3_la_OBJECTS = idiag/idiag_meminfo_obj.lo \
 	idiag/idiag_vegasinfo_obj.lo idiag/idiag_msg_obj.lo \
 	idiag/idiag_req_obj.lo idiag/idiag.lo
 libnl_idiag_3_la_OBJECTS = $(am_libnl_idiag_3_la_OBJECTS)
-libnl_nf_3_la_DEPENDENCIES = libnl-route-3.la
+libnl_idiag_3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libnl_idiag_3_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am_libnl_nf_3_la_OBJECTS = netfilter/ct.lo netfilter/ct_obj.lo \
 	netfilter/log.lo netfilter/log_msg.lo netfilter/log_msg_obj.lo \
 	netfilter/log_obj.lo netfilter/netfilter.lo netfilter/nfnl.lo \
@@ -231,7 +248,9 @@ am_libnl_nf_3_la_OBJECTS = netfilter/ct.lo netfilter/ct_obj.lo \
 	netfilter/queue_msg_obj.lo netfilter/queue_obj.lo \
 	netfilter/exp.lo netfilter/exp_obj.lo
 libnl_nf_3_la_OBJECTS = $(am_libnl_nf_3_la_OBJECTS)
-libnl_route_3_la_DEPENDENCIES = libnl-3.la
+libnl_nf_3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(libnl_nf_3_la_LDFLAGS) $(LDFLAGS) -o $@
 am_libnl_route_3_la_OBJECTS = route/addr.lo route/class.lo \
 	route/cls.lo route/act.lo route/link.lo route/neigh.lo \
 	route/neightbl.lo route/nexthop.lo route/qdisc.lo \
@@ -239,24 +258,38 @@ am_libnl_route_3_la_OBJECTS = route/addr.lo route/class.lo \
 	route/rtnl.lo route/rule.lo route/tc.lo route/classid.lo \
 	route/cls/fw.lo route/cls/police.lo route/cls/u32.lo \
 	route/cls/basic.lo route/cls/cgroup.lo route/act/mirred.lo \
-	route/cls/ematch.lo route/cls/ematch/container.lo \
-	route/cls/ematch/cmp.lo route/cls/ematch/nbyte.lo \
-	route/cls/ematch/text.lo route/cls/ematch/meta.lo \
-	route/link/api.lo route/link/vlan.lo route/link/dummy.lo \
-	route/link/bridge.lo route/link/inet6.lo route/link/inet.lo \
-	route/link/bonding.lo route/link/can.lo route/link/macvlan.lo \
-	route/link/vxlan.lo route/link/veth.lo \
+	route/act/skbedit.lo route/cls/ematch.lo \
+	route/cls/ematch/container.lo route/cls/ematch/cmp.lo \
+	route/cls/ematch/nbyte.lo route/cls/ematch/text.lo \
+	route/cls/ematch/meta.lo route/link/api.lo route/link/vlan.lo \
+	route/link/dummy.lo route/link/bridge.lo route/link/inet6.lo \
+	route/link/inet.lo route/link/bonding.lo route/link/can.lo \
+	route/link/macvlan.lo route/link/vxlan.lo route/link/veth.lo \
+	route/link/ipip.lo route/link/ipgre.lo route/link/sit.lo \
+	route/link/ipvti.lo route/link/ip6tnl.lo route/link/ifb.lo \
 	route/qdisc/blackhole.lo route/qdisc/cbq.lo \
 	route/qdisc/dsmark.lo route/qdisc/fifo.lo route/qdisc/htb.lo \
 	route/qdisc/netem.lo route/qdisc/prio.lo route/qdisc/red.lo \
 	route/qdisc/sfq.lo route/qdisc/tbf.lo route/qdisc/plug.lo \
 	route/qdisc/ingress.lo route/qdisc/fq_codel.lo \
-	fib_lookup/lookup.lo fib_lookup/request.lo route/pktloc.lo
+	route/qdisc/hfsc.lo fib_lookup/lookup.lo fib_lookup/request.lo \
+	route/pktloc.lo
 nodist_libnl_route_3_la_OBJECTS = route/pktloc_syntax.lo \
 	route/pktloc_grammar.lo route/cls/ematch_syntax.lo \
 	route/cls/ematch_grammar.lo
 libnl_route_3_la_OBJECTS = $(am_libnl_route_3_la_OBJECTS) \
 	$(nodist_libnl_route_3_la_OBJECTS)
+libnl_route_3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libnl_route_3_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
+am_libnl_xfrm_3_la_OBJECTS = xfrm/ae.lo xfrm/lifetime.lo xfrm/sa.lo \
+	xfrm/selector.lo xfrm/sp.lo xfrm/template.lo
+libnl_xfrm_3_la_OBJECTS = $(am_libnl_xfrm_3_la_OBJECTS)
+libnl_xfrm_3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libnl_xfrm_3_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -292,17 +325,19 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = cli/cls/basic.c cli/cls/cgroup.c cli/qdisc/bfifo.c \
-	cli/qdisc/blackhole.c cli/qdisc/fq_codel.c cli/qdisc/htb.c \
-	cli/qdisc/ingress.c cli/qdisc/pfifo.c cli/qdisc/plug.c \
-	$(libnl_3_la_SOURCES) $(libnl_genl_3_la_SOURCES) \
-	$(libnl_idiag_3_la_SOURCES) $(libnl_nf_3_la_SOURCES) \
-	$(libnl_route_3_la_SOURCES) $(nodist_libnl_route_3_la_SOURCES)
+	cli/qdisc/blackhole.c cli/qdisc/fq_codel.c cli/qdisc/hfsc.c \
+	cli/qdisc/htb.c cli/qdisc/ingress.c cli/qdisc/pfifo.c \
+	cli/qdisc/plug.c $(libnl_3_la_SOURCES) \
+	$(libnl_genl_3_la_SOURCES) $(libnl_idiag_3_la_SOURCES) \
+	$(libnl_nf_3_la_SOURCES) $(libnl_route_3_la_SOURCES) \
+	$(nodist_libnl_route_3_la_SOURCES) $(libnl_xfrm_3_la_SOURCES)
 DIST_SOURCES = cli/cls/basic.c cli/cls/cgroup.c cli/qdisc/bfifo.c \
-	cli/qdisc/blackhole.c cli/qdisc/fq_codel.c cli/qdisc/htb.c \
-	cli/qdisc/ingress.c cli/qdisc/pfifo.c cli/qdisc/plug.c \
-	$(libnl_3_la_SOURCES) $(libnl_genl_3_la_SOURCES) \
-	$(libnl_idiag_3_la_SOURCES) $(libnl_nf_3_la_SOURCES) \
-	$(libnl_route_3_la_SOURCES)
+	cli/qdisc/blackhole.c cli/qdisc/fq_codel.c cli/qdisc/hfsc.c \
+	cli/qdisc/htb.c cli/qdisc/ingress.c cli/qdisc/pfifo.c \
+	cli/qdisc/plug.c $(libnl_3_la_SOURCES) \
+	$(libnl_genl_3_la_SOURCES) $(libnl_idiag_3_la_SOURCES) \
+	$(libnl_nf_3_la_SOURCES) $(libnl_route_3_la_SOURCES) \
+	$(libnl_xfrm_3_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -461,6 +496,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = \
 	-Wall \
+	-I${top_srcdir}/include/linux-private \
 	-I${top_srcdir}/include \
 	-I${top_builddir}/include \
 	-I${builddir}/route \
@@ -469,11 +505,17 @@ AM_CPPFLAGS = \
 	-DSYSCONFDIR=\"$(sysconfdir)/libnl\"
 
 AM_LDFLAGS = \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
-	-Wl,--version-script=$(top_builddir)/libnl.sym
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 lib_LTLIBRARIES = \
-	libnl-3.la libnl-genl-3.la libnl-route-3.la libnl-nf-3.la libnl-idiag-3.la
+	libnl-3.la libnl-genl-3.la libnl-route-3.la libnl-nf-3.la libnl-idiag-3.la libnl-xfrm-3.la
+
+libnl_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-3.sym
+
+libnl_3_la_DEPENDENCIES = \
+	$(top_srcdir)/libnl-3.sym
 
 libnl_3_la_SOURCES = \
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c \
@@ -481,15 +523,39 @@ libnl_3_la_SOURCES = \
 	version.c hash.c hashtable.c
 
 libnl_idiag_3_la_LIBADD = libnl-3.la
+libnl_idiag_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-idiag-3.sym
+
+libnl_idiag_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-idiag-3.sym
+
 libnl_idiag_3_la_SOURCES = \
 	idiag/idiag_meminfo_obj.c idiag/idiag_vegasinfo_obj.c \
 	idiag/idiag_msg_obj.c idiag/idiag_req_obj.c idiag/idiag.c
 
 libnl_genl_3_la_LIBADD = libnl-3.la
+libnl_genl_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-genl-3.sym
+
+libnl_genl_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-genl-3.sym
+
 libnl_genl_3_la_SOURCES = \
 	genl/ctrl.c genl/family.c genl/genl.c genl/mngt.c
 
 libnl_nf_3_la_LIBADD = libnl-route-3.la
+libnl_nf_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-nf-3.sym
+
+libnl_nf_3_la_DEPENDENCIES = \
+	libnl-route-3.la \
+	$(top_srcdir)/libnl-nf-3.sym
+
 libnl_nf_3_la_SOURCES = \
 	netfilter/ct.c netfilter/ct_obj.c netfilter/log.c \
 	netfilter/log_msg.c netfilter/log_msg_obj.c netfilter/log_obj.c \
@@ -504,6 +570,14 @@ CLEANFILES = \
 	route/cls/ematch_syntax.c route/cls/ematch_syntax.h
 
 libnl_route_3_la_LIBADD = libnl-3.la
+libnl_route_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-route-3.sym
+
+libnl_route_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-route-3.sym
+
 libnl_route_3_la_SOURCES = \
 	route/addr.c route/class.c route/cls.c route/act.c route/link.c \
 	route/neigh.c route/neightbl.c route/nexthop.c route/qdisc.c \
@@ -514,6 +588,7 @@ libnl_route_3_la_SOURCES = \
 	route/cls/cgroup.c \
 	\
 	route/act/mirred.c \
+	route/act/skbedit.c \
 	\
 	route/cls/ematch.c \
 	route/cls/ematch/container.c route/cls/ematch/cmp.c \
@@ -523,13 +598,15 @@ libnl_route_3_la_SOURCES = \
 	route/link/api.c route/link/vlan.c route/link/dummy.c \
 	route/link/bridge.c route/link/inet6.c route/link/inet.c \
 	route/link/bonding.c route/link/can.c route/link/macvlan.c \
-	route/link/vxlan.c route/link/veth.c \
+	route/link/vxlan.c route/link/veth.c route/link/ipip.c \
+	route/link/ipgre.c route/link/sit.c route/link/ipvti.c \
+	route/link/ip6tnl.c route/link/ifb.c \
 	\
 	route/qdisc/blackhole.c route/qdisc/cbq.c route/qdisc/dsmark.c \
 	route/qdisc/fifo.c route/qdisc/htb.c route/qdisc/netem.c \
 	route/qdisc/prio.c route/qdisc/red.c route/qdisc/sfq.c \
 	route/qdisc/tbf.c route/qdisc/plug.c route/qdisc/ingress.c \
-	route/qdisc/fq_codel.c \
+	route/qdisc/fq_codel.c route/qdisc/hfsc.c \
 	\
 	fib_lookup/lookup.c fib_lookup/request.c \
 	\
@@ -553,6 +630,23 @@ EXTRA_DIST = \
 	route/cls/ematch_grammar.l \
 	route/cls/ematch_syntax.y
 
+libnl_xfrm_3_la_LIBADD = libnl-3.la
+libnl_xfrm_3_la_LDFLAGS = \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/libnl-xfrm-3.sym
+
+libnl_xfrm_3_la_DEPENDENCIES = \
+	libnl-3.la \
+	$(top_srcdir)/libnl-xfrm-3.sym
+
+libnl_xfrm_3_la_SOURCES = \
+	xfrm/ae.c \
+	xfrm/lifetime.c \
+	xfrm/sa.c \
+	xfrm/selector.c \
+	xfrm/sp.c \
+	xfrm/template.c
+
 @ENABLE_CLI_TRUE@nobase_pkglib_LTLIBRARIES = \
 @ENABLE_CLI_TRUE@	cli/qdisc/htb.la \
 @ENABLE_CLI_TRUE@	cli/qdisc/blackhole.la \
@@ -561,6 +655,7 @@ EXTRA_DIST = \
 @ENABLE_CLI_TRUE@	cli/qdisc/bfifo.la \
 @ENABLE_CLI_TRUE@	cli/qdisc/ingress.la \
 @ENABLE_CLI_TRUE@	cli/qdisc/fq_codel.la \
+@ENABLE_CLI_TRUE@	cli/qdisc/hfsc.la \
 @ENABLE_CLI_TRUE@	cli/cls/basic.la \
 @ENABLE_CLI_TRUE@	cli/cls/cgroup.la
 
@@ -571,6 +666,7 @@ EXTRA_DIST = \
 @ENABLE_CLI_TRUE@cli_qdisc_bfifo_la_LDFLAGS = -module -avoid-version
 @ENABLE_CLI_TRUE@cli_qdisc_ingress_la_LDFLAGS = -module -avoid-version
 @ENABLE_CLI_TRUE@cli_qdisc_fq_codel_la_LDFLAGS = -module -avoid-version
+@ENABLE_CLI_TRUE@cli_qdisc_hfsc_la_LDFLAGS = -module -avoid-version
 @ENABLE_CLI_TRUE@cli_cls_basic_la_LDFLAGS = -module -avoid-version
 @ENABLE_CLI_TRUE@cli_cls_cgroup_la_LDFLAGS = -module -avoid-version
 all: $(BUILT_SOURCES) defs.h
@@ -738,6 +834,11 @@ cli/qdisc/fq_codel.lo: cli/qdisc/$(am__dirstamp) \
 
 cli/qdisc/fq_codel.la: $(cli_qdisc_fq_codel_la_OBJECTS) $(cli_qdisc_fq_codel_la_DEPENDENCIES) $(EXTRA_cli_qdisc_fq_codel_la_DEPENDENCIES) cli/qdisc/$(am__dirstamp)
 	$(AM_V_CCLD)$(cli_qdisc_fq_codel_la_LINK) $(am_cli_qdisc_fq_codel_la_rpath) $(cli_qdisc_fq_codel_la_OBJECTS) $(cli_qdisc_fq_codel_la_LIBADD) $(LIBS)
+cli/qdisc/hfsc.lo: cli/qdisc/$(am__dirstamp) \
+	cli/qdisc/$(DEPDIR)/$(am__dirstamp)
+
+cli/qdisc/hfsc.la: $(cli_qdisc_hfsc_la_OBJECTS) $(cli_qdisc_hfsc_la_DEPENDENCIES) $(EXTRA_cli_qdisc_hfsc_la_DEPENDENCIES) cli/qdisc/$(am__dirstamp)
+	$(AM_V_CCLD)$(cli_qdisc_hfsc_la_LINK) $(am_cli_qdisc_hfsc_la_rpath) $(cli_qdisc_hfsc_la_OBJECTS) $(cli_qdisc_hfsc_la_LIBADD) $(LIBS)
 cli/qdisc/htb.lo: cli/qdisc/$(am__dirstamp) \
 	cli/qdisc/$(DEPDIR)/$(am__dirstamp)
 
@@ -760,7 +861,7 @@ cli/qdisc/plug.la: $(cli_qdisc_plug_la_OBJECTS) $(cli_qdisc_plug_la_DEPENDENCIES
 	$(AM_V_CCLD)$(cli_qdisc_plug_la_LINK) $(am_cli_qdisc_plug_la_rpath) $(cli_qdisc_plug_la_OBJECTS) $(cli_qdisc_plug_la_LIBADD) $(LIBS)
 
 libnl-3.la: $(libnl_3_la_OBJECTS) $(libnl_3_la_DEPENDENCIES) $(EXTRA_libnl_3_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_3_la_OBJECTS) $(libnl_3_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnl_3_la_LINK) -rpath $(libdir) $(libnl_3_la_OBJECTS) $(libnl_3_la_LIBADD) $(LIBS)
 genl/$(am__dirstamp):
 	@$(MKDIR_P) genl
 	@: > genl/$(am__dirstamp)
@@ -773,7 +874,7 @@ genl/genl.lo: genl/$(am__dirstamp) genl/$(DEPDIR)/$(am__dirstamp)
 genl/mngt.lo: genl/$(am__dirstamp) genl/$(DEPDIR)/$(am__dirstamp)
 
 libnl-genl-3.la: $(libnl_genl_3_la_OBJECTS) $(libnl_genl_3_la_DEPENDENCIES) $(EXTRA_libnl_genl_3_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_genl_3_la_OBJECTS) $(libnl_genl_3_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnl_genl_3_la_LINK) -rpath $(libdir) $(libnl_genl_3_la_OBJECTS) $(libnl_genl_3_la_LIBADD) $(LIBS)
 idiag/$(am__dirstamp):
 	@$(MKDIR_P) idiag
 	@: > idiag/$(am__dirstamp)
@@ -791,7 +892,7 @@ idiag/idiag_req_obj.lo: idiag/$(am__dirstamp) \
 idiag/idiag.lo: idiag/$(am__dirstamp) idiag/$(DEPDIR)/$(am__dirstamp)
 
 libnl-idiag-3.la: $(libnl_idiag_3_la_OBJECTS) $(libnl_idiag_3_la_DEPENDENCIES) $(EXTRA_libnl_idiag_3_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_idiag_3_la_OBJECTS) $(libnl_idiag_3_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnl_idiag_3_la_LINK) -rpath $(libdir) $(libnl_idiag_3_la_OBJECTS) $(libnl_idiag_3_la_LIBADD) $(LIBS)
 netfilter/$(am__dirstamp):
 	@$(MKDIR_P) netfilter
 	@: > netfilter/$(am__dirstamp)
@@ -828,7 +929,7 @@ netfilter/exp_obj.lo: netfilter/$(am__dirstamp) \
 	netfilter/$(DEPDIR)/$(am__dirstamp)
 
 libnl-nf-3.la: $(libnl_nf_3_la_OBJECTS) $(libnl_nf_3_la_DEPENDENCIES) $(EXTRA_libnl_nf_3_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_nf_3_la_OBJECTS) $(libnl_nf_3_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnl_nf_3_la_LINK) -rpath $(libdir) $(libnl_nf_3_la_OBJECTS) $(libnl_nf_3_la_LIBADD) $(LIBS)
 route/$(am__dirstamp):
 	@$(MKDIR_P) route
 	@: > route/$(am__dirstamp)
@@ -880,6 +981,8 @@ route/act/$(DEPDIR)/$(am__dirstamp):
 	@: > route/act/$(DEPDIR)/$(am__dirstamp)
 route/act/mirred.lo: route/act/$(am__dirstamp) \
 	route/act/$(DEPDIR)/$(am__dirstamp)
+route/act/skbedit.lo: route/act/$(am__dirstamp) \
+	route/act/$(DEPDIR)/$(am__dirstamp)
 route/cls/ematch.lo: route/cls/$(am__dirstamp) \
 	route/cls/$(DEPDIR)/$(am__dirstamp)
 route/cls/ematch/$(am__dirstamp):
@@ -926,6 +1029,18 @@ route/link/vxlan.lo: route/link/$(am__dirstamp) \
 	route/link/$(DEPDIR)/$(am__dirstamp)
 route/link/veth.lo: route/link/$(am__dirstamp) \
 	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/ipip.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/ipgre.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/sit.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/ipvti.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/ip6tnl.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
+route/link/ifb.lo: route/link/$(am__dirstamp) \
+	route/link/$(DEPDIR)/$(am__dirstamp)
 route/qdisc/$(am__dirstamp):
 	@$(MKDIR_P) route/qdisc
 	@: > route/qdisc/$(am__dirstamp)
@@ -958,6 +1073,8 @@ route/qdisc/ingress.lo: route/qdisc/$(am__dirstamp) \
 	route/qdisc/$(DEPDIR)/$(am__dirstamp)
 route/qdisc/fq_codel.lo: route/qdisc/$(am__dirstamp) \
 	route/qdisc/$(DEPDIR)/$(am__dirstamp)
+route/qdisc/hfsc.lo: route/qdisc/$(am__dirstamp) \
+	route/qdisc/$(DEPDIR)/$(am__dirstamp)
 fib_lookup/$(am__dirstamp):
 	@$(MKDIR_P) fib_lookup
 	@: > fib_lookup/$(am__dirstamp)
@@ -979,7 +1096,22 @@ route/cls/ematch_grammar.lo: route/cls/$(am__dirstamp) \
 	route/cls/$(DEPDIR)/$(am__dirstamp)
 
 libnl-route-3.la: $(libnl_route_3_la_OBJECTS) $(libnl_route_3_la_DEPENDENCIES) $(EXTRA_libnl_route_3_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libnl_route_3_la_OBJECTS) $(libnl_route_3_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnl_route_3_la_LINK) -rpath $(libdir) $(libnl_route_3_la_OBJECTS) $(libnl_route_3_la_LIBADD) $(LIBS)
+xfrm/$(am__dirstamp):
+	@$(MKDIR_P) xfrm
+	@: > xfrm/$(am__dirstamp)
+xfrm/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) xfrm/$(DEPDIR)
+	@: > xfrm/$(DEPDIR)/$(am__dirstamp)
+xfrm/ae.lo: xfrm/$(am__dirstamp) xfrm/$(DEPDIR)/$(am__dirstamp)
+xfrm/lifetime.lo: xfrm/$(am__dirstamp) xfrm/$(DEPDIR)/$(am__dirstamp)
+xfrm/sa.lo: xfrm/$(am__dirstamp) xfrm/$(DEPDIR)/$(am__dirstamp)
+xfrm/selector.lo: xfrm/$(am__dirstamp) xfrm/$(DEPDIR)/$(am__dirstamp)
+xfrm/sp.lo: xfrm/$(am__dirstamp) xfrm/$(DEPDIR)/$(am__dirstamp)
+xfrm/template.lo: xfrm/$(am__dirstamp) xfrm/$(DEPDIR)/$(am__dirstamp)
+
+libnl-xfrm-3.la: $(libnl_xfrm_3_la_OBJECTS) $(libnl_xfrm_3_la_DEPENDENCIES) $(EXTRA_libnl_xfrm_3_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libnl_xfrm_3_la_LINK) -rpath $(libdir) $(libnl_xfrm_3_la_OBJECTS) $(libnl_xfrm_3_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1007,6 +1139,8 @@ mostlyclean-compile:
 	-rm -f route/link/*.lo
 	-rm -f route/qdisc/*.$(OBJEXT)
 	-rm -f route/qdisc/*.lo
+	-rm -f xfrm/*.$(OBJEXT)
+	-rm -f xfrm/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -1032,6 +1166,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@cli/qdisc/$(DEPDIR)/bfifo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@cli/qdisc/$(DEPDIR)/blackhole.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@cli/qdisc/$(DEPDIR)/fq_codel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@cli/qdisc/$(DEPDIR)/hfsc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@cli/qdisc/$(DEPDIR)/htb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@cli/qdisc/$(DEPDIR)/ingress.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@cli/qdisc/$(DEPDIR)/pfifo.Plo@am__quote@
@@ -1081,6 +1216,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@route/$(DEPDIR)/rule.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/$(DEPDIR)/tc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/act/$(DEPDIR)/mirred.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/act/$(DEPDIR)/skbedit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/cls/$(DEPDIR)/basic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/cls/$(DEPDIR)/cgroup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/cls/$(DEPDIR)/ematch.Plo@am__quote@
@@ -1099,9 +1235,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/can.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/dummy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/ifb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/inet.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/inet6.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/ip6tnl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/ipgre.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/ipip.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/ipvti.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/macvlan.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/sit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/veth.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/vlan.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/link/$(DEPDIR)/vxlan.Plo@am__quote@
@@ -1110,6 +1252,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/dsmark.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/fifo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/fq_codel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/hfsc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/htb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/ingress.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/netem.Plo@am__quote@
@@ -1118,6 +1261,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/red.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/sfq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@route/qdisc/$(DEPDIR)/tbf.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@xfrm/$(DEPDIR)/ae.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@xfrm/$(DEPDIR)/lifetime.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@xfrm/$(DEPDIR)/sa.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@xfrm/$(DEPDIR)/selector.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@xfrm/$(DEPDIR)/sp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@xfrm/$(DEPDIR)/template.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1160,6 +1309,7 @@ clean-libtool:
 	-rm -rf route/cls/ematch/.libs route/cls/ematch/_libs
 	-rm -rf route/link/.libs route/link/_libs
 	-rm -rf route/qdisc/.libs route/qdisc/_libs
+	-rm -rf xfrm/.libs xfrm/_libs
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1303,6 +1453,8 @@ distclean-generic:
 	-rm -f route/link/$(am__dirstamp)
 	-rm -f route/qdisc/$(DEPDIR)/$(am__dirstamp)
 	-rm -f route/qdisc/$(am__dirstamp)
+	-rm -f xfrm/$(DEPDIR)/$(am__dirstamp)
+	-rm -f xfrm/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1314,7 +1466,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	clean-nobase_pkglibLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR) cli/cls/$(DEPDIR) cli/qdisc/$(DEPDIR) fib_lookup/$(DEPDIR) genl/$(DEPDIR) idiag/$(DEPDIR) netfilter/$(DEPDIR) route/$(DEPDIR) route/act/$(DEPDIR) route/cls/$(DEPDIR) route/cls/ematch/$(DEPDIR) route/link/$(DEPDIR) route/qdisc/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) cli/cls/$(DEPDIR) cli/qdisc/$(DEPDIR) fib_lookup/$(DEPDIR) genl/$(DEPDIR) idiag/$(DEPDIR) netfilter/$(DEPDIR) route/$(DEPDIR) route/act/$(DEPDIR) route/cls/$(DEPDIR) route/cls/ematch/$(DEPDIR) route/link/$(DEPDIR) route/qdisc/$(DEPDIR) xfrm/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -1361,7 +1513,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR) cli/cls/$(DEPDIR) cli/qdisc/$(DEPDIR) fib_lookup/$(DEPDIR) genl/$(DEPDIR) idiag/$(DEPDIR) netfilter/$(DEPDIR) route/$(DEPDIR) route/act/$(DEPDIR) route/cls/$(DEPDIR) route/cls/ematch/$(DEPDIR) route/link/$(DEPDIR) route/qdisc/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) cli/cls/$(DEPDIR) cli/qdisc/$(DEPDIR) fib_lookup/$(DEPDIR) genl/$(DEPDIR) idiag/$(DEPDIR) netfilter/$(DEPDIR) route/$(DEPDIR) route/act/$(DEPDIR) route/cls/$(DEPDIR) route/cls/ematch/$(DEPDIR) route/link/$(DEPDIR) route/qdisc/$(DEPDIR) xfrm/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1404,16 +1556,16 @@ uninstall-am: uninstall-libLTLIBRARIES \
 # Hack to avoid using ylwrap. It does not function correctly in combination
 # with --header-file=
 route/pktloc_grammar.c: route/pktloc_grammar.l
-	$(AM_V_GEN) $(FLEX) --header-file=route/pktloc_grammar.h $(LFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route; $(FLEX) --header-file=route/pktloc_grammar.h $(LFLAGS) -o $@ $^
 
 route/pktloc_syntax.c: route/pktloc_syntax.y
-	$(AM_V_GEN) $(YACC) -d $(YFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route; $(YACC) -d $(YFLAGS) -o $@ $^
 
 route/cls/ematch_grammar.c: route/cls/ematch_grammar.l
-	$(AM_V_GEN) $(FLEX) --header-file=route/cls/ematch_grammar.h $(LFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route/cls; $(FLEX) --header-file=route/cls/ematch_grammar.h $(LFLAGS) -o $@ $^
 
 route/cls/ematch_syntax.c: route/cls/ematch_syntax.y
-	$(AM_V_GEN) $(YACC) -d $(YFLAGS) -o $@ $^
+	$(AM_V_GEN) $(MKDIR_P) route/cls; $(YACC) -d $(YFLAGS) -o $@ $^
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

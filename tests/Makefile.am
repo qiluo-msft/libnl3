@@ -5,7 +5,13 @@ EXTRA_DIST = \
 
 if ENABLE_UNIT_TESTS
 
-AM_CPPFLAGS  = -Wall -I${top_srcdir}/include -I${top_builddir}/include -D_GNU_SOURCE -DSYSCONFDIR=\"$(sysconfdir)/libnl\"
+AM_CPPFLAGS = \
+	-Wall \
+	-I${top_srcdir}/include/linux-private \
+	-I${top_srcdir}/include \
+	-I${top_builddir}/include \
+	-D_GNU_SOURCE \
+	-DSYSCONFDIR=\"$(sysconfdir)/libnl\"
 
 LDADD = \
 	${top_builddir}/lib/libnl-3.la \
@@ -24,6 +30,13 @@ check_PROGRAMS = \
 	test-create-vxlan \
 	test-create-veth \
 	test-create-bridge \
+	test-create-ip6tnl \
+	test-create-ipgre \
+	test-create-ipip \
+	test-create-ipvti \
+	test-create-macvlan \
+	test-create-sit \
+	test-create-ifb \
 	test-delete-link \
 	test-socket-creation \
 	test-complex-HTB-with-hash-filters \
@@ -47,6 +60,7 @@ test_create_vlan_SOURCES = test-create-vlan.c
 test_create_vxlan_SOURCES = test-create-vxlan.c
 test_create_veth_SOURCES = test-create-veth.c
 test_create_bridge_SOURCES = test-create-bridge.c
+test_create_ifb_SOURCES = test-create-ifb.c
 test_delete_link_SOURCES = test-delete-link.c
 test_genl_SOURCES = test-genl.c
 test_nf_cache_mngr_SOURCES = test-nf-cache-mngr.c

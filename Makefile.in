@@ -85,9 +85,10 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
-	$(srcdir)/libnl.sym.in $(srcdir)/libnl-3.0.pc.in \
-	$(srcdir)/libnl-route-3.0.pc.in $(srcdir)/libnl-genl-3.0.pc.in \
-	$(srcdir)/libnl-nf-3.0.pc.in $(srcdir)/libnl-cli-3.0.pc.in \
+	$(srcdir)/libnl-3.0.pc.in $(srcdir)/libnl-route-3.0.pc.in \
+	$(srcdir)/libnl-genl-3.0.pc.in $(srcdir)/libnl-nf-3.0.pc.in \
+	$(srcdir)/libnl-cli-3.0.pc.in $(srcdir)/libnl-xfrm-3.0.pc.in \
+	$(srcdir)/libnl-idiag-3.0.pc.in \
 	$(top_srcdir)/include/netlink/version.h.in COPYING ChangeLog \
 	build-aux/ar-lib build-aux/compile build-aux/config.guess \
 	build-aux/config.sub build-aux/depcomp build-aux/install-sh \
@@ -109,9 +110,9 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/lib/defs.h
-CONFIG_CLEAN_FILES = libnl.sym libnl-3.0.pc libnl-route-3.0.pc \
-	libnl-genl-3.0.pc libnl-nf-3.0.pc libnl-cli-3.0.pc \
-	include/netlink/version.h
+CONFIG_CLEAN_FILES = libnl-3.0.pc libnl-route-3.0.pc libnl-genl-3.0.pc \
+	libnl-nf-3.0.pc libnl-cli-3.0.pc libnl-xfrm-3.0.pc \
+	libnl-idiag-3.0.pc include/netlink/version.h
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -374,11 +375,19 @@ top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = include lib man python tests $(am__append_1)
 pkgconfig_DATA = libnl-3.0.pc libnl-route-3.0.pc libnl-genl-3.0.pc \
-	libnl-nf-3.0.pc $(am__append_2)
+	libnl-nf-3.0.pc libnl-xfrm-3.0.pc libnl-idiag-3.0.pc \
+	$(am__append_2)
 pkgsysconfdir = ${sysconfdir}/libnl
 pkgsysconf_DATA = etc/pktloc etc/classid
 EXTRA_DIST = \
-	$(pkgsysconf_DATA)
+	$(pkgsysconf_DATA) \
+	libnl-3.sym \
+	libnl-cli-3.sym \
+	libnl-genl-3.sym \
+	libnl-idiag-3.sym \
+	libnl-nf-3.sym \
+	libnl-route-3.sym \
+	libnl-xfrm-3.sym
 
 all: all-recursive
 
@@ -417,8 +426,6 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
-libnl.sym: $(top_builddir)/config.status $(srcdir)/libnl.sym.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 libnl-3.0.pc: $(top_builddir)/config.status $(srcdir)/libnl-3.0.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 libnl-route-3.0.pc: $(top_builddir)/config.status $(srcdir)/libnl-route-3.0.pc.in
@@ -428,6 +435,10 @@ libnl-genl-3.0.pc: $(top_builddir)/config.status $(srcdir)/libnl-genl-3.0.pc.in
 libnl-nf-3.0.pc: $(top_builddir)/config.status $(srcdir)/libnl-nf-3.0.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 libnl-cli-3.0.pc: $(top_builddir)/config.status $(srcdir)/libnl-cli-3.0.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+libnl-xfrm-3.0.pc: $(top_builddir)/config.status $(srcdir)/libnl-xfrm-3.0.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+libnl-idiag-3.0.pc: $(top_builddir)/config.status $(srcdir)/libnl-idiag-3.0.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 include/netlink/version.h: $(top_builddir)/config.status $(top_srcdir)/include/netlink/version.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

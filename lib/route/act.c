@@ -21,6 +21,7 @@
 #include <netlink/utils.h>
 #include <netlink-private/route/tc-api.h>
 #include <netlink/route/link.h>
+#include <netlink/route/action.h>
 
 
 static struct nl_object_ops act_obj_ops;
@@ -178,6 +179,11 @@ struct rtnl_act *rtnl_act_alloc(void)
 	return (struct rtnl_act *) tc;
 }
 
+void rtnl_act_get(struct rtnl_act *act)
+{
+	nl_object_get(OBJ_CAST(act));
+}
+
 void rtnl_act_put(struct rtnl_act *act)
 {
 	nl_object_put((struct nl_object *) act);
@@ -231,9 +237,6 @@ int rtnl_act_build_add_request(struct rtnl_act *act, int flags,
  * the flag \c NLM_F_EXCL is specified. If no matching action
  * exists, it will be created if the flag \c NLM_F_CREATE is set,
  * otherwise the error -NLE_OBJ_NOTFOUND is returned.
- *
- * If the parent qdisc does not support classes, the error
- * \c NLE_OPNOTSUPP is returned.
  *
  * After sending, the function will wait for the ACK or an eventual
  * error message to be received and will therefore block until the
@@ -382,6 +385,7 @@ void rtnl_act_put_all(struct rtnl_act **head)
 
 int rtnl_act_parse(struct rtnl_act **head, struct nlattr *tb)
 {
+	struct rtnl_act *act;
 	struct rtnl_tc_ops *ops;
 	struct nlattr *tb2[TCA_ACT_MAX + 1];
 	struct nlattr *nla[TCA_ACT_MAX_PRIO + 1];
@@ -393,9 +397,11 @@ int rtnl_act_parse(struct rtnl_act **head, struct nlattr *tb)
 	if (err < 0)
 		return err;
 
-	for (i = 1; i <= TCA_ACT_MAX_PRIO && nla[i]; i++) {
-		struct rtnl_act *act;
+	for (i = 0; i < TCA_ACT_MAX_PRIO; i++) {
 		struct rtnl_tc *tc;
+
+		if (nla[i] == NULL)
+			continue;
 
 		act = rtnl_act_alloc();
 		if (!act) {
@@ -445,6 +451,7 @@ int rtnl_act_parse(struct rtnl_act **head, struct nlattr *tb)
 	return 0;
 
 err_free:
+	rtnl_act_put (act);
 	rtnl_act_put_all(head);
 
 	return err;
@@ -452,7 +459,7 @@ err_free:
 
 static int rtnl_act_msg_parse(struct nlmsghdr *n, struct rtnl_act **act)
 {
-	struct rtnl_tc *tc = TC_CAST(act);
+	struct rtnl_tc *tc = TC_CAST(*act);
 	struct nl_cache *link_cache;
 	struct nlattr *tb[TCAA_MAX + 1];
 	struct tcamsg *tm;

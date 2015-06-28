@@ -1,5 +1,5 @@
 /*
- * lib/route/cls/mirred.c		mirred action
+ * lib/route/act/mirred.c		mirred action
  *
  *	This library is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU Lesser General Public
@@ -187,7 +187,7 @@ int rtnl_mirred_set_policy(struct rtnl_act *act, int policy)
 	if (!(u = (struct rtnl_mirred *) rtnl_tc_data(TC_CAST(act))))
 		return -NLE_NOMEM;
 
-	if (policy > TC_POLICE_PIPE || policy < TC_POLICE_OK)
+	if (policy > TC_ACT_REPEAT || policy < TC_ACT_OK)
 		return -NLE_INVAL;
 
 	switch (u->m_parm.eaction) {
