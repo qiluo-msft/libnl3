@@ -116,6 +116,7 @@ Depends: libnl-3-200 (= ${binary:Version}), ${misc:Depends}
 Conflicts: libnl-dev, libnl2-dev
 Breaks: libnl3-dev
 Replaces: libnl3-dev
+Multi-Arch: same
 Description: development library and headers for libnl-3
  This is a library for applications dealing with netlink sockets.
  The library provides an interface for raw netlink messaging and various
@@ -128,6 +129,7 @@ Package: libnl-cli-3-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libnl-3-dev (= ${binary:Version}), libnl-genl-3-dev (= ${binary:Version}), libnl-nf-3-dev (= ${binary:Version}), libnl-route-3-dev (= ${binary:Version}), libnl-cli-3-200 (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: development library and headers for libnl-cli-3
  This is a library for applications dealing with netlink sockets. 
  The library provides an interface for raw netlink messaging and various 
@@ -140,6 +142,7 @@ Package: libnl-genl-3-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libnl-3-dev (= ${binary:Version}), libnl-genl-3-200 (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: development library and headers for libnl-genl-3
  This is a library for applications dealing with netlink sockets.
  The library provides an interface for raw netlink messaging and various
@@ -152,6 +155,7 @@ Package: libnl-idiag-3-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libnl-3-dev (= ${binary:Version}), libnl-idiag-3-200 (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: development library and headers for libnl-genl-3
  This is a library for applications dealing with netlink sockets.
  The library provides an interface for raw netlink messaging and various
@@ -164,6 +168,7 @@ Package: libnl-nf-3-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libnl-3-dev (= ${binary:Version}), libnl-route-3-dev (= ${binary:Version}), libnl-nf-3-200 (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: development library and headers for libnl-nf-3
  This is a library for applications dealing with netlink sockets.
  The library provides an interface for raw netlink messaging and various
@@ -176,6 +181,7 @@ Package: libnl-route-3-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libnl-3-dev (= ${binary:Version}), libnl-route-3-200 (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: development library and headers for libnl-route-3
  This is a library for applications dealing with netlink sockets.
  The library provides an interface for raw netlink messaging and various
@@ -188,6 +194,7 @@ Package: libnl-xfrm-3-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libnl-3-dev (= ${binary:Version}), libnl-xfrm-3-200 (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: development library and headers for libnl-xfrm-3
  This is a library for applications dealing with netlink sockets.
  The library provides an interface for raw netlink messaging and various
