@@ -109,6 +109,7 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_act_change@Base 3.2.24
  rtnl_act_delete@Base 3.2.24
  rtnl_act_fill@Base 3.2.24
+ rtnl_act_get@Base 3.2.26
  rtnl_act_parse@Base 3.2.24
  rtnl_act_put@Base 3.2.24
  rtnl_act_put_all@Base 3.2.24
@@ -175,6 +176,12 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_class_foreach_child@Base 3.2.7
  rtnl_class_foreach_cls@Base 3.2.7
  rtnl_class_get@Base 3.2.7
+ rtnl_class_hfsc_get_fsc@Base 3.2.26
+ rtnl_class_hfsc_get_rsc@Base 3.2.26
+ rtnl_class_hfsc_get_usc@Base 3.2.26
+ rtnl_class_hfsc_set_fsc@Base 3.2.26
+ rtnl_class_hfsc_set_rsc@Base 3.2.26
+ rtnl_class_hfsc_set_usc@Base 3.2.26
  rtnl_class_leaf_qdisc@Base 3.2.7
  rtnl_class_put@Base 3.2.7
  rtnl_classid_generate@Base 3.2.7
@@ -342,6 +349,7 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_link_get_num_vf@Base 3.2.7
  rtnl_link_get_operstate@Base 3.2.7
  rtnl_link_get_phys_port_id@Base 3.2.24
+ rtnl_link_get_pmtudisc@Base 3.2.26
  rtnl_link_get_promiscuity@Base 3.2.21
  rtnl_link_get_qdisc@Base 3.2.7
  rtnl_link_get_stat@Base 3.2.7
@@ -349,6 +357,12 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_link_get_type@Base 3.2.7
  rtnl_link_get_weight@Base 3.2.7
  rtnl_link_i2name@Base 3.2.7
+ rtnl_link_inet6_addrgenmode2str@Base 3.2.26
+ rtnl_link_inet6_get_addr_gen_mode@Base 3.2.26
+ rtnl_link_inet6_get_token@Base 3.2.26
+ rtnl_link_inet6_set_addr_gen_mode@Base 3.2.26
+ rtnl_link_inet6_set_token@Base 3.2.26
+ rtnl_link_inet6_str2addrgenmode@Base 3.2.26
  rtnl_link_inet_devconf2str@Base 3.2.7
  rtnl_link_inet_get_conf@Base 3.2.7
  rtnl_link_inet_set_conf@Base 3.2.7
@@ -356,9 +370,81 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_link_info_ops_lookup@Base 3.2.7
  rtnl_link_info_ops_put@Base 3.2.7
  rtnl_link_info_parse@Base 3.2.24
+ rtnl_link_ip6_tnl_add@Base 3.2.26
+ rtnl_link_ip6_tnl_alloc@Base 3.2.26
+ rtnl_link_ip6_tnl_get_encaplimit@Base 3.2.26
+ rtnl_link_ip6_tnl_get_flags@Base 3.2.26
+ rtnl_link_ip6_tnl_get_flowinfo@Base 3.2.26
+ rtnl_link_ip6_tnl_get_link@Base 3.2.26
+ rtnl_link_ip6_tnl_get_local@Base 3.2.26
+ rtnl_link_ip6_tnl_get_proto@Base 3.2.26
+ rtnl_link_ip6_tnl_get_remote@Base 3.2.26
+ rtnl_link_ip6_tnl_get_tos@Base 3.2.26
+ rtnl_link_ip6_tnl_get_ttl@Base 3.2.26
+ rtnl_link_ip6_tnl_set_encaplimit@Base 3.2.26
+ rtnl_link_ip6_tnl_set_flags@Base 3.2.26
+ rtnl_link_ip6_tnl_set_flowinfo@Base 3.2.26
+ rtnl_link_ip6_tnl_set_link@Base 3.2.26
+ rtnl_link_ip6_tnl_set_local@Base 3.2.26
+ rtnl_link_ip6_tnl_set_proto@Base 3.2.26
+ rtnl_link_ip6_tnl_set_remote@Base 3.2.26
+ rtnl_link_ip6_tnl_set_tos@Base 3.2.26
+ rtnl_link_ip6_tnl_set_ttl@Base 3.2.26
+ rtnl_link_ipgre_add@Base 3.2.26
+ rtnl_link_ipgre_alloc@Base 3.2.26
+ rtnl_link_ipgre_get_iflags@Base 3.2.26
+ rtnl_link_ipgre_get_ikey@Base 3.2.26
+ rtnl_link_ipgre_get_link@Base 3.2.26
+ rtnl_link_ipgre_get_local@Base 3.2.26
+ rtnl_link_ipgre_get_oflags@Base 3.2.26
+ rtnl_link_ipgre_get_okey@Base 3.2.26
+ rtnl_link_ipgre_get_remote@Base 3.2.26
+ rtnl_link_ipgre_get_tos@Base 3.2.26
+ rtnl_link_ipgre_get_ttl@Base 3.2.26
+ rtnl_link_ipgre_set_iflags@Base 3.2.26
+ rtnl_link_ipgre_set_ikey@Base 3.2.26
+ rtnl_link_ipgre_set_link@Base 3.2.26
+ rtnl_link_ipgre_set_local@Base 3.2.26
+ rtnl_link_ipgre_set_oflags@Base 3.2.26
+ rtnl_link_ipgre_set_okey@Base 3.2.26
+ rtnl_link_ipgre_set_pmtudisc@Base 3.2.26
+ rtnl_link_ipgre_set_remote@Base 3.2.26
+ rtnl_link_ipgre_set_tos@Base 3.2.26
+ rtnl_link_ipgre_set_ttl@Base 3.2.26
+ rtnl_link_ipip_add@Base 3.2.26
+ rtnl_link_ipip_alloc@Base 3.2.26
+ rtnl_link_ipip_get_link@Base 3.2.26
+ rtnl_link_ipip_get_local@Base 3.2.26
+ rtnl_link_ipip_get_pmtudisc@Base 3.2.26
+ rtnl_link_ipip_get_remote@Base 3.2.26
+ rtnl_link_ipip_get_tos@Base 3.2.26
+ rtnl_link_ipip_get_ttl@Base 3.2.26
+ rtnl_link_ipip_set_link@Base 3.2.26
+ rtnl_link_ipip_set_local@Base 3.2.26
+ rtnl_link_ipip_set_pmtudisc@Base 3.2.26
+ rtnl_link_ipip_set_remote@Base 3.2.26
+ rtnl_link_ipip_set_tos@Base 3.2.26
+ rtnl_link_ipip_set_ttl@Base 3.2.26
+ rtnl_link_ipvti_add@Base 3.2.26
+ rtnl_link_ipvti_alloc@Base 3.2.26
+ rtnl_link_ipvti_get_ikey@Base 3.2.26
+ rtnl_link_ipvti_get_link@Base 3.2.26
+ rtnl_link_ipvti_get_local@Base 3.2.26
+ rtnl_link_ipvti_get_okey@Base 3.2.26
+ rtnl_link_ipvti_get_remote@Base 3.2.26
+ rtnl_link_ipvti_set_ikey@Base 3.2.26
+ rtnl_link_ipvti_set_link@Base 3.2.26
+ rtnl_link_ipvti_set_local@Base 3.2.26
+ rtnl_link_ipvti_set_okey@Base 3.2.26
+ rtnl_link_ipvti_set_remote@Base 3.2.26
  rtnl_link_is_bridge@Base 3.2.24
  rtnl_link_is_can@Base 3.2.21
+ rtnl_link_is_ip6_tnl@Base 3.2.26
+ rtnl_link_is_ipgre@Base 3.2.26
+ rtnl_link_is_ipip@Base 3.2.26
+ rtnl_link_is_ipvti@Base 3.2.26
  rtnl_link_is_macvlan@Base 3.2.24
+ rtnl_link_is_sit@Base 3.2.26
  rtnl_link_is_veth@Base 3.2.24
  rtnl_link_is_vlan@Base 3.2.7
  rtnl_link_is_vxlan@Base 3.2.24
@@ -405,6 +491,24 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_link_set_txqlen@Base 3.2.7
  rtnl_link_set_type@Base 3.2.7
  rtnl_link_set_weight@Base 3.2.7
+ rtnl_link_sit_add@Base 3.2.26
+ rtnl_link_sit_alloc@Base 3.2.26
+ rtnl_link_sit_get_flags@Base 3.2.26
+ rtnl_link_sit_get_link@Base 3.2.26
+ rtnl_link_sit_get_local@Base 3.2.26
+ rtnl_link_sit_get_pmtudisc@Base 3.2.26
+ rtnl_link_sit_get_proto@Base 3.2.26
+ rtnl_link_sit_get_remote@Base 3.2.26
+ rtnl_link_sit_get_tos@Base 3.2.26
+ rtnl_link_sit_get_ttl@Base 3.2.26
+ rtnl_link_sit_set_flags@Base 3.2.26
+ rtnl_link_sit_set_link@Base 3.2.26
+ rtnl_link_sit_set_local@Base 3.2.26
+ rtnl_link_sit_set_pmtudisc@Base 3.2.26
+ rtnl_link_sit_set_proto@Base 3.2.26
+ rtnl_link_sit_set_remote@Base 3.2.26
+ rtnl_link_sit_set_tos@Base 3.2.26
+ rtnl_link_sit_set_ttl@Base 3.2.26
  rtnl_link_stat2str@Base 3.2.7
  rtnl_link_str2carrier@Base 3.2.21
  rtnl_link_str2flags@Base 3.2.7
@@ -423,10 +527,12 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_link_vlan_get_flags@Base 3.2.7
  rtnl_link_vlan_get_id@Base 3.2.7
  rtnl_link_vlan_get_ingress_map@Base 3.2.7
+ rtnl_link_vlan_get_protocol@Base 3.2.26
  rtnl_link_vlan_set_egress_map@Base 3.2.7
  rtnl_link_vlan_set_flags@Base 3.2.7
  rtnl_link_vlan_set_id@Base 3.2.7
  rtnl_link_vlan_set_ingress_map@Base 3.2.7
+ rtnl_link_vlan_set_protocol@Base 3.2.26
  rtnl_link_vlan_str2flags@Base 3.2.7
  rtnl_link_vlan_unset_flags@Base 3.2.7
  rtnl_link_vxlan_alloc@Base 3.2.24
@@ -493,6 +599,7 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_neigh_get_lladdr@Base 3.2.7
  rtnl_neigh_get_state@Base 3.2.7
  rtnl_neigh_get_type@Base 3.2.7
+ rtnl_neigh_get_vlan@Base 3.2.26
  rtnl_neigh_parse@Base 3.2.21
  rtnl_neigh_put@Base 3.2.7
  rtnl_neigh_set_dst@Base 3.2.7
@@ -502,6 +609,7 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_neigh_set_lladdr@Base 3.2.7
  rtnl_neigh_set_state@Base 3.2.7
  rtnl_neigh_set_type@Base 3.2.7
+ rtnl_neigh_set_vlan@Base 3.2.26
  rtnl_neigh_state2str@Base 3.2.7
  rtnl_neigh_str2flag@Base 3.2.7
  rtnl_neigh_str2state@Base 3.2.7
@@ -600,6 +708,8 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_qdisc_fq_codel_set_target@Base 3.2.24
  rtnl_qdisc_get@Base 3.2.7
  rtnl_qdisc_get_by_parent@Base 3.2.7
+ rtnl_qdisc_hfsc_get_defcls@Base 3.2.26
+ rtnl_qdisc_hfsc_set_defcls@Base 3.2.26
  rtnl_qdisc_plug_buffer@Base 3.2.21
  rtnl_qdisc_plug_release_indefinite@Base 3.2.21
  rtnl_qdisc_plug_release_one@Base 3.2.21
@@ -736,6 +846,14 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_sfq_set_limit@Base 3.2.7
  rtnl_sfq_set_perturb@Base 3.2.7
  rtnl_sfq_set_quantum@Base 3.2.7
+ rtnl_skbedit_get_action@Base 3.2.26
+ rtnl_skbedit_get_mark@Base 3.2.26
+ rtnl_skbedit_get_priority@Base 3.2.26
+ rtnl_skbedit_get_queue_mapping@Base 3.2.26
+ rtnl_skbedit_set_action@Base 3.2.26
+ rtnl_skbedit_set_mark@Base 3.2.26
+ rtnl_skbedit_set_priority@Base 3.2.26
+ rtnl_skbedit_set_queue_mapping@Base 3.2.26
  rtnl_str2prio@Base 3.2.7
  rtnl_str2scope@Base 3.2.7
  rtnl_tc_build_rate_table@Base 3.2.7
@@ -746,6 +864,7 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_tc_compare@Base 3.2.7
  rtnl_tc_data@Base 3.2.7
  rtnl_tc_data_check@Base 3.2.7
+ rtnl_tc_data_peek@Base 3.2.26
  rtnl_tc_dump_details@Base 3.2.7
  rtnl_tc_dump_line@Base 3.2.7
  rtnl_tc_dump_stats@Base 3.2.7
@@ -776,7 +895,9 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_tc_set_mtu@Base 3.2.7
  rtnl_tc_set_overhead@Base 3.2.7
  rtnl_tc_set_parent@Base 3.2.7
+ rtnl_tc_stat2str@Base 3.2.26
  rtnl_tc_str2handle@Base 3.2.7
+ rtnl_tc_str2stat@Base 3.2.26
  rtnl_tc_type_register@Base 3.2.7
  rtnl_tc_type_unregister@Base 3.2.7
  rtnl_tc_unregister@Base 3.2.7
@@ -787,7 +908,10 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_u32_add_key_uint16@Base 3.2.7
  rtnl_u32_add_key_uint32@Base 3.2.7
  rtnl_u32_add_key_uint8@Base 3.2.7
+ rtnl_u32_add_mark@Base 3.2.26
  rtnl_u32_del_action@Base 3.2.24
+ rtnl_u32_del_mark@Base 3.2.26
+ rtnl_u32_get_classid@Base 3.2.26
  rtnl_u32_get_key@Base 3.2.24
  rtnl_u32_set_classid@Base 3.2.7
  rtnl_u32_set_cls_terminal@Base 3.2.21
@@ -797,5 +921,6 @@ libnl-route-3.so.200 libnl-route-3-200 #MINVER#
  rtnl_u32_set_hashmask@Base 3.2.21
  rtnl_u32_set_hashtable@Base 3.2.21
  rtnl_u32_set_link@Base 3.2.21
+ tc_groups@Base 3.2.26
  tca_parse@Base 3.2.7
  tca_set_kind@Base 3.2.7

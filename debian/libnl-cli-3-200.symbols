@@ -3,6 +3,7 @@ bfifo.so libnl-cli-3-200 #MINVER#
 blackhole.so libnl-cli-3-200 #MINVER#
 cgroup.so libnl-cli-3-200 #MINVER#
 fq_codel.so libnl-cli-3-200 #MINVER#
+hfsc.so libnl-cli-3-200 #MINVER#
 htb.so libnl-cli-3-200 #MINVER#
 ingress.so libnl-cli-3-200 #MINVER#
 libnl-cli-3.so.200 libnl-cli-3-200 #MINVER#
@@ -41,6 +42,7 @@ libnl-cli-3.so.200 libnl-cli-3-200 #MINVER#
  nl_cli_ct_parse_tcp_state@Base 3.2.7
  nl_cli_ct_parse_timeout@Base 3.2.7
  nl_cli_ct_parse_use@Base 3.2.7
+ nl_cli_ct_parse_zone@Base 3.2.26
  nl_cli_exp_alloc@Base 3.2.21
  nl_cli_exp_alloc_cache@Base 3.2.21
  nl_cli_exp_parse_class@Base 3.2.21

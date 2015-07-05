@@ -67,6 +67,7 @@ libnl-nf-3.so.200 libnl-nf-3-200 #MINVER#
  nfnl_ct_test_packets@Base 3.2.7
  nfnl_ct_test_proto@Base 3.2.7
  nfnl_ct_test_src_port@Base 3.2.7
+ nfnl_ct_test_status@Base 3.2.26
  nfnl_ct_test_tcp_state@Base 3.2.7
  nfnl_ct_test_timeout@Base 3.2.7
  nfnl_ct_test_timestamp@Base 3.2.24
