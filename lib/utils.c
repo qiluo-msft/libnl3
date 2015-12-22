@@ -603,6 +603,8 @@ static const struct trans_tbl nlfamilies[] = {
 	__ADD(NETLINK_GENERIC,generic),
 	__ADD(NETLINK_SCSITRANSPORT,scsitransport),
 	__ADD(NETLINK_ECRYPTFS,ecryptfs),
+	__ADD(NETLINK_RDMA,rdma),
+	__ADD(NETLINK_CRYPTO,crypto),
 };
 
 char * nl_nlfamily2str(int family, char *buf, size_t size)
@@ -627,6 +629,7 @@ int nl_str2nlfamily(const char *name)
 
 static const struct trans_tbl llprotos[] = {
 	{0, "generic"},
+	__ADD(ARPHRD_NETROM,netrom),
 	__ADD(ARPHRD_ETHER,ether),
 	__ADD(ARPHRD_EETHER,eether),
 	__ADD(ARPHRD_AX25,ax25),
@@ -639,9 +642,7 @@ static const struct trans_tbl llprotos[] = {
 	__ADD(ARPHRD_ATM,atm),
 	__ADD(ARPHRD_METRICOM,metricom),
 	__ADD(ARPHRD_IEEE1394,ieee1394),
-#ifdef ARPHRD_EUI64
 	__ADD(ARPHRD_EUI64,eui64),
-#endif
 	__ADD(ARPHRD_INFINIBAND,infiniband),
 	__ADD(ARPHRD_SLIP,slip),
 	__ADD(ARPHRD_CSLIP,cslip),
@@ -651,11 +652,10 @@ static const struct trans_tbl llprotos[] = {
 	__ADD(ARPHRD_ADAPT,adapt),
 	__ADD(ARPHRD_ROSE,rose),
 	__ADD(ARPHRD_X25,x25),
-#ifdef ARPHRD_HWX25
 	__ADD(ARPHRD_HWX25,hwx25),
-#endif
 	__ADD(ARPHRD_CAN,can),
 	__ADD(ARPHRD_PPP,ppp),
+	__ADD(ARPHRD_CISCO,cisco),
 	__ADD(ARPHRD_HDLC,hdlc),
 	__ADD(ARPHRD_LAPB,lapb),
 	__ADD(ARPHRD_DDCMP,ddcmp),
@@ -694,19 +694,18 @@ static const struct trans_tbl llprotos[] = {
 	__ADD(ARPHRD_FCFABRIC+12,fcfb_12),
 	__ADD(ARPHRD_IEEE802_TR,tr),
 	__ADD(ARPHRD_IEEE80211,ieee802.11),
+	__ADD(ARPHRD_IEEE80211_PRISM,ieee802.11_prism),
+	__ADD(ARPHRD_IEEE80211_RADIOTAP,ieee802.11_radiotap),
+	__ADD(ARPHRD_IEEE802154,ieee802.15.4),
+	__ADD(ARPHRD_IEEE802154_MONITOR,ieee802.15.4_monitor),
 	__ADD(ARPHRD_PHONET,phonet),
-#ifdef ARPHRD_CAIF
-	__ADD(ARPHRD_CAIF, caif),
-#endif
-#ifdef ARPHRD_IEEE80211_PRISM
-	__ADD(ARPHRD_IEEE80211_PRISM, ieee802.11_prism),
-#endif
-#ifdef ARPHRD_VOID
+	__ADD(ARPHRD_PHONET_PIPE,phonet_pipe),
+	__ADD(ARPHRD_CAIF,caif),
+	__ADD(ARPHRD_IP6GRE,ip6gre),
+	__ADD(ARPHRD_NETLINK,netlink),
+	__ADD(ARPHRD_6LOWPAN,6lowpan),
 	__ADD(ARPHRD_VOID,void),
-#endif
-#ifdef ARPHRD_NONE
 	__ADD(ARPHRD_NONE,nohdr),
-#endif
 };
 
 char * nl_llproto2str(int llproto, char *buf, size_t len)
@@ -1151,6 +1150,15 @@ int nl_has_capability (int capability)
 			NL_CAPABILITY_ROUTE_LINK_GET_KERNEL_FAIL_OPNOTSUPP,
 			NL_CAPABILITY_ROUTE_ADDR_COMPARE_CACHEINFO,
 			NL_CAPABILITY_VERSION_3_2_26,
+			NL_CAPABILITY_NL_RECV_FAIL_TRUNC_NO_PEEK),
+		_NL_SET(1,
+			NL_CAPABILITY_LINK_BUILD_CHANGE_REQUEST_SET_CHANGE,
+			NL_CAPABILITY_RTNL_NEIGH_GET_FILTER_AF_UNSPEC_FIX,
+			NL_CAPABILITY_VERSION_3_2_27,
+			0,
+			0,
+			0,
+			0,
 			0),
 		/* IMPORTANT: these capability numbers are intended to be universal and stable
 		 * for libnl3. Don't allocate new numbers on your own that differ from upstream
