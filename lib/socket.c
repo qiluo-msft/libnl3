@@ -108,24 +108,20 @@ static uint32_t generate_local_port(void)
 
 			nl_write_unlock(&port_map_lock);
 
-			return pid + (((uint32_t)n) << 22);
+			/* ensure we don't return zero. */
+			pid = pid + (((uint32_t)n) << 22);
+			return pid ? pid : 1024;
 		}
 	}
 
 	nl_write_unlock(&port_map_lock);
-
-	/* Out of sockets in our own PID namespace, what to do? FIXME */
-	NL_DBG(1, "Warning: Ran out of unique local port namespace\n");
-	return UINT32_MAX;
+	return 0;
 }
 
 static void release_local_port(uint32_t port)
 {
 	int nr;
 	uint32_t mask;
-
-	if (port == UINT32_MAX)
-		return;
 
 	BUG_ON(port == 0);
 
@@ -167,7 +163,7 @@ void _nl_socket_used_ports_set(uint32_t *used_ports, uint32_t port)
 	nr /= 32;
 
 	/*
-	BUG_ON(port == UINT32_MAX || port == 0 || (getpid() & 0x3FFFFF) != (port & 0x3FFFFF));
+	BUG_ON(port == 0 || (getpid() & 0x3FFFFF) != (port & 0x3FFFFF));
 	BUG_ON(used_ports[nr] & mask);
 	*/
 
@@ -337,16 +333,24 @@ int _nl_socket_is_local_port_unspecified(struct nl_sock *sk)
 	return (sk->s_local.nl_pid == 0);
 }
 
-uint32_t _nl_socket_generate_local_port_no_release(struct nl_sock *sk)
+uint32_t _nl_socket_set_local_port_no_release(struct nl_sock *sk, int generate_other)
 {
 	uint32_t port;
 
 	/* reset the port to generate_local_port(), but do not release
 	 * the previously generated port. */
 
-	port = generate_local_port();
-	sk->s_flags &= ~NL_OWN_PORT;
+	if (generate_other)
+		port = generate_local_port();
+	else
+		port = 0;
 	sk->s_local.nl_pid = port;
+	if (port == 0) {
+		/* failed to find an unsed port. Restore the socket to have an
+		 * unspecified port. */
+		sk->s_flags |= NL_OWN_PORT;
+	} else
+		sk->s_flags &= ~NL_OWN_PORT;
 	return port;
 }
 /** \endcond */
@@ -359,6 +363,8 @@ uint32_t _nl_socket_generate_local_port_no_release(struct nl_sock *sk)
 uint32_t nl_socket_get_local_port(const struct nl_sock *sk)
 {
 	if (sk->s_local.nl_pid == 0) {
+		struct nl_sock *sk_mutable = (struct nl_sock *) sk;
+
 		/* modify the const argument sk. This is justified, because
 		 * nobody ever saw the local_port from externally. So, we
 		 * initilize it on first use.
@@ -368,7 +374,15 @@ uint32_t nl_socket_get_local_port(const struct nl_sock *sk)
 		 * is not automatically threadsafe anyway, so the user is not
 		 * allowed to do that.
 		 */
-		return _nl_socket_generate_local_port_no_release((struct nl_sock *) sk);
+		sk_mutable->s_local.nl_pid = generate_local_port();
+		if (sk_mutable->s_local.nl_pid == 0) {
+			/* could not generate a local port. Assign UINT32_MAX to preserve
+			 * backward compatibility. A user who cares can clear that anyway
+			 * with nl_socket_set_local_port(). */
+			sk_mutable->s_local.nl_pid = UINT32_MAX;
+			sk_mutable->s_flags |= NL_OWN_PORT;
+		} else
+			sk_mutable->s_flags &= ~NL_OWN_PORT;
 	}
 	return sk->s_local.nl_pid;
 }
@@ -675,12 +689,7 @@ no_so_protocol:
 		so_protocol = protocol;
 	}
 
-	if (sk->s_local.nl_pid != local.nl_pid) {
-		/* the port id differs. The socket is using a port id not managed by
-		 * libnl, hence reset the local port id to release a possibly generated
-		 * port. */
-		nl_socket_set_local_port (sk, local.nl_pid);
-	}
+	nl_socket_set_local_port (sk, local.nl_pid);
 	sk->s_local = local;
 	sk->s_fd = fd;
 	sk->s_proto = so_protocol;

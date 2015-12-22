@@ -32,6 +32,7 @@
 #include <netlink/handlers.h>
 #include <netlink/msg.h>
 #include <netlink/attr.h>
+#include <linux/socket.h>
 
 /**
  * @defgroup core_types Data Types
@@ -105,6 +106,7 @@ int nl_connect(struct nl_sock *sk, int protocol)
 	socklen_t addrlen;
 	struct sockaddr_nl local = { 0 };
 	char buf[64];
+	int try_bind = 1;
 
 #ifdef SOCK_CLOEXEC
 	flags |= SOCK_CLOEXEC;
@@ -129,20 +131,26 @@ int nl_connect(struct nl_sock *sk, int protocol)
 	if (_nl_socket_is_local_port_unspecified (sk)) {
 		uint32_t port;
 		uint32_t used_ports[32] = { 0 };
+		int ntries = 0;
 
 		while (1) {
-			port = _nl_socket_generate_local_port_no_release(sk);
-
-			if (port == UINT32_MAX) {
-				NL_DBG(4, "nl_connect(%p): no more unused local ports.\n", sk);
-				_nl_socket_used_ports_release_all(used_ports);
-				err = -NLE_EXIST;
-				goto errout;
+			if (ntries++ > 5) {
+				/* try only a few times. We hit this only if many ports are already in
+				 * use but allocated *outside* libnl/generate_local_port(). */
+				_nl_socket_set_local_port_no_release (sk, 0);
+				break;
 			}
+
+			port = _nl_socket_set_local_port_no_release(sk, 1);
+			if (port == 0)
+				break;
+
 			err = bind(sk->s_fd, (struct sockaddr*) &sk->s_local,
 				   sizeof(sk->s_local));
-			if (err == 0)
+			if (err == 0) {
+				try_bind = 0;
 				break;
+			}
 
 			errsv = errno;
 			if (errsv == EADDRINUSE) {
@@ -157,7 +165,8 @@ int nl_connect(struct nl_sock *sk, int protocol)
 			}
 		}
 		_nl_socket_used_ports_release_all(used_ports);
-	} else {
+	}
+	if (try_bind) {
 		err = bind(sk->s_fd, (struct sockaddr*) &sk->s_local,
 			   sizeof(sk->s_local));
 		if (err != 0) {
@@ -190,9 +199,8 @@ int nl_connect(struct nl_sock *sk, int protocol)
 	}
 
 	if (sk->s_local.nl_pid != local.nl_pid) {
-		/* strange, the port id is not as expected. Set the local
-		 * port id to release a possibly generated port and un-own
-		 * it. */
+		/* The port id is different. That can happen if the port id was zero
+		 * and kernel assigned a local port. */
 		nl_socket_set_local_port (sk, local.nl_pid);
 	}
 	sk->s_local = local;
@@ -713,6 +721,13 @@ retry:
 
 	if (msg.msg_flags & MSG_CTRUNC) {
 		void *tmp;
+
+		if (msg.msg_controllen == 0) {
+			retval = -NLE_MSG_TRUNC;
+			NL_DBG(4, "recvmsg(%p): Received unexpected control data", sk);
+			goto abort;
+		}
+
 		msg.msg_controllen *= 2;
 		tmp = realloc(msg.msg_control, msg.msg_controllen);
 		if (!tmp) {
@@ -725,6 +740,13 @@ retry:
 
 	if (iov.iov_len < n || (msg.msg_flags & MSG_TRUNC)) {
 		void *tmp;
+
+		/* respond with error to an incomplete message */
+		if (!(sk->s_flags & NL_MSG_PEEK)) {
+			retval = -NLE_MSG_TRUNC;
+			goto abort;
+		}
+
 		/* Provided buffer is not long enough, enlarge it
 		 * to size of n (which should be total length of the message)
 		 * and try again. */
