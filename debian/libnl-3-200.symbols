@@ -12,6 +12,7 @@ libnl-3.so.200 libnl-3-200 #MINVER#
  __type2str@Base 3.2.7
  _nl_socket_generate_local_port_no_release@Base 3.2.26
  _nl_socket_is_local_port_unspecified@Base 3.2.26
+ _nl_socket_set_local_port_no_release@Base 3.2.27
  _nl_socket_used_ports_release_all@Base 3.2.26
  _nl_socket_used_ports_set@Base 3.2.26
  dump_from_ops@Base 3.2.7
@@ -247,6 +248,10 @@ libnl-3.so.200 libnl-3-200 #MINVER#
  nla_find@Base 3.2.7
  nla_get_flag@Base 3.2.7
  nla_get_msecs@Base 3.2.7
+ nla_get_s16@Base 3.2.27
+ nla_get_s32@Base 3.2.27
+ nla_get_s64@Base 3.2.27
+ nla_get_s8@Base 3.2.27
  nla_get_string@Base 3.2.7
  nla_get_u16@Base 3.2.7
  nla_get_u32@Base 3.2.7
@@ -270,6 +275,10 @@ libnl-3.so.200 libnl-3-200 #MINVER#
  nla_put_flag@Base 3.2.7
  nla_put_msecs@Base 3.2.7
  nla_put_nested@Base 3.2.7
+ nla_put_s16@Base 3.2.27
+ nla_put_s32@Base 3.2.27
+ nla_put_s64@Base 3.2.27
+ nla_put_s8@Base 3.2.27
  nla_put_string@Base 3.2.7
  nla_put_u16@Base 3.2.7
  nla_put_u32@Base 3.2.7
