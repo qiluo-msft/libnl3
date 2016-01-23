@@ -11,7 +11,7 @@ Signed-off-by: Heiko Stuebner <heiko@sntech.de>
  1 file changed, 4 insertions(+)
 
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index 92f812c..59a2bf7 100644
+index 1474c8d..5307cbd 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -70,15 +70,19 @@ CLEANFILES = \
@@ -35,4 +35,4 @@ index 92f812c..59a2bf7 100644
  
  libnl_route_3_la_LIBADD  = libnl-3.la
 -- 
-tg: (f26f48b..) debian/out-of-tree (depends on: upstream-dist)
+tg: (269d17e..) debian/out-of-tree (depends on: upstream-dist)

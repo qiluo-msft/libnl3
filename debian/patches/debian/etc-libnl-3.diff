@@ -26,7 +26,7 @@ index 61237dc..9ff2ef1 100644
  
  EXTRA_DIST = \
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index 92f812c..bbf0708 100644
+index 1474c8d..46b4a96 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -8,7 +8,7 @@ AM_CPPFLAGS  =			 	\
@@ -52,7 +52,7 @@ index a77b328..c0d26b1 100644
  AM_CFLAGS = -Wall
  
 diff --git a/src/lib/Makefile.am b/src/lib/Makefile.am
-index d6f0d5b..ee40d5e 100644
+index 9b83e4f..eb074a6 100644
 --- a/src/lib/Makefile.am
 +++ b/src/lib/Makefile.am
 @@ -5,7 +5,7 @@ AM_CPPFLAGS  = \
@@ -65,4 +65,4 @@ index d6f0d5b..ee40d5e 100644
  	-rdynamic
  
 -- 
-tg: (f26f48b..) debian/etc-libnl-3 (depends on: upstream-dist)
+tg: (269d17e..) debian/etc-libnl-3 (depends on: upstream-dist)

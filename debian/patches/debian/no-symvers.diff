@@ -15,7 +15,7 @@ versioning disabled.
  2 files changed, 9 insertions(+), 16 deletions(-)
 
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index bbf0708..28b4a7d 100644
+index 46b4a96..d69e00c 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -10,15 +10,14 @@ AM_CPPFLAGS  =			 	\
@@ -88,7 +88,7 @@ index bbf0708..28b4a7d 100644
  	libnl-3.la \
  	$(top_srcdir)/libnl-xfrm-3.sym
 diff --git a/src/lib/Makefile.am b/src/lib/Makefile.am
-index ee40d5e..d8466e8 100644
+index eb074a6..f3e1387 100644
 --- a/src/lib/Makefile.am
 +++ b/src/lib/Makefile.am
 @@ -42,8 +42,7 @@ lib_LTLIBRARIES = \
@@ -96,10 +96,10 @@ index ee40d5e..d8466e8 100644
  
  libnl_cli_3_la_LDFLAGS = \
 -	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
--	-Wl,--version-script=$(top_builddir)/libnl-cli-3.sym
+-	-Wl,--version-script=$(top_srcdir)/libnl-cli-3.sym
 +	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
  libnl_cli_3_la_DEPENDENCIES = \
- 	$(top_builddir)/libnl-cli-3.sym
+ 	$(top_srcdir)/libnl-cli-3.sym
  
 -- 
-tg: (233547d..) debian/no-symvers (depends on: upstream-dist debian/etc-libnl-3)
+tg: (971f661..) debian/no-symvers (depends on: upstream-dist debian/etc-libnl-3)
