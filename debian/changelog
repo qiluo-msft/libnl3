@@ -4,7 +4,7 @@ libnl3 (3.2.27-1) unstable; urgency=low
     Including fixes for unusable sockets after a failed portid
     generation (Closes: #808213)
 
- -- Heiko Stuebner <mmind@debian.org>  Tue, 22 Dec 2015 14:56:32 +0100
+ -- Heiko Stuebner <mmind@debian.org>  Sun, 24 Jan 2016 23:54:47 +0100
 
 libnl3 (3.2.26-1) unstable; urgency=low
 
