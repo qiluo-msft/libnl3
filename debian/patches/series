@@ -3,3 +3,4 @@ debian/out-of-tree.diff -p1
 debian/no-symvers.diff -p1
 debian/__nl_cache_ops_lookup-unstatic.diff -p1
 debian/_nl_socket_generate_local_port_no_release.diff -p1
+debian/nlmsg_reserve-overflow.patch -p1
